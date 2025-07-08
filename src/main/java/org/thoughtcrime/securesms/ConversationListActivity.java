@@ -456,7 +456,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       onBackPressed();
       return true;
     } else if (itemId == R.id.menu_all_media) {
-      startActivity(new Intent(this, ProfileActivity.class));
+      startActivity(new Intent(this, AllMediaActivity.class));
       return true;
     } else if (itemId == R.id.menu_public_bots) {
       handleShowBot("botsindex@arcanechat.me", "https://i.delta.chat/#67889B0362BEDBFEE05ACD92C1D737FA632A9582&a=botsindex%40arcanechat.me&n=Public%20Bots&i=336MTEz38EH-RJxM9OKWygYK&s=TpVVGK6C4KrJmRG0bwHLalXt");
