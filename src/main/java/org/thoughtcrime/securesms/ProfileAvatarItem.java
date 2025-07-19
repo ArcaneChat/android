@@ -64,7 +64,7 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_recipients, memberCount, memberCount);
       } else if (dcChat.getType() == DcChat.DC_CHAT_TYPE_GROUP) {
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_members, memberCount, memberCount);
-      } else if (dcContact != null) {
+      } else if (dcContact != null && !dcChat.isSelfTalk() && !dcChat.isDeviceTalk()) {
         long timestamp = dcContact.getLastSeen();
         if (timestamp == 0) {
           subtitle = getContext().getString(R.string.last_seen_unknown);
