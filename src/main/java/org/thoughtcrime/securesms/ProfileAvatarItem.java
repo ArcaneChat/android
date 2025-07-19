@@ -59,7 +59,7 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
 
       if (dcChat.isMailingList()) {
         subtitle = dcChat.getMailinglistAddr();
-      } else if (dcChat.isBroadcast()) {
+      } else if (dcChat.isOutBroadcast()) {
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_recipients, memberCount, memberCount);
       } else if (dcChat.getType() == DcChat.DC_CHAT_TYPE_GROUP) {
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_members, memberCount, memberCount);

@@ -169,8 +169,8 @@ public class ConversationFragment extends MessageSelectorFragment
     private void setNoMessageText() {
         DcChat dcChat = getListAdapter().getChat();
         if(dcChat.isMultiUser()){
-            if (dcChat.isBroadcast()) {
-              noMessageTextView.setText(R.string.chat_new_broadcast_hint);
+            if (dcChat.isInBroadcast() || dcChat.isOutBroadcast()) {
+              noMessageTextView.setText(R.string.chat_new_channel_hint);
             } else if (dcChat.isUnpromoted()) {
                 noMessageTextView.setText(R.string.chat_new_group_hint);
             }
@@ -848,7 +848,7 @@ public class ConversationFragment extends MessageSelectorFragment
       public void onShowFullClicked(DcMsg messageRecord) {
         Intent intent = new Intent(getActivity(), FullMsgActivity.class);
         intent.putExtra(FullMsgActivity.MSG_ID_EXTRA, messageRecord.getId());
-        intent.putExtra(FullMsgActivity.BLOCK_LOADING_REMOTE, getListAdapter().getChat().isHalfBlocked());
+        intent.putExtra(FullMsgActivity.BLOCK_LOADING_REMOTE, getListAdapter().getChat().isContactRequest());
         startActivity(intent);
         getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
       }

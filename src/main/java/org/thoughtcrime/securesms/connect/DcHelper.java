@@ -194,7 +194,7 @@ public class DcHelper {
     dcContext.setStockTranslation(112, context.getString(R.string.error_x));
     dcContext.setStockTranslation(113, context.getString(R.string.not_supported_by_provider));
     dcContext.setStockTranslation(114, context.getString(R.string.messages));
-    dcContext.setStockTranslation(115, context.getString(R.string.broadcast_list));
+    dcContext.setStockTranslation(115, context.getString(R.string.channel));
     dcContext.setStockTranslation(116, context.getString(R.string.part_of_total_used));
     dcContext.setStockTranslation(117, context.getString(R.string.secure_join_started));
     dcContext.setStockTranslation(118, context.getString(R.string.secure_join_replies));
@@ -256,6 +256,7 @@ public class DcHelper {
     dcContext.setStockTranslation(177, context.getString(R.string.reaction_by_other));
     dcContext.setStockTranslation(190, context.getString(R.string.secure_join_wait));
     dcContext.setStockTranslation(192, context.getString(R.string.secure_join_takes_longer));
+    dcContext.setStockTranslation(193, context.getString(R.string.donate_device_msg));
   }
 
   public static File getImexDir() {
@@ -479,16 +480,6 @@ public class DcHelper {
       } else {
           return context.getString(R.string.connectivity_not_connected);
       }
-  }
-
-  public static void showVerificationBrokenDialog(Context context, String name) {
-    new AlertDialog.Builder(context)
-      .setMessage(context.getString(R.string.chat_protection_broken_explanation, name))
-      .setNeutralButton(R.string.learn_more, (d, w) -> openHelp(context, "#nocryptanymore"))
-      .setNegativeButton(R.string.qrscan_title, (d, w) -> context.startActivity(new Intent(context, QrActivity.class)))
-      .setPositiveButton(R.string.ok, null)
-      .setCancelable(true)
-      .show();
   }
 
   public static void showProtectionEnabledDialog(Context context) {

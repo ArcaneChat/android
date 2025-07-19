@@ -150,7 +150,6 @@
         <item quantity="one">%d triat</item>
         <item quantity="other">%d seleccionats</item>
     </plurals>
-
     <string name="self">Jo</string>
     <string name="draft">Esborrany</string>
     <string name="image">Imatge</string>
@@ -228,13 +227,18 @@
     <!-- "Chat" is a verb here, "Message to" would also fit. the string might be used in the "New Chat" screen above the contact list -->
     <string name="chat_with">Xateja amb…</string>
     <string name="clone_chat">Clona el xat</string>
-    <!-- consider keeping the term "broadcast" as in WhatsApp or Telegram -->
+    <!-- deprecated -->
     <string name="broadcast_list">Llista de difusió</string>
+    <!-- deprecated -->
     <string name="broadcast_lists">Llistes de difusió</string>
+    <!-- deprecated -->
     <string name="new_broadcast_list">Llista de difusió nova</string>
     <string name="add_recipients">Afegeix destinataris</string>
+    <!-- deprecated -->
     <string name="edit_broadcast_list">Edita la llista de difusió</string>
+    <!-- deprecated -->
     <string name="broadcast_list_name">Nom de la llista de difusió</string>
+    <!-- deprecated -->
     <string name="please_enter_broadcast_list_name">Poseu el nom de la llista de difusió.</string>
     <string name="menu_send">Envia</string>
     <string name="menu_toggle_keyboard">Canvia al teclat d\'emojis</string>
@@ -328,7 +332,6 @@
     <!-- Menu item beside an app/chat that adds an icon to the system's home screen. If the user taps that icon, the app/chat is opened directly. -->
     <string name="add_to_home_screen">Afegeix a la pantalla d\'inici</string>
     <string name="donate">Feu un donatiu</string>
-
     <string name="mute_for_one_hour">Silencia 1 hora</string>
     <string name="mute_for_eight_hours">Silencia 8 hores</string>
     <string name="mute_for_one_day">Silencia 1 dia</string>
@@ -363,8 +366,6 @@
     <string name="videochat_invitation">Invitació a un xat de vídeo</string>
     <string name="videochat_invitation_body">Us han convidat a un xat de vídeo, feu clic a %1$s per unir-vos-hi.</string>
 
-    <!-- get confirmations -->
-    <string name="ask_leave_group">Segur que voleu deixar aquest grup?</string>
     <plurals name="ask_delete_chat">
         <item quantity="one">¿Esborrar %d xat de tots els teus dispositius?</item>
         <item quantity="other">¿Esborrar %d xats de tots els teus dispositius?</item>
@@ -390,7 +391,7 @@
     <string name="ask_start_chat_with">Voleu xatejar amb %1$s?</string>
     <!-- %1$s is replaced by a comma-separated list of names -->
     <string name="ask_remove_members">Voleu eliminar %1$s del grup?</string>
-    <!-- %1$s is replaced by a comma-separated list of names -->
+    <!-- deprecated -->
     <string name="ask_remove_from_broadcast">Voleu eliminar %1$s de la llista de difusió?</string>
     <string name="open_url_confirmation">Voleu obrir aquest enllaç?</string>
 
@@ -421,6 +422,7 @@
     </plurals>
     <!-- The placeholder will be replaced by the name of the recipient in a one-to-one chat. -->
     <string name="chat_new_one_to_one_hint">Envia un missatge a %1$s.</string>
+    <!-- deprecated -->
     <string name="chat_new_broadcast_hint">En una llista de difusió, els destinataris rebran missatges en mode de només lectura en un xat amb tu.</string>
     <string name="chat_new_group_hint">Els altres membres només veuran aquest grup després que hi envieu el primer missatge.</string>
     <string name="chat_record_slide_to_cancel">Llisca per cancel·lar</string>
@@ -886,8 +888,6 @@
     <string name="remove_member_by_you">Heu eliminat el membre %1$s.</string>
     <!-- %1$s will be replaced by name and address of the contact removed from the group, %2$s will be replaced by name and address of the contact who did the action -->
     <string name="remove_member_by_other">Membre %1$s eliminat per %2$s.</string>
-    <!-- "left" in the meaning of "exited" -->
-    <string name="group_left_by_you">Heu abandonat el grup.</string>
     <!-- "left" in the meaning of "exited"; %1$s will be replaced by name and address of the contact leaving the group -->
     <string name="group_left_by_other">%1$sha abandonat el grup</string>
     <string name="group_image_deleted_by_you">Heu esborrat la imatge de grup.</string>
@@ -935,7 +935,9 @@
     <string name="chat_protection_broken">%1$s ha enviat un missatge des d\'un altre dispositiu.</string>
     <string name="chat_protection_enabled_tap_to_learn_more">Us garantim que a partir d\'ara els missatges són xifrats d\'extrem a extrem. Toqueu per a obtenir més informació.</string>
     <string name="chat_protection_enabled_explanation">Ara es garanteix que tots els missatges d\'aquest xat són xifrats d\'extrem a extrem.\n\nEl xifratge d\'extrem a extrem manté privats els missatges entre vós i els companys de xat. Ni tan sols el vostre proveïdor de correu electrònic pot llegir-los.</string>
+    <!-- deprecated -->
     <string name="chat_protection_broken_tap_to_learn_more">%1$s ha enviat un missatge des d\'un altre dispositiu. Toqueu per a obtenir més informació.</string>
+    <!-- deprecated -->
     <string name="chat_protection_broken_explanation">No es pot garantir el xifrat d\'extrem a extrem, probablement perquè %1$s ha reinstal·lat Delta Chat o ha enviat un missatge des d\'un altre dispositiu.\n\n Podeu trobar-vos físicament amb la persona i tornar a escanejar el seu codi QR per tomar-hi a tenir xifrat d\'extrem a extrem.</string>
     <string name="invalid_unencrypted_tap_to_learn_more">%1$srequereix xifratge d\'extrem a extrem, que encara no s\'ha configurat per a aquest xat. Toqueu per a obtenir més informació.</string>
     <string name="invalid_unencrypted_explanation">Per a establir xifratge d\'extrem a extrem, heu de trobar-vos amb els contactes en persona i escanejar el seu codi QR per a poder afegir-los.</string>
@@ -1046,7 +1048,7 @@
     <string name="ImageEditorHud_flip">Capgira</string>
     <string name="ImageEditorHud_rotate">Gira</string>
 
-    <!-- dc_str_* resources -->
+    <!-- deprecated, use string "E-Mail" for non-encrypted messages instead -->
     <string name="encrypted_message">Missatge encriptat</string>
 
     <!-- strings introduced on desktop. we want to share strings between the os, in general, please do not add generic strings here -->
@@ -1176,7 +1178,6 @@
     <string name="perm_enable_bg_reminder_title">Prem aquí per rebre missatges mentre Delta Chat és en segon pla.</string>
     <string name="perm_enable_bg_already_done">Ja heu autoritzat Delta Chat a rebre missatges en segon pla.\n\nSi encara no us arriben els missatge, reviseu els paràmetres de sistema.</string>
 
-    <!-- device messages for updates -->
     <string name="update_1_50_android">Què hi ha de nou?\n\n❤️‍🔥 Un selector d\'emojis nou amb més emojis\n\n🎮 Aplicacions al xat millorades: rebeu notificacions i obriu les aplicacions suportades segons el context. P. ex. obriu una entrada afegida al calendari directament.\n\n👍 Rebeu notificacions de les reaccions dels vostres missatges\n\n... 🛠️ Correccions i moltes coses més a %1$s</string>
     <string name="update_switch_profile_placement">ℹ️ S\'ha mogut l\'opció «Canvia el perfil»: toqueu en la vostra imatge de perfil en la cantonada superior de la finestra principal per a afegir o canviar perfils 💡</string>
 </resources>

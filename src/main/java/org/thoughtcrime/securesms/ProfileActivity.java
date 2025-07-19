@@ -51,7 +51,8 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
   private boolean              chatIsMultiUser;
   private boolean              chatIsDeviceTalk;
   private boolean              chatIsMailingList;
-  private boolean              chatIsBroadcast;
+  private boolean              chatIsOutBroadcast;
+  private boolean              chatIsInBroadcast;
   private int                  contactId;
   private boolean              contactIsBot;
   private Toolbar              toolbar;
@@ -76,8 +77,8 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       String title = getString(R.string.profile);
       if (chatIsMailingList) {
         title = getString(R.string.mailing_list);
-      } else if (chatIsBroadcast) {
-        title = getString(R.string.broadcast_list);
+      } else if (chatIsOutBroadcast || chatIsInBroadcast) {
+        title = getString(R.string.channel);
       } else if (chatIsMultiUser) {
         title = getString(R.string.tab_group);
       } else if (contactIsBot) {
@@ -115,7 +116,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
           menu.findItem(R.id.share).setVisible(false);
         } else if (chatIsMultiUser) {
           menu.findItem(R.id.edit_name).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-          if (chatIsBroadcast) {
+          if (chatIsOutBroadcast) {
             canReceive = false;
           } else {
             if (!dcChat.isEncrypted()
@@ -190,7 +191,8 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
     chatIsMultiUser  = false;
     chatIsDeviceTalk = false;
     chatIsMailingList= false;
-    chatIsBroadcast  = false;
+    chatIsInBroadcast = false;
+    chatIsOutBroadcast = false;
 
     if (contactId!=0) {
       DcContact dcContact = dcContext.getContact(contactId);
@@ -203,7 +205,8 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       chatIsMultiUser = dcChat.isMultiUser();
       chatIsDeviceTalk = dcChat.isDeviceTalk();
       chatIsMailingList = dcChat.isMailingList();
-      chatIsBroadcast = dcChat.isBroadcast();
+      chatIsInBroadcast = dcChat.isInBroadcast();
+      chatIsOutBroadcast = dcChat.isOutBroadcast();
       if(!chatIsMultiUser) {
         final int[] members = dcContext.getChatContacts(chatId);
         contactId = members.length>=1? members[0] : 0;
@@ -312,10 +315,12 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
     String profileImagePath;
     String title;
     Uri profileImageUri;
+    boolean chatIsEncrypted = true;
     if(chatId!=0) {
       DcChat dcChat = dcContext.getChat(chatId);
       profileImagePath = dcChat.getProfileImage();
       title = dcChat.getName();
+      chatIsEncrypted = dcChat.isEncrypted();
     } else {
       DcContact dcContact = dcContext.getContact(contactId);
       profileImagePath = dcContact.getProfileImage();
@@ -331,7 +336,10 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       Intent intent = new Intent(this, MediaPreviewActivity.class);
       intent.setDataAndType(profileImageUri, type);
       intent.putExtra(MediaPreviewActivity.ACTIVITY_TITLE_EXTRA, title);
-      intent.putExtra(MediaPreviewActivity.EDIT_AVATAR_CHAT_ID, chatIsMultiUser ? chatId : 0); // shows edit-button, might be 0 for a contact-profile
+      intent.putExtra( // show edit-button, if the user is allowed to edit the name/avatar
+              MediaPreviewActivity.EDIT_AVATAR_CHAT_ID,
+              (chatIsMultiUser && chatIsEncrypted && !chatIsInBroadcast && !chatIsMailingList) ? chatId : 0
+      );
       startActivity(intent);
     } else if (chatIsMultiUser){
       onEditName();

@@ -252,8 +252,6 @@
     <string name="videochat_invitation">Videochat-invitation</string>
     <string name="videochat_invitation_body">Du er inviteret til en videochat, klik %1$s for at tilslutte dig.</string>
 
-    <!-- get confirmations -->
-    <string name="ask_leave_group">Forlad denne gruppe?</string>
     <!-- Used for the deletion of Device messages -->
     <plurals name="ask_delete_messages_simple">
         <item quantity="one">Slet %d besked?</item>
@@ -657,7 +655,7 @@
     <string name="ImageEditorHud_draw_anywhere_to_blur">Tegn hvor som helst for at sløre</string>
     <string name="ImageEditorHud_rotate">Roter</string>
 
-    <!-- dc_str_* resources -->
+    <!-- deprecated, use string "E-Mail" for non-encrypted messages instead -->
     <string name="encrypted_message">Krypteret besked</string>
 
     <!-- strings introduced on desktop. we want to share strings between the os, in general, please do not add generic strings here -->

@@ -62,6 +62,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
@@ -437,7 +438,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     getMenuInflater().inflate(R.menu.conversation, menu);
 
-    if (dcChat.isSelfTalk() || dcChat.isBroadcast()) {
+    if (dcChat.isSelfTalk() || dcChat.isOutBroadcast()) {
       menu.findItem(R.id.menu_mute_notifications).setVisible(false);
     } else if(dcChat.isMuted()) {
       menu.findItem(R.id.menu_mute_notifications).setTitle(R.string.menu_unmute);
@@ -447,14 +448,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       menu.findItem(R.id.menu_show_map).setVisible(false);
     }
 
-    if (!dcChat.canSend() || dcChat.isBroadcast() || dcChat.isMailingList()) {
+    if (!dcChat.canSend() || dcChat.isMailingList() ) {
       menu.findItem(R.id.menu_ephemeral_messages).setVisible(false);
     }
 
     if (isMultiUser()) {
-      if (dcChat.isEncrypted()
+      if (dcChat.isInBroadcast() && !dcChat.isContactRequest()) {
+        menu.findItem(R.id.menu_leave).setTitle(R.string.menu_leave_channel).setVisible(true);
+      } else if (dcChat.isEncrypted()
           && dcChat.canSend()
-          && !dcChat.isBroadcast()
+          && !dcChat.isOutBroadcast()
           && !dcChat.isMailingList()) {
         menu.findItem(R.id.menu_leave).setVisible(true);
       }
@@ -631,9 +634,16 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void handleLeaveGroup() {
+    @StringRes int leaveLabel;
+    if (dcChat.isInBroadcast()) {
+      leaveLabel = R.string.menu_leave_channel;
+    } else {
+      leaveLabel = R.string.menu_leave_group;
+    }
+
     AlertDialog dialog = new AlertDialog.Builder(this)
       .setMessage(getString(R.string.ask_leave_group))
-      .setPositiveButton(R.string.menu_leave_group, (d, which) -> {
+      .setPositiveButton(leaveLabel, (d, which) -> {
         dcContext.removeContactFromChat(chatId, DcContact.DC_CONTACT_ID_SELF);
         Toast.makeText(this, getString(R.string.done), Toast.LENGTH_SHORT).show();
       })
@@ -1608,7 +1618,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   public void initializeContactRequest() {
-    if (!dcChat.isHalfBlocked()) {
+    if (!dcChat.isContactRequest()) {
       messageRequestBottomView.setVisibility(View.GONE);
       return;
     }
@@ -1621,15 +1631,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     });
 
 
-    if (dcChat.isProtectionBroken()) {
-      messageRequestBottomView.setBlockText(R.string.more_info_desktop);
-      String name = dcContext.getContact(recipient.getDcContact().getId()).getDisplayName();
-      messageRequestBottomView.setBlockOnClickListener(v -> DcHelper.showVerificationBrokenDialog(this, name));
-
-      messageRequestBottomView.setQuestion(getString(R.string.chat_protection_broken, name));
-      messageRequestBottomView.setAcceptText(R.string.ok);
-
-    } else if (dcChat.getType() == DcChat.DC_CHAT_TYPE_GROUP) {
+    if (dcChat.getType() == DcChat.DC_CHAT_TYPE_GROUP) {
       // We don't support blocking groups yet, so offer to delete it instead
       messageRequestBottomView.setBlockText(R.string.delete);
       messageRequestBottomView.setBlockOnClickListener(v -> handleDeleteChat());

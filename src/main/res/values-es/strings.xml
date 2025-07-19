@@ -8,7 +8,6 @@
   <string name="gray">Gris</string>
   <string name="share_location_for_12_hours">Por 12 horas</string>
   <string name="super_group">Súper Grupo</string>
-  <string name="channel">Canal</string>
   <string name="public_bots">🤖 Bots Públicos</string>
   <string name="force_e2ee">Forzar el cifrado de extremo a extremo</string>
   <string name="disable_force_e2ee_warning">⚠️ Si desactivas esta opción, no estarás protegido contra el envío accidental de mensajes no cifrados. Desactiva esta opción únicamente si quieres enviar correos electrónicos no cifrados con tu cuenta de correo electrónico clásica.</string>
@@ -48,6 +47,8 @@
     <string name="update">Actualización</string>
     <string name="emoji">Emoji</string>
     <string name="attachment">Adjunto</string>
+    <!-- the placeholder will be replaced by the name of the image or file to attach -->
+    <string name="ask_attach">¿Adjunta \"%1$s\"?</string>
     <string name="back">Atrás</string>
     <string name="close">Cerrar</string>
     <string name="close_window">Cerrar ventana</string>
@@ -70,7 +71,10 @@
     <string name="save">Guardar</string>
     <string name="chat">Chat</string>
     <string name="media">Multimedia</string>
+    <string name="apps_and_media">Apps y medias</string>
     <string name="profile">Perfil</string>
+    <string name="all_profiles">Todos perfiles</string>
+    <string name="current_profile">Perfil actual</string>
     <string name="main_menu">Menú principal</string>
     <string name="start_chat">Comenzar chat</string>
     <string name="show_full_message">Mostrar mensaje completo…</string>
@@ -105,6 +109,8 @@
     <string name="no_app_to_handle_data">No se puede encontrar una aplicación compatible con este tipo de contenido</string>
     <string name="no_browser_installed">No hay ningún navegador instalado.</string>
     <string name="file_not_found">No se pudo encontrar %1$s.</string>
+    <!-- the placeholder will be replaced by the name of a file -->
+    <string name="cannot_save_file">No se puede guardar %1$s.</string>
     <string name="copied_to_clipboard">Copiado al portapapeles.</string>
     <string name="contacts_headline">Contactos</string>
     <string name="email_address">Dirección de correo</string>
@@ -173,7 +179,7 @@
         <item quantity="many">%d seleccionados</item>
         <item quantity="other">%d seleccionados</item>
     </plurals>
-
+    <string name="selected_colon">Seleccionado:</string>
     <string name="self">Yo</string>
     <string name="draft">Borrador</string>
     <string name="image">Imagen</string>
@@ -217,6 +223,7 @@
     <string name="webxdc_apps">Aplicaciones</string>
     <string name="webxdc_store_url">App Picker URL</string>
     <string name="webxdc_store_url_explain">Si se establece, la URL se utilizará como App Picker en lugar de la predeterminada</string>
+    <string name="webxdc_draft_hint">Pulsa \"Enviar\" para compartir</string>
     <string name="home">Inicio</string>
     <string name="games">Juegos</string>
     <string name="tools">Herramientas</string>
@@ -255,14 +262,31 @@
     <!-- "Chat" is a verb here, "Message to" would also fit. the string might be used in the "New Chat" screen above the contact list -->
     <string name="chat_with">Chatear con...</string>
     <string name="clone_chat">Clonar chat</string>
-    <!-- consider keeping the term "broadcast" as in WhatsApp or Telegram -->
+    <!-- deprecated -->
     <string name="broadcast_list">Difusión</string>
+    <!-- deprecated -->
     <string name="broadcast_lists">Difusiones</string>
+    <!-- deprecated -->
     <string name="new_broadcast_list">Nueva difusión</string>
+    <!-- consider keeping the term "channel" as in WhatsApp or Telegram -->
+    <string name="channel">Canal</string>
+    <!-- consider keeping the term "channel" as in WhatsApp or Telegram -->
+    <string name="channels">Canales</string>
+    <!-- consider keeping the term "channel" as in WhatsApp or Telegram -->
+    <string name="new_channel">Nuevo canal</string>
     <string name="add_recipients">Agregar destinatarios</string>
+    <!-- deprecated -->
     <string name="edit_broadcast_list">Editar difusión</string>
+    <!-- deprecated -->
     <string name="broadcast_list_name">Nombre de difusión</string>
+    <!-- deprecated -->
     <string name="please_enter_broadcast_list_name">Por favor, introduce un nombre para la difusión.</string>
+    <!-- consider keeping the term "channel" as in WhatsApp or Telegram -->
+    <string name="channel_name">Nombre del canal</string>
+    <!-- "New" as in "Create New E-Mail"; shown together with "New Group" and "New Channel" -->
+    <string name="new_email">Nuevo correo electrónico</string>
+    <!-- the "Subject" of an e-mail, use the term common in classic e-mail apps -->
+    <string name="subject">Asunto</string>
     <string name="menu_send">Enviar</string>
     <string name="menu_toggle_keyboard">Alternar teclado emoji</string>
     <string name="menu_edit_group">Editar grupo</string>
@@ -272,6 +296,7 @@
     <string name="menu_unarchive_chat">Des-archivar chat</string>
     <string name="menu_add_attachment">Añadir adjunto</string>
     <string name="menu_leave_group">Abandonar grupo</string>
+    <string name="menu_leave_channel">Abandonar canal</string>
     <string name="menu_delete_chat">Eliminar chat</string>
     <!-- Command to delete all messages in a chat. The chat itself will not be deleted but will be empty afterwards, so make sure to be different from "Delete Chat" here. "Clear" is a verb here, "Empty Chat" would also be fine (eg. in German "Chat leeren") -->
     <string name="clear_chat">Vaciar chat</string>
@@ -298,6 +323,7 @@
     <string name="menu_export_attachment">Exportar adjunto</string>
     <string name="menu_export_attachments">Exportar adjuntos</string>
     <string name="menu_all_media">Toda la multimedia</string>
+    <string name="all_apps_and_media">Todas apps y medias</string>
     <!-- Command to jump to the original message corresponding to a gallery image or document -->
     <string name="show_in_chat">Mostrar en el chat</string>
     <string name="show_app_in_chat">Mostrar en el chat</string>
@@ -355,7 +381,6 @@
     <!-- Menu item beside an app/chat that adds an icon to the system's home screen. If the user taps that icon, the app/chat is opened directly. -->
     <string name="add_to_home_screen">Añadir a la pantalla principal</string>
     <string name="donate">Donar</string>
-
     <string name="mute_for_one_hour">Silenciar por 1 hora</string>
     <string name="mute_for_eight_hours">Silenciar por 8 horas</string>
     <string name="mute_for_one_day">Silenciar por 1 día</string>
@@ -392,7 +417,8 @@
     <string name="videochat_invitation_body">Fuiste invitado a una videollamada, click en %1$s para unirse.</string>
 
     <!-- get confirmations -->
-    <string name="ask_leave_group">¿Seguro que deseas abandonar este grupo? </string>
+    <!-- confirmation for leaving groups, channels, broadcasts or a mailinglists. If a subject is needed, "Are you sure you want to leave the chat?" would work as well -->
+    <string name="ask_leave_group">¿Seguro que quieres abandonar este canal?</string>
     <plurals name="ask_delete_chat">
         <item quantity="one">¿Eliminar %d chat de todos tus dispositivos?</item>
         <item quantity="many">¿Eliminar %d chats de todos tus dispositivos?</item>
@@ -421,8 +447,10 @@
     <string name="ask_start_chat_with">¿Chatear con %1$s?</string>
     <!-- %1$s is replaced by a comma-separated list of names -->
     <string name="ask_remove_members">¿Eliminar a %1$s del grupo?</string>
-    <!-- %1$s is replaced by a comma-separated list of names -->
+    <!-- deprecated -->
     <string name="ask_remove_from_broadcast">¿Eliminar %1$s de la lista de difusión?</string>
+    <!-- %1$s is replaced by a comma-separated list of names -->
+    <string name="ask_remove_from_channel">¿Quita %1$s del canal?</string>
     <string name="open_url_confirmation">¿Quieres abrir este enlace?</string>
 
 
@@ -455,7 +483,10 @@
     </plurals>
     <!-- The placeholder will be replaced by the name of the recipient in a one-to-one chat. -->
     <string name="chat_new_one_to_one_hint">Envíe un mensaje a %1$s.</string>
+    <!-- deprecated -->
     <string name="chat_new_broadcast_hint">En una difusión, los destinatarios recibirán mensajes en un chat de solo lectura contigo.</string>
+    <!-- consider keeping the term "channel" as in WhatsApp or Telegram -->
+    <string name="chat_new_channel_hint">Canales son una herramienta para comunicación de uno a muchos para crear un transmisión de mensajes.</string>
     <string name="chat_new_group_hint">Los demás sólo verán este grupo después de que hayas enviado un primer mensaje.</string>
     <string name="chat_record_slide_to_cancel">Deslice para cancelar</string>
     <string name="chat_record_explain">Mantenga pulsado para grabar un mensaje de voz, suelte para enviar</string>
@@ -465,6 +496,7 @@
     <string name="chat_input_placeholder">Mensaje</string>
     <string name="chat_archived_label">Archivado</string>
     <string name="chat_request_label">Solicitud</string>
+    <string name="chat_request_label_explain">Incluir solicitudes en contadores y notificaciones</string>
     <string name="chat_no_messages">No hay mensajes.</string>
     <string name="chat_self_talk_subtitle">Mensajes que envié a mí mismo</string>
     <string name="archive_empty_hint">Chats arquivados se mostrarán aquí.</string>
@@ -834,6 +866,7 @@
     <string name="n_bytes_message">Mensaje de %1$s</string>
     <!-- %1$s will be replaced by human-readable date and time -->
     <string name="download_max_available_until">Descarga disponible hasta %1$s</string>
+    <string name="select_profile">Seleccionar perfil</string>
     <string name="profile_image_select">Seleccionar imagen de perfil</string>
     <string name="select_your_new_profile_image">Seleccionar tu nueva imagen de perfil</string>
     <string name="profile_image_delete">Borrar imagen de perfil</string>
@@ -920,8 +953,8 @@
     <string name="remove_member_by_you">Eliminaste al miembro %1$s.</string>
     <!-- %1$s will be replaced by name and address of the contact removed from the group, %2$s will be replaced by name and address of the contact who did the action -->
     <string name="remove_member_by_other">Miembro %1$s eliminado por %2$s.</string>
-    <!-- "left" in the meaning of "exited" -->
-    <string name="group_left_by_you">Abandonaste el grupo.</string>
+    <!-- "left" in the meaning of "exited". This string is added to a chat after groups, channels, broadcasts or mailinglists are left. If a subject is needed, "You left the chat." would work as well. -->
+    <string name="group_left_by_you">Abandonaste.</string>
     <!-- "left" in the meaning of "exited"; %1$s will be replaced by name and address of the contact leaving the group -->
     <string name="group_left_by_other">Grupo abandonado por %1$s.</string>
     <string name="group_image_deleted_by_you">Eliminaste la imagen del grupo.</string>
@@ -969,7 +1002,9 @@
     <string name="chat_protection_broken">%1$s envió un mensaje desde otro dispositivo.</string>
     <string name="chat_protection_enabled_tap_to_learn_more">A partir de ahora se garantiza que los mensajes están cifrados de extremo a extremo . Toca para obtener más información.</string>
     <string name="chat_protection_enabled_explanation">Ahora se garantiza que todos los mensajes en este chat están cifrados de extremo a extremo.\n\nEl cifrado de extremo a extremo mantiene los mensajes privados entre tú y tus compañeros de chat. Ni siquiera tu proveedor de correo electrónico puede leerlos.</string>
+    <!-- deprecated -->
     <string name="chat_protection_broken_tap_to_learn_more">%1$s envió un mensaje desde otro dispositivo. Toca para obtener más información.</string>
+    <!-- deprecated -->
     <string name="chat_protection_broken_explanation">El cifrado de extremo a extremo ya no se puede garantizar, probablemente porque %1$s reinstaló Delta Chat o envió un mensaje desde otro dispositivo.\n\nPueden encontrarse en persona y escanear su código QR nuevamente para restablecer el cifrado de extremo a extremo garantizado.</string>
     <string name="invalid_unencrypted_tap_to_learn_more">⚠️ %1$s requiere cifrado de extremo a extremo que aún no está configurado para este chat. Toca para obtener más información.</string>
     <string name="invalid_unencrypted_explanation">Para establecer un cifrado de extremo a extremo, puede reunirse con los contactos en persona y escanear su código QR.</string>
@@ -1081,7 +1116,7 @@
     <string name="ImageEditorHud_flip">Voltear</string>
     <string name="ImageEditorHud_rotate">Rotar</string>
 
-    <!-- dc_str_* resources -->
+    <!-- deprecated, use string "E-Mail" for non-encrypted messages instead -->
     <string name="encrypted_message">Mensaje cifrado</string>
 
     <!-- strings introduced on desktop. we want to share strings between the os, in general, please do not add generic strings here -->
@@ -1212,7 +1247,7 @@
     <string name="perm_enable_bg_already_done">Ya has permitido que Delta Chat reciba mensajes en segundo plano.\n\nSi los mensajes aún no llegan en segundo plano, compruebe también la configuración de su sistema.</string>
 
     <!-- device messages for updates -->
-    <string name="update_1_58_android">🔮 ¿Qué hay de nuevo?\n\n★ las listas de difusión ahora son cifradas y están disponibles para perfiles chatmail\n\n★ se muestra la biografía/estado debajo del nombre de perfil en los ajustes principales\n\n★ añadido soporte para importar contactos de ProtonMail via archivos vCard recibidos en chats\n\n★ tocar un mensaje del sistema sobre un contacto (ej. miembro añadido/eliminado) abre el perfil de dicho contacto\n\n★ ocultada opción avanzada superflua \"Mostrar correos clásicos\" en perfiles chatmail\n\n★ esperar por la finalización del proceso de escaneo de QR (o enlace de invitación) antes de permitir enviar mensajes\n\n★ varios arreglos menores y actualización de traducciones\n\n\n💜 Muestra tu amor y apoyo al desarrollo de Delta Chat: %1$s</string>
+    <string name="update_2_0">🔮 ¿Qué hay de nuevo?\n\n★ El cifrado del chat es ahora más confiable, no puede degradarse, por lo que los candados 🔒 en los mensajes ya no son necesarios.\n\n★ Los correos sin cifrado aparecerán en su propio chat y marcados con un símbolo de correo ✉️\n\n★ Nueva pantalla de perfil mejorado\n\n★ Nuevo botón para acceder rápidamente a las mini-apps del chat\n\n\n💜 Ayuda con una donación para que podamos continuar añadiendo mejoras: %1$s</string>
 
     <string name="update_1_50_android">¿Qué hay de nuevo?\n\n❤️‍🔥 Nuevo selector de emojis con más emojis\n\n🎮 Aplicaciones de chat mejoradas: recibe notificaciones y abre aplicaciones en contexto, por ejemplo, abre una entrada de calendario agregada directamente\n\n👍 Recibe notificaciones sobre las reacciones a tus mensajes\n\n... 🛠️ CORRECCIONES y AÚN MÁS en %1$s</string>
     <string name="update_switch_profile_placement">ℹ️ Se movió la opción \"Cambiar perfil\": toca tu imagen de perfil en la esquina superior de la pantalla principal para agregar o cambiar perfiles 💡</string>
