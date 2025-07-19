@@ -16,6 +16,7 @@ import org.thoughtcrime.securesms.components.AvatarView;
 import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.recipients.RecipientModifiedListener;
+import org.thoughtcrime.securesms.util.DateUtils;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
@@ -63,11 +64,25 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_recipients, memberCount, memberCount);
       } else if (dcChat.getType() == DcChat.DC_CHAT_TYPE_GROUP) {
         subtitle = getContext().getResources().getQuantityString(R.plurals.n_members, memberCount, memberCount);
+      } else if (dcContact != null) {
+        long timestamp = dcContact.getLastSeen();
+        if (timestamp == 0) {
+          subtitle = getContext().getString(R.string.last_seen_unknown);
+        } else {
+          subtitle = getContext().getString(R.string.last_seen_at, DateUtils.getExtendedTimeSpanString(getContext(), timestamp));
+        }
       }
     } else if (dcContact != null) {
       recipient = new Recipient(getContext(), dcContact);
       name = dcContact.getDisplayName();
       greenCheckmark = dcContact.isVerified();
+
+      long timestamp = dcContact.getLastSeen();
+      if (timestamp == 0) {
+        subtitle = getContext().getString(R.string.last_seen_unknown);
+      } else {
+        subtitle = getContext().getString(R.string.last_seen_at, DateUtils.getExtendedTimeSpanString(getContext(), timestamp));
+      }
     }
 
     recipient.addListener(this);

@@ -296,6 +296,7 @@ public class ProfileAdapter extends RecyclerView.Adapter
       itemData.add(new ItemData(ITEM_SEND_MESSAGE_BUTTON, context.getString(R.string.send_message), R.drawable.ic_send_sms_white_24dp));
     }
 
+    /*
     if (dcContact != null && !isDeviceTalk && !isSelfTalk) {
       long lastSeenTimestamp = dcContact.getLastSeen();
       String lastSeenTxt;
@@ -307,6 +308,7 @@ public class ProfileAdapter extends RecyclerView.Adapter
       }
       itemData.add(new ItemData(ITEM_LAST_SEEN, lastSeenTxt, 0));
     }
+    */
 
     if (memberList!=null && !isMailingList) {
       itemData.add(new ItemData(ITEM_DIVIDER, null, 0));
@@ -331,6 +333,7 @@ public class ProfileAdapter extends RecyclerView.Adapter
     }
 
     if (dcContact != null && !isDeviceTalk && !isSelfTalk) {
+      itemData.add(new ItemData(ITEM_DIVIDER, null, 0));
       int verifierId = dcContact.getVerifierId();
       if (verifierId != 0) {
         String introducedBy;
