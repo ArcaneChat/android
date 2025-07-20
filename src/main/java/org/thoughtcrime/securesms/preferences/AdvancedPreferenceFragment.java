@@ -3,7 +3,6 @@ package org.thoughtcrime.securesms.preferences;
 import static android.app.Activity.RESULT_OK;
 import static android.text.InputType.TYPE_TEXT_VARIATION_URI;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_BCC_SELF;
-import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_FORCE_ENCRYPTION;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_MVBOX_MOVE;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_ONLY_FETCH_MVBOX;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SHOW_EMAILS;
@@ -57,7 +56,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   private static final String TAG = AdvancedPreferenceFragment.class.getSimpleName();
 
   private ListPreference showEmails;
-  CheckBoxPreference forceE2eeCheckbox;
   CheckBoxPreference bccSelfCheckbox;
   CheckBoxPreference mvboxMoveCheckbox;
   CheckBoxPreference onlyFetchMvboxCheckbox;
@@ -79,11 +77,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     Preference sendAsm = this.findPreference("pref_send_autocrypt_setup_message");
     if (sendAsm != null) {
       sendAsm.setOnPreferenceClickListener(new SendAsmListener());
-    }
-
-    forceE2eeCheckbox = (CheckBoxPreference) this.findPreference("pref_prefer_e2ee");
-    if (forceE2eeCheckbox != null) {
-      forceE2eeCheckbox.setOnPreferenceChangeListener(new PreferE2eeListener());
     }
 
     bccSelfCheckbox = (CheckBoxPreference) this.findPreference("pref_bcc_self");
@@ -219,7 +212,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     showEmails.setValue(value);
     updateListSummary(showEmails, value);
 
-    forceE2eeCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_FORCE_ENCRYPTION, 1));
     bccSelfCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_BCC_SELF));
     mvboxMoveCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_MVBOX_MOVE));
     onlyFetchMvboxCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
@@ -368,24 +360,4 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
   }
 
-  private class PreferE2eeListener implements Preference.OnPreferenceChangeListener {
-    @Override
-    public boolean onPreferenceChange(@NonNull final Preference preference, Object newValue) {
-      final boolean enabled = (Boolean) newValue;
-      if (enabled) {
-        dcContext.setConfigInt(CONFIG_FORCE_ENCRYPTION, 1);
-        return true;
-      } else {
-        new AlertDialog.Builder(requireContext())
-          .setMessage(R.string.disable_force_e2ee_warning)
-          .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-            dcContext.setConfigInt(CONFIG_FORCE_ENCRYPTION, 0);
-            ((CheckBoxPreference)preference).setChecked(false);
-          })
-          .setNegativeButton(R.string.cancel, null)
-          .show();
-        return false;
-      }
-    }
-  }
 }
