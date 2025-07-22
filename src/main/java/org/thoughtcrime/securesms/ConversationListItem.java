@@ -161,7 +161,8 @@ public class ConversationListItem extends RelativeLayout
     DcContact contact = recipient.getDcContact();
     avatar.setSeenRecently(contact != null && contact.wasSeenRecently());
 
-    boolean isProtected = thread.isProtected() || DcHelper.getContext(getContext()).getChat((int)chatId).isDeviceTalk();
+    DcChat dcChat = DcHelper.getContext(getContext()).getChat((int)chatId);
+    boolean isProtected = dcChat.isDeviceTalk() || dcChat.isSelfTalk();
 
     fromView.setCompoundDrawablesWithIntrinsicBounds(
         thread.isMuted()? R.drawable.ic_volume_off_grey600_18dp : 0,

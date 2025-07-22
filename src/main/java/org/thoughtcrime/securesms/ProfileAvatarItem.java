@@ -51,12 +51,10 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
     this.glideRequests = glideRequests;
 
     String name = "";
-    boolean greenCheckmark = false;
     String subtitle = null;
     if (dcChat != null) {
       recipient = new Recipient(getContext(), dcChat);
       name = dcChat.getName();
-      greenCheckmark = dcChat.isProtected();
 
       if (dcChat.isMailingList()) {
         subtitle = dcChat.getMailinglistAddr();
@@ -75,7 +73,6 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
     } else if (dcContact != null) {
       recipient = new Recipient(getContext(), dcContact);
       name = dcContact.getDisplayName();
-      greenCheckmark = dcContact.isVerified();
 
       long timestamp = dcContact.getLastSeen();
       if (timestamp == 0) {
@@ -90,7 +87,6 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
     avatarView.setSeenRecently(dcContact != null && dcContact.wasSeenRecently());
 
     nameView.setText(name);
-    nameView.setCompoundDrawablesWithIntrinsicBounds(0,0, greenCheckmark ? R.drawable.ic_verified : 0, 0);
 
     if (subtitle != null) {
       subtitleView.setVisibility(View.VISIBLE);
