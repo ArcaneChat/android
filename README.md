@@ -30,4 +30,4 @@ This app has some extended support for WebXDC apps:
 
 This app is based on the [official Delta Chat client](https://github.com/deltachat/deltachat-android) with several improvements.
 
-This app uses a [modified](https://github.com/ArcaneChat/core) version of the [Delta Chat Core Library](https://github.com/deltachat/deltachat-core-rust).
+This app uses a [modified](https://github.com/ArcaneChat/core) version of the [Chatmail Core Library](https://github.com/chatmail/core).
