@@ -134,6 +134,7 @@ public class ConversationListItem extends RelativeLayout
       this.fromView.setText(recipient, state!=DcMsg.DC_STATE_IN_FRESH);
     }
 
+    subjectView.setVisibility(VISIBLE);
     this.subjectView.setText(thread.getDisplayBody());
     this.subjectView.setTypeface(state==DcMsg.DC_STATE_IN_FRESH ? BOLD_TYPEFACE : LIGHT_TYPEFACE);
     this.subjectView.setTextColor(state==DcMsg.DC_STATE_IN_FRESH ? ThemeUtil.getThemedColor(getContext(), R.attr.conversation_list_item_unread_color)
@@ -179,8 +180,8 @@ public class ConversationListItem extends RelativeLayout
     Recipient recipient  = new Recipient(getContext(), contact);
 
     fromView.setText(getHighlightedSpan(contact.getDisplayName(), highlightSubstring));
-    fromView.setCompoundDrawablesWithIntrinsicBounds(0, 0, contact.isVerified()? R.drawable.ic_verified : 0, 0);
-    subjectView.setText(getHighlightedSpan(contact.getAddr(), highlightSubstring));
+    fromView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    subjectView.setVisibility(GONE);
     dateView.setText("");
     dateView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     archivedBadgeView.setVisibility(GONE);
@@ -204,6 +205,7 @@ public class ConversationListItem extends RelativeLayout
 
     fromView.setText(recipient, true);
     fromView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+    subjectView.setVisibility(VISIBLE);
     subjectView.setText(getHighlightedSpan(messageResult.getSummarytext(512), highlightSubstring));
 
     long timestamp = messageResult.getTimestamp();
