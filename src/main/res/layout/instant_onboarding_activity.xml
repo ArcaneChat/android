@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/colorPrimary"
+    android:fitsSystemWindows="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true" >
+    android:fillViewport="true"
+    android:background="?android:attr/windowBackground"
+    >
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -136,3 +144,5 @@
   </LinearLayout>
 
 </ScrollView>
+
+</RelativeLayout>

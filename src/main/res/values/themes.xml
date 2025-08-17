@@ -37,7 +37,7 @@
         <item name="theme_type">light</item>
         <item name="actionBarStyle">@style/TextSecure.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.LightActionBar.TabBar</item>
-        <item name="actionModeBackground">@color/action_mode_status_bar</item>
+        <item name="actionModeBackground">@color/def_primary</item>
         <item name="colorPrimary">@color/def_primary</item>
         <item name="colorPrimaryDark">@color/def_primary</item>
 
@@ -152,7 +152,7 @@
         <item name="colorPrimary">@color/gray95</item>
         <item name="colorPrimaryDark">@color/gray95</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="actionModeBackground">@color/action_mode_status_bar</item>
+        <item name="actionModeBackground">@color/gray95</item>
         <item name="android:textColor">@color/text_color_dark_theme</item>
         <item name="android:textColorSecondary">@color/text_color_secondary_dark_theme</item>
 
@@ -189,7 +189,7 @@
         <item name="conversation_item_background">@drawable/conversation_item_background</item>
         <item name="conversation_item_background_animated">@drawable/conversation_item_background_animated</item>
         <item name="conversation_item_update_bg_color">@color/universal_overlay</item>
-        <item name="conversation_item_update_text_color">@color/core_light_35</item>
+        <item name="conversation_item_update_text_color">@color/white</item>
 
         <item name="conversation_item_sent_indicator_text_background">@drawable/conversation_item_sent_indicator_text_shape_dark</item>
         <item name="conversation_item_date_line_color">@color/core_dark_55</item>
@@ -270,6 +270,7 @@
     <style name="TextSecure.PurpleTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.PurpleActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.PurpleActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/purple_primary</item>
         <item name="colorPrimary">@color/purple_primary</item>
         <item name="colorPrimaryDark">@color/purple_primary</item>
 
@@ -335,6 +336,7 @@
     <style name="TextSecure.GreenTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.GreenActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.GreenActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/green_primary</item>
         <item name="colorPrimary">@color/green_primary</item>
         <item name="colorPrimaryDark">@color/green_primary</item>
 
@@ -401,6 +403,7 @@
     <style name="TextSecure.BlueTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.BlueActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.BlueActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/blue_primary</item>
         <item name="colorPrimary">@color/blue_primary</item>
         <item name="colorPrimaryDark">@color/blue_primary</item>
 
@@ -466,6 +469,7 @@
     <style name="TextSecure.RedTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.RedActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.RedActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/red_primary</item>
         <item name="colorPrimary">@color/red_primary</item>
         <item name="colorPrimaryDark">@color/red_primary</item>
 
@@ -531,6 +535,7 @@
     <style name="TextSecure.PinkTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.PinkActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.PinkActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/pink_primary</item>
         <item name="colorPrimary">@color/pink_primary</item>
         <item name="colorPrimaryDark">@color/pink_primary</item>
 
@@ -596,6 +601,7 @@
     <style name="TextSecure.GrayTheme" parent="@style/TextSecure.LightTheme">
         <item name="actionBarStyle">@style/TextSecure.GrayActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.GrayActionBar.TabBar</item>
+        <item name="actionModeBackground">@color/gray_primary</item>
         <item name="colorPrimary">@color/gray_primary</item>
         <item name="colorPrimaryDark">@color/gray_primary</item>
 

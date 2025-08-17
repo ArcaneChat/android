@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.pm.ShortcutManagerCompat;
 
 import com.b44t.messenger.DcContext;
 
@@ -216,6 +217,16 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
     int       accId            = intent.getIntExtra(EXTRA_ACC_ID, -1);
     int       chatId           = intent.getIntExtra(EXTRA_CHAT_ID, -1);
     String    msgType          = intent.getStringExtra(EXTRA_MSG_TYPE);
+
+    // the intent coming from shortcuts in the share selector might not include the custom extras but the shortcut ID
+    String shortcutId = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID);
+    if ((chatId == -1 || accId == -1) && shortcutId != null && shortcutId.startsWith("chat-")) {
+      String[] args = shortcutId.split("-");
+      if (args.length == 3) {
+        accId = Integer.parseInt(args[1]);
+        chatId = Integer.parseInt(args[2]);
+      }
+    }
 
     String[] extraEmail = getIntent().getStringArrayExtra(Intent.EXTRA_EMAIL);
     /*
