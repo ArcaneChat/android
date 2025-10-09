@@ -38,8 +38,6 @@ import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcMsg;
-import com.b44t.messenger.rpc.Rpc;
-import com.b44t.messenger.rpc.RpcException;
 import com.google.common.base.Charsets;
 
 import org.json.JSONObject;
@@ -62,6 +60,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
 
 public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcEventDelegate  {
   private static final String TAG = WebxdcActivity.class.getSimpleName();

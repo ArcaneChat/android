@@ -22,8 +22,6 @@ import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcLot;
 import com.b44t.messenger.DcMsg;
-import com.b44t.messenger.rpc.Rpc;
-import com.b44t.messenger.rpc.RpcException;
 
 import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.BuildConfig;
@@ -42,6 +40,9 @@ import org.thoughtcrime.securesms.util.Util;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
 
 public class DcHelper {
 
@@ -69,15 +70,11 @@ public class DcHelper {
     public static final String CONFIG_BCC_SELF = "bcc_self";
     public static final String CONFIG_SHOW_EMAILS = "show_emails";
     public static final String CONFIG_MEDIA_QUALITY = "media_quality";
-    public static final String CONFIG_WEBRTC_INSTANCE = "webrtc_instance";
     public static final String CONFIG_PROXY_ENABLED = "proxy_enabled";
     public static final String CONFIG_PROXY_URL = "proxy_url";
     public static final String CONFIG_VERIFIED_ONE_ON_ONE_CHATS = "verified_one_on_one_chats";
     public static final String CONFIG_WEBXDC_REALTIME_ENABLED = "webxdc_realtime_enabled";
     public static final String CONFIG_PRIVATE_TAG = "private_tag";
-
-    public static final String DEFAULT_VIDEOCHAT_URL_PREFIX = "https://meet.systemli.org/";
-    public static final String DEFAULT_VIDEOCHAT_URL = DEFAULT_VIDEOCHAT_URL_PREFIX + "$ROOM#config.prejoinConfig.enabled=false&config.notifications=[]&config.toolbarButtons=[%22microphone%22,%22camera%22,%22hangup%22]";
 
     public static DcContext getContext(@NonNull Context context) {
         return ApplicationContext.getInstance(context).dcContext;
@@ -247,6 +244,11 @@ public class DcHelper {
     dcContext.setStockTranslation(177, context.getString(R.string.reaction_by_other));
     dcContext.setStockTranslation(190, context.getString(R.string.secure_join_wait));
     dcContext.setStockTranslation(193, context.getString(R.string.donate_device_msg));
+    dcContext.setStockTranslation(194, context.getString(R.string.outgoing_call));
+    dcContext.setStockTranslation(195, context.getString(R.string.incoming_call));
+    dcContext.setStockTranslation(196, context.getString(R.string.declined_call));
+    dcContext.setStockTranslation(197, context.getString(R.string.canceled_call));
+    dcContext.setStockTranslation(198, context.getString(R.string.missed_call));
   }
 
   public static File getImexDir() {
@@ -409,14 +411,6 @@ public class DcHelper {
     }
     return getBlobdirFile(dcContext, filename, ext);
 
-  }
-
-  public static String getVideochatURL(DcContext dcContext) {
-    String instance = dcContext.getConfig(DcHelper.CONFIG_WEBRTC_INSTANCE);
-    if (instance != null && !instance.isEmpty()) {
-      return instance;
-    }
-    return DEFAULT_VIDEOCHAT_URL;
   }
 
   @NonNull

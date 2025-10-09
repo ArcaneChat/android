@@ -34,8 +34,6 @@ import androidx.loader.app.LoaderManager;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcLot;
-import com.b44t.messenger.rpc.Rpc;
-import com.b44t.messenger.rpc.RpcException;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
@@ -64,6 +62,9 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Objects;
 
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
+
 public class InstantOnboardingActivity extends BaseActionBarActivity implements DcEventCenter.DcEventDelegate {
 
   private static final String TAG = InstantOnboardingActivity.class.getSimpleName();
@@ -89,7 +90,10 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
 
   private AttachmentManager attachmentManager;
   private Bitmap avatarBmp;
+
   private @Nullable ProgressDialog progressDialog;
+  private boolean cancelled;
+
   private DcContext dcContext;
 
   @Override
@@ -422,7 +426,6 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
   }
 
   private void progressSuccess() {
-    DcHelper.getEventCenter(this).endCaptureNextError();
     if (progressDialog != null) {
       progressDialog.dismiss();
     }
@@ -481,11 +484,14 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
       progressDialog = null;
     }
 
+    cancelled = false;
+
     progressDialog = new ProgressDialog(this);
     progressDialog.setMessage(getResources().getString(R.string.one_moment));
     progressDialog.setCanceledOnTouchOutside(false);
     progressDialog.setCancelable(false);
     progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getResources().getString(android.R.string.cancel), (dialog, which) -> {
+        cancelled = true;
         dcContext.stopOngoingProcess();
       });
     progressDialog.show();
@@ -496,9 +502,13 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
       Rpc rpc = DcHelper.getRpc(this);
         try {
           rpc.addTransportFromQr(dcContext.getAccountId(), qrCode);
+          DcHelper.getEventCenter(this).endCaptureNextError();
           progressSuccess();
         } catch (RpcException e) {
-          Util.runOnMain(() -> progressError(e.getMessage()));
+          DcHelper.getEventCenter(this).endCaptureNextError();
+          if (!cancelled) {
+            Util.runOnMain(() -> progressError(e.getMessage()));
+          }
         }
     }).start();
   }

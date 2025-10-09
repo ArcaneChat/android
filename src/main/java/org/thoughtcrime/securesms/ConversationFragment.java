@@ -66,7 +66,7 @@ import org.thoughtcrime.securesms.util.StickyHeaderDecoration;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.ConversationAdaptiveActionsToolbar;
-import org.thoughtcrime.securesms.videochat.VideochatUtil;
+import org.thoughtcrime.securesms.calls.CallUtil;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -367,8 +367,7 @@ public class ConversationFragment extends MessageSelectorFragment
     }
 
     static boolean canReplyToMsg(DcMsg dcMsg) {
-        boolean canReply = dcMsg.getType() != DcMsg.DC_MSG_VIDEOCHAT_INVITATION;
-        if (canReply && dcMsg.isInfo()) {
+        if (dcMsg.isInfo()) {
             switch (dcMsg.getInfoType()) {
                 case DcMsg.DC_INFO_GROUP_NAME_CHANGED:
                 case DcMsg.DC_INFO_GROUP_IMAGE_CHANGED:
@@ -377,16 +376,16 @@ public class ConversationFragment extends MessageSelectorFragment
                 case DcMsg.DC_INFO_LOCATIONSTREAMING_ENABLED:
                 case DcMsg.DC_INFO_EPHEMERAL_TIMER_CHANGED:
                 case DcMsg.DC_INFO_WEBXDC_INFO_MESSAGE:
-                    break;
+                    return true;
                 default:
-                    canReply = false;
+                    return false;
             }
         }
-        return canReply;
+        return true;
     }
 
     static boolean canEditMsg(DcMsg dcMsg) {
-        return dcMsg.isOutgoing() && !dcMsg.isInfo() && dcMsg.getType() != DcMsg.DC_MSG_VIDEOCHAT_INVITATION && !dcMsg.hasHtml() && !dcMsg.getText().isEmpty();
+        return dcMsg.isOutgoing() && !dcMsg.isInfo() && dcMsg.getType() != DcMsg.DC_MSG_CALL && !dcMsg.hasHtml() && !dcMsg.getText().isEmpty();
     }
 
     public void handleClearChat() {
@@ -757,9 +756,6 @@ public class ConversationFragment extends MessageSelectorFragment
                     actionMode.setTitle(String.valueOf(getListAdapter().getSelectedItems().size()));
                     actionMode.setTitleOptionalHint(false); // the title represents important information, also indicating implicitly, more items can be selected
                 }
-            }
-            else if (messageRecord.getType()==DcMsg.DC_MSG_VIDEOCHAT_INVITATION) {
-                new VideochatUtil().join(getActivity(), messageRecord.getId());
             }
             else if(DozeReminder.isDozeReminderMsg(getContext(), messageRecord)) {
                 DozeReminder.dozeReminderTapped(getContext());

@@ -14,7 +14,6 @@ import androidx.appcompat.app.AlertDialog;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcMsg;
-import com.b44t.messenger.rpc.Rpc;
 
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.recipients.Recipient;
@@ -23,6 +22,8 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import chat.delta.rpc.Rpc;
 
 public abstract class BaseConversationItem extends LinearLayout
     implements BindableConversationItem

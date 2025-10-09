@@ -27,8 +27,6 @@ import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
-import com.b44t.messenger.rpc.RpcException;
-
 import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
 import org.thoughtcrime.securesms.ConversationActivity;
 import org.thoughtcrime.securesms.LogViewActivity;
@@ -48,6 +46,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
+
+import chat.delta.rpc.RpcException;
 
 
 public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
@@ -131,12 +131,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     if (submitDebugLog != null) {
       submitDebugLog.setOnPreferenceClickListener(new ViewLogListener());
     }
-
-    Preference webrtcInstance = this.findPreference("pref_webrtc_instance");
-    if (webrtcInstance != null) {
-      webrtcInstance.setOnPreferenceClickListener(new WebrtcInstanceListener());
-    }
-    updateWebrtcSummary();
 
     Preference webxdcStore = this.findPreference(Prefs.WEBXDC_STORE_URL_PREF);
     if (webxdcStore != null) {
@@ -259,29 +253,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
   }
 
-  private class WebrtcInstanceListener implements Preference.OnPreferenceClickListener {
-    @Override
-    public boolean onPreferenceClick(@NonNull Preference preference) {
-      View gl = View.inflate(requireActivity(), R.layout.single_line_input, null);
-      EditText inputField = gl.findViewById(R.id.input_field);
-      inputField.setHint(R.string.videochat_instance_placeholder);
-      inputField.setText(DcHelper.getVideochatURL(dcContext));
-      inputField.setSelection(inputField.getText().length());
-      inputField.setInputType(TYPE_TEXT_VARIATION_URI);
-      new AlertDialog.Builder(requireActivity())
-              .setTitle(R.string.videochat_instance)
-              .setMessage(getString(R.string.videochat_instance_explain_2)+"\n\n"+getString(R.string.videochat_instance_example))
-              .setView(gl)
-              .setNegativeButton(android.R.string.cancel, null)
-              .setPositiveButton(android.R.string.ok, (dialog, which) -> {
-                dcContext.setConfig(DcHelper.CONFIG_WEBRTC_INSTANCE, inputField.getText().toString());
-                updateWebrtcSummary();
-              })
-              .show();
-      return true;
-    }
-  }
-
   private class WebxdcStoreUrlListener implements Preference.OnPreferenceClickListener {
     @Override
     public boolean onPreferenceClick(@NonNull Preference preference) {
@@ -302,13 +273,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
               })
               .show();
       return true;
-    }
-  }
-
-  private void updateWebrtcSummary() {
-    Preference webrtcInstance = this.findPreference("pref_webrtc_instance");
-    if (webrtcInstance != null) {
-      webrtcInstance.setSummary(DcHelper.getVideochatURL(dcContext));
     }
   }
 

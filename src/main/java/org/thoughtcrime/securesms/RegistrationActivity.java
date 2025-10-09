@@ -46,9 +46,6 @@ import androidx.constraintlayout.widget.Group;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcProvider;
-import com.b44t.messenger.rpc.EnteredLoginParam;
-import com.b44t.messenger.rpc.Rpc;
-import com.b44t.messenger.rpc.RpcException;
 import com.b44t.messenger.util.concurrent.ListenableFuture;
 import com.b44t.messenger.util.concurrent.SettableFuture;
 import com.google.android.material.textfield.TextInputEditText;
@@ -65,6 +62,12 @@ import org.thoughtcrime.securesms.util.views.ProgressDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.ExecutionException;
+
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
+import chat.delta.rpc.types.EnteredCertificateChecks;
+import chat.delta.rpc.types.EnteredLoginParam;
+import chat.delta.rpc.types.Socket;
 
 public class RegistrationActivity extends BaseActionBarActivity implements DcEventCenter.DcEventDelegate {
 
@@ -87,6 +90,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
     private Group advancedGroup;
     private ImageView advancedIcon;
     private ProgressDialog progressDialog;
+    private boolean cancelled = false;
 
     Spinner imapSecurity;
     Spinner smtpSecurity;
@@ -563,6 +567,7 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
             return;
         }
 
+        cancelled = false;
         setupConfig();
 
         if (progressDialog != null) {
@@ -574,7 +579,10 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
         progressDialog.setMessage(getString(R.string.one_moment));
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
-        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel), (dialog, which) -> stopLoginProcess());
+        progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(android.R.string.cancel), (dialog, which) -> {
+          cancelled = true;
+          DcHelper.getContext(this).stopOngoingProcess();
+        });
         progressDialog.show();
     }
 
@@ -584,24 +592,49 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
                 && !passwordInput.getText().toString().isEmpty();
     }
 
+    private EnteredCertificateChecks certificateChecksFromInt(int position) {
+        switch (position) {
+            case 0:
+                return EnteredCertificateChecks.automatic;
+            case 1:
+                return EnteredCertificateChecks.strict;
+            case 2:
+                return EnteredCertificateChecks.acceptInvalidCertificates;
+        }
+        throw new IllegalArgumentException("Invalid certificate position: " + position);
+    }
+
+    public static Socket socketSecurityFromInt(int position) {
+        switch (position) {
+        case 0:
+            return Socket.automatic;
+        case 1:
+            return Socket.ssl;
+        case 2:
+            return Socket.starttls;
+        case 3:
+            return Socket.plain;
+        }
+        throw new IllegalArgumentException("Invalid socketSecurity position: " + position);
+    }
+
     private void setupConfig() {
         DcHelper.getEventCenter(this).captureNextError();
 
-        EnteredLoginParam param = new EnteredLoginParam(
-                getParam(R.id.email_text, true),
-                getParam(R.id.password_text, false),
-                getParam(R.id.imap_server_text, true),
-                Util.objectToInt(getParam(R.id.imap_port_text, true)),
-                EnteredLoginParam.socketSecurityFromInt(imapSecurity.getSelectedItemPosition()),
-                getParam(R.id.imap_login_text, false),
-                getParam(R.id.smtp_server_text, true),
-                Util.objectToInt(getParam(R.id.smtp_port_text, true)),
-                EnteredLoginParam.socketSecurityFromInt(smtpSecurity.getSelectedItemPosition()),
-                getParam(R.id.smtp_login_text, false),
-                getParam(R.id.smtp_password_text, false),
-                EnteredLoginParam.certificateChecksFromInt(certCheck.getSelectedItemPosition()),
-                authMethod.getSelectedItemPosition() == 1
-        );
+        EnteredLoginParam param = new EnteredLoginParam();
+        param.addr = getParam(R.id.email_text, true);
+        param.password = getParam(R.id.password_text, false);
+        param.imapServer = getParam(R.id.imap_server_text, true);
+        param.imapPort = Util.objectToInt(getParam(R.id.imap_port_text, true));
+        param.imapSecurity = socketSecurityFromInt(imapSecurity.getSelectedItemPosition());
+        param.imapUser = getParam(R.id.imap_login_text, false);
+        param.smtpServer = getParam(R.id.smtp_server_text, true);
+        param.smtpPort = Util.objectToInt(getParam(R.id.smtp_port_text, true));
+        param.smtpSecurity = socketSecurityFromInt(smtpSecurity.getSelectedItemPosition());
+        param.smtpUser = getParam(R.id.smtp_login_text, false);
+        param.smtpPassword = getParam(R.id.smtp_password_text, false);
+        param.certificateChecks = certificateChecksFromInt(certCheck.getSelectedItemPosition());
+        param.oauth2 = authMethod.getSelectedItemPosition() == 1;
 
         new Thread(() -> {
             Rpc rpc = DcHelper.getRpc(this);
@@ -613,11 +646,13 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
                 startActivity(conversationList);
                 finish();
             } catch (RpcException e) {
-                Util.runOnMain(() -> {
-                    DcHelper.getEventCenter(this).endCaptureNextError();
-                    progressDialog.dismiss();
-                    WelcomeActivity.maybeShowConfigurationError(this, e.getMessage());
-                });
+                DcHelper.getEventCenter(this).endCaptureNextError();
+                if (!cancelled) {
+                  Util.runOnMain(() -> {
+                      progressDialog.dismiss();
+                      WelcomeActivity.maybeShowConfigurationError(this, e.getMessage());
+                  });
+                }
             }
         }).start();
     }
@@ -629,10 +664,6 @@ public class RegistrationActivity extends BaseActionBarActivity implements DcEve
             value = value.trim();
         }
         return value.isEmpty()? null : value;
-    }
-
-    private void stopLoginProcess() {
-        DcHelper.getContext(this).stopOngoingProcess();
     }
 
     @Override
