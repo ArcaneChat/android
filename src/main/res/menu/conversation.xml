@@ -27,7 +27,7 @@
 
     <item android:id="@+id/menu_start_call"
         android:title="@string/start_call"
-        android:icon="@drawable/baseline_call_24"
+        android:icon="@drawable/ic_videocam_white_24dp"
         app:showAsAction="always" />
 
     <item android:id="@+id/menu_all_media"

@@ -457,7 +457,7 @@ public class NotificationCenter {
 
         builder.addAction(
           new NotificationCompat.Action.Builder(
-            R.drawable.baseline_call_24,
+            R.drawable.ic_videocam_white_24dp,
             context.getString(R.string.answer_call),
             getOpenCallIntent(chatData, callId, payload, true)).build());
 
