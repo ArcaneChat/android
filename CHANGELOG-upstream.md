@@ -1,6 +1,7 @@
 # Delta Chat Android Changelog
 
-## Unreleased
+## v2.22.0
+2025-10
 
 * target Android 15
 * improve readability of info messages in dark mode
@@ -16,7 +17,7 @@
 * show dialog if user has permanently denied camera permission and tries to take picture for group avatar
 * several small fixes and improvements
 * add experimental built-in calls
-* update to core 2.20.0
+* update to core 2.22.0
 
 ## v2.11.0
 2025-08

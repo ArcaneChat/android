@@ -72,7 +72,6 @@ public class DcHelper {
     public static final String CONFIG_MEDIA_QUALITY = "media_quality";
     public static final String CONFIG_PROXY_ENABLED = "proxy_enabled";
     public static final String CONFIG_PROXY_URL = "proxy_url";
-    public static final String CONFIG_VERIFIED_ONE_ON_ONE_CHATS = "verified_one_on_one_chats";
     public static final String CONFIG_WEBXDC_REALTIME_ENABLED = "webxdc_realtime_enabled";
     public static final String CONFIG_PRIVATE_TAG = "private_tag";
 
@@ -152,7 +151,6 @@ public class DcHelper {
     dcContext.setStockTranslation(11, context.getString(R.string.audio));
     dcContext.setStockTranslation(12, context.getString(R.string.file));
     dcContext.setStockTranslation(23, context.getString(R.string.gif));
-    dcContext.setStockTranslation(29, context.getString(R.string.systemmsg_cannot_decrypt));
     dcContext.setStockTranslation(35, context.getString(R.string.contact_verified));
     dcContext.setStockTranslation(40, context.getString(R.string.chat_archived_label));
     dcContext.setStockTranslation(60, context.getString(R.string.login_error_cannot_login));
