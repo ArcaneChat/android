@@ -33,8 +33,8 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        versionCode 30000730
-        versionName "2.22.0"
+        versionCode 30000731
+        versionName "2.24.0"
 
         applicationId "chat.delta.lite"
         multiDexEnabled true
@@ -130,7 +130,9 @@ android {
 
     buildTypes {
         debug {
-            minifyEnabled false
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            testProguardFiles 'test-proguard-rules.pro'
             applicationIdSuffix ".beta"
         }
         release {
@@ -145,6 +147,7 @@ android {
             // otherwise problems might be noticed delayed only
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            testProguardFiles 'test-proguard-rules.pro'
             productFlavors.foss.signingConfig signingConfigs.releaseFdroid
             productFlavors.gplay.signingConfig signingConfigs.releaseApk
         }

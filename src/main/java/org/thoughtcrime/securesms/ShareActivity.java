@@ -17,11 +17,6 @@
 
 package org.thoughtcrime.securesms;
 
-import static org.thoughtcrime.securesms.util.RelayUtil.setSharedText;
-import static org.thoughtcrime.securesms.util.RelayUtil.setSharedSubject;
-import static org.thoughtcrime.securesms.util.RelayUtil.setSharedHtml;
-import static org.thoughtcrime.securesms.util.RelayUtil.setSharedTitle;
-
 import android.Manifest;
 import android.content.Intent;
 import android.net.Uri;
@@ -60,10 +55,6 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
 
   public static final String EXTRA_ACC_ID = "acc_id";
   public static final String EXTRA_CHAT_ID = "chat_id";
-  public static final String EXTRA_MSG_TYPE = "msg_type";
-  public static final String EXTRA_MSG_SUBJECT = "msg_subject";
-  public static final String EXTRA_MSG_HTML = "msg_html";
-  public static final String EXTRA_TITLE = "extra_title";
 
   private ArrayList<Uri>               resolvedExtras;
   private DcContext                    dcContext;
@@ -216,7 +207,6 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
   private void handleResolvedMedia(Intent intent) {
     int       accId            = intent.getIntExtra(EXTRA_ACC_ID, -1);
     int       chatId           = intent.getIntExtra(EXTRA_CHAT_ID, -1);
-    String    msgType          = intent.getStringExtra(EXTRA_MSG_TYPE);
 
     // the intent coming from shortcuts in the share selector might not include the custom extras but the shortcut ID
     String shortcutId = intent.getStringExtra(ShortcutManagerCompat.EXTRA_SHORTCUT_ID);
@@ -281,13 +271,10 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
       composeIntent = getBaseShareIntent(ConversationActivity.class);
       composeIntent.putExtra(ConversationActivity.CHAT_ID_EXTRA, chatId);
       composeIntent.putExtra(ConversationActivity.ACCOUNT_ID_EXTRA, accId);
-      RelayUtil.setSharedType(composeIntent, msgType);
-      RelayUtil.setSharedUris(composeIntent, resolvedExtras);
       startActivity(composeIntent);
     } else {
       composeIntent = getBaseShareIntent(ConversationListRelayingActivity.class);
-      RelayUtil.setSharedType(composeIntent, msgType);
-      RelayUtil.setSharedUris(composeIntent, resolvedExtras);
+      RelayUtil.setIsFromWebxdc(composeIntent, RelayUtil.isFromWebxdc(this));
       ConversationListRelayingActivity.start(this, composeIntent);
     }
     finish();
@@ -296,10 +283,11 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
   private Intent getBaseShareIntent(final @NonNull Class<?> target) {
     final Intent intent = new Intent(this, target);
 
-    String title = getIntent().getStringExtra(EXTRA_TITLE);
-    if (title != null) {
-        setSharedTitle(intent, title);
-    }
+    RelayUtil.setSharedTitle(intent, RelayUtil.getSharedTitle(this));
+    RelayUtil.setSharedType(intent, RelayUtil.getSharedType(this));
+    RelayUtil.setSharedSubject(intent, RelayUtil.getSharedSubject(this));
+    RelayUtil.setSharedHtml(intent, RelayUtil.getSharedHtml(this));
+    RelayUtil.setSharedUris(intent, resolvedExtras);
 
     String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
     if (text==null) {
@@ -310,17 +298,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
     }
 
     if (text != null) {
-      setSharedText(intent, text.toString());
-    }
-
-    String subject = getIntent().getStringExtra(EXTRA_MSG_SUBJECT);
-    if (subject != null) {
-      setSharedSubject(intent, subject);
-    }
-
-    Uri html = getIntent().getParcelableExtra(EXTRA_MSG_HTML);
-    if (html != null) {
-      setSharedHtml(intent, html);
+      RelayUtil.setSharedText(intent, text.toString());
     }
 
     if (resolvedExtras.size() > 0) {

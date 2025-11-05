@@ -1,5 +1,26 @@
 # Delta Chat Android Changelog
 
+## Unreleased
+
+* Make it possible to invite members into a channel via a QR code,
+  and make channels more secure
+* metadata protection: protect Date header
+* metadata protection: protect Autocrypt header
+* better multi-device: synchronize group creation across devices
+* data saving: do not send Autocrypt header in read receipts
+* improve onboarding speed
+* allow to save to storage files shared from inside in-chat apps
+* reduce app size
+* don't show badge counter in app icon for the permanent background notification
+* fix sorting of old media in gallery
+* fix text direction in "x members" subtitle for RTL languages
+* fix group invite QR screen's layout
+* remove deprecated "companion app" code
+* remove deprecated "Watch Sent Folder" preference
+* remove deprecated "send self-report" preference
+* don't show email address in shared vcard
+* update to core 2.24.0
+
 ## v2.22.0
 2025-10
 

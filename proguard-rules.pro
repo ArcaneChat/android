@@ -5,7 +5,6 @@
 -keep class chat.delta.rpc.** { * ; }
 -keepattributes *Annotation*,EnclosingMethod,Signature
 -keepnames class com.fasterxml.jackson.** { *; }
-#-dontwarn com.fasterxml.jackson.databind.**
 
 # bug with video recoder
 -keep class com.coremedia.iso.** { *; }
