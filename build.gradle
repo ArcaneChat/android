@@ -144,9 +144,9 @@ android {
             // nb: it is highly recommended to use the same settings in debug+release -
             // otherwise problems might be noticed delayed only
             minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             productFlavors.foss.signingConfig signingConfigs.releaseFdroid
             productFlavors.gplay.signingConfig signingConfigs.releaseApk
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
