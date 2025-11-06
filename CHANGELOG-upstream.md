@@ -1,6 +1,7 @@
 # Delta Chat Android Changelog
 
-## Unreleased
+## v2.25.0
+2025-11
 
 * Make it possible to invite members into a channel via a QR code,
   and make channels more secure
@@ -15,11 +16,12 @@
 * fix sorting of old media in gallery
 * fix text direction in "x members" subtitle for RTL languages
 * fix group invite QR screen's layout
+* tweak text hints in advanced classic e-mail configuration
 * remove deprecated "companion app" code
 * remove deprecated "Watch Sent Folder" preference
 * remove deprecated "send self-report" preference
 * don't show email address in shared vcard
-* update to core 2.24.0
+* update to core 2.25.0
 
 ## v2.22.0
 2025-10
