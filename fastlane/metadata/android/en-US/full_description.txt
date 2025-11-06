@@ -32,7 +32,6 @@ ArcaneChat is a Delta Chat client and was created with a focus on usability, goo
 <li>Voice messages have more aggressive compression in "worse quality" mode to save data plan</li>
 <li>Automatic download of messages limited to 640KB by default</li>
 <li>Profile's display name is always shown in the app's title bar instead of the name of the app</li>
-<li>Your avatar is visible to other users in Mailing Lists</li>
 <li>For mini-apps developers: there are some extra features in the WebXDC API, check https://github.com/ArcaneChat/android/#webxdc</li>
 <li>Better settings organization with additional "Privacy" section</li>
 </ul>
