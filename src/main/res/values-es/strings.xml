@@ -1212,6 +1212,8 @@
     <string name="perm_enable_bg_already_done">Ya has permitido que Delta Chat reciba mensajes en segundo plano.\n\nSi los mensajes aún no llegan en segundo plano, compruebe también la configuración de su sistema.</string>
 
     <!-- device messages for updates -->
+    <string name="update_2_25">🔮 ¿Qué hay de nuevo?\n\n★ Ahora es posible crear canales con enlace de invitación. Únete al canal oficial (en inglés) de Delta Chat aquí: %1$s\n\n★ Ahorro de datos: reducido el tamaño de las notificaciones de lectura\n\n★ Ahora es posible guardar en el almacenamiento archivos compartidos por mini-apps\n\n★ Más protección de metadatos\n\n★ La creación de grupos se sincroniza immediatamente en todos tus dispositivos\n\n★ Arreglado el ordenamiento de multimedia en la galería del chat\n\n★ Varios otros arreglos y pequeñas mejoras\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
+
     <string name="update_2_0">🔮 ¿Qué hay de nuevo?\n\n★ El cifrado del chat es ahora más confiable, no puede degradarse, por lo que los candados 🔒 en los mensajes ya no son necesarios.\n\n★ Los correos sin cifrado aparecerán en su propio chat y marcados con un símbolo de correo ✉️\n\n★ Nueva pantalla de perfil mejorado\n\n★ Nuevo botón para acceder rápidamente a las mini-apps del chat\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
 
     <!-- deprecated -->

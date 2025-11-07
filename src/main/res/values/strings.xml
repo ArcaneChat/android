@@ -1219,6 +1219,8 @@
     <string name="perm_enable_bg_already_done">You already allowed Delta Chat to receive messages in the background.\n\nIf messages still do not arrive in background, please also check your system settings.</string>
 
     <!-- device messages for updates -->
+    <string name="update_2_25">🔮 What\'s new?\n\n★ Now it is possible to create channels that have invite links! Join the official Delta Chat channel here: %1$s\n\n★ More metadata protection\n\n★ Better multi-device: synchronize group creation across devices\n\n★ Data saving: reduce size of read receipts\n\n★ Improved onboarding speed\n\n★ Now it is possible to save to storage files shared from inside in-chat apps\n\n★ Fixed sorting of old media in the chat\'s gallery\n\n★ Several other fixes and small improvements\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %2$s</string>
+
     <string name="update_2_0">🔮 What\'s new?\n\n★ End-to-end encryption is reliable and forever now so padlocks 🔒 are not needed anymore.\n\n★ Classic email without end-to-end encryption is marked with a letter symbol ✉️\n\n★ New enhanced profile screen for all your contacts\n\n★ New button for quick access to apps used in a chat\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %1$s</string>
 
     <!-- deprecated -->
