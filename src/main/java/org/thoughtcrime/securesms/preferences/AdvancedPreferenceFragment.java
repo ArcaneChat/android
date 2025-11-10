@@ -74,11 +74,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       });
     }
 
-    Preference sendAsm = this.findPreference("pref_send_autocrypt_setup_message");
-    if (sendAsm != null) {
-      sendAsm.setOnPreferenceClickListener(new SendAsmListener());
-    }
-
     bccSelfCheckbox = (CheckBoxPreference) this.findPreference("pref_bcc_self");
     if (bccSelfCheckbox != null) {
       bccSelfCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
@@ -166,7 +161,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
 
     if (dcContext.isChatmail()) {
-      sendAsm.setVisible(false);
       showEmails.setVisible(false);
       bccSelfCheckbox.setVisible(false);
       mvboxMoveCheckbox.setVisible(false);
@@ -268,42 +262,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   private void openRegistrationActivity() {
     Intent intent = new Intent(requireActivity(), RegistrationActivity.class);
     startActivity(intent);
-  }
-
-  /***********************************************************************************************
-   * Autocrypt
-   **********************************************************************************************/
-
-  private class SendAsmListener implements Preference.OnPreferenceClickListener {
-    @Override
-    public boolean onPreferenceClick(@NonNull Preference preference) {
-      Activity activity = requireActivity();
-      new AlertDialog.Builder(activity)
-        .setTitle(activity.getString(R.string.autocrypt_send_asm_title))
-        .setMessage(activity.getString(R.string.autocrypt_send_asm_explain_before))
-        .setNegativeButton(android.R.string.cancel, null)
-        .setPositiveButton(R.string.autocrypt_send_asm_button, (dialog, which) -> {
-              final String sc = dcContext.initiateKeyTransfer();
-              if( sc != null ) {
-                String scFormatted = "";
-                try {
-                  scFormatted = sc.substring(0, 4) + "  -  " + sc.substring(5, 9) + "  -  " + sc.substring(10, 14) + "  -\n\n" +
-                      sc.substring(15, 19) + "  -  " + sc.substring(20, 24) + "  -  " + sc.substring(25, 29) + "  -\n\n" +
-                      sc.substring(30, 34) + "  -  " + sc.substring(35, 39) + "  -  " + sc.substring(40, 44);
-                } catch (Exception e) {
-                  Log.e(TAG, "Unexpected exception", e);
-                }
-                new AlertDialog.Builder(activity)
-                  .setTitle(activity.getString(R.string.autocrypt_send_asm_title))
-                  .setMessage(activity.getString(R.string.autocrypt_send_asm_explain_after) + "\n\n" + scFormatted)
-                  .setPositiveButton(android.R.string.ok, null)
-                  .setCancelable(false) // prevent the dialog from being dismissed accidentally (when the dialog is closed, the setup code is gone forever and the user has to create a new setup message)
-                  .show();
-              }
-        })
-        .show();
-      return true;
-    }
   }
 
 }
