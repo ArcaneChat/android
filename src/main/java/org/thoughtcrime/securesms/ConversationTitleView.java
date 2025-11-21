@@ -21,6 +21,7 @@ import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.DateUtils;
+import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
 import java.util.Locale;
@@ -59,10 +60,6 @@ public class ConversationTitleView extends RelativeLayout {
   }
 
   public void setTitle(@NonNull GlideRequests glideRequests, @NonNull DcChat dcChat) {
-    setTitle(glideRequests, dcChat, false);
-  }
-
-  public void setTitle(@NonNull GlideRequests glideRequests, @NonNull DcChat dcChat, boolean profileView) {
     final int chatId = dcChat.getId();
     final Context context = getContext();
     final DcContext dcContext = DcHelper.getContext(context);
@@ -74,23 +71,16 @@ public class ConversationTitleView extends RelativeLayout {
     boolean isOnline = false;
     int[] chatContacts = dcContext.getChatContacts(chatId);
     if (dcChat.isMailingList()) {
-      subtitleStr = dcChat.getMailinglistAddr();
-      if (!profileView) {
-        if (TextUtils.isEmpty(subtitleStr)) {
-          subtitleStr = context.getString(R.string.channel);
-        } else {
-          subtitleStr = context.getString(R.string.super_group);
-        }
-      }
+      subtitleStr = context.getString(R.string.mailing_list);
     } else if (dcChat.isInBroadcast()) {
       subtitleStr = context.getString(R.string.channel);
     } else if (dcChat.isOutBroadcast()) {
-      if (!profileView) {
-        subtitleStr = context.getResources().getQuantityString(R.plurals.n_recipients, chatContacts.length, chatContacts.length);
-      }
+      subtitleStr = context.getResources().getQuantityString(R.plurals.n_recipients, chatContacts.length, chatContacts.length);
     } else if( dcChat.isMultiUser() ) {
-      if (!profileView) {
+      if (chatContacts.length > 1 || Util.contains(chatContacts, DcContact.DC_CONTACT_ID_SELF)) {
         subtitleStr = context.getResources().getQuantityString(R.plurals.n_members, chatContacts.length, chatContacts.length);
+      } else {
+        subtitleStr = "…";
       }
     } else if( chatContacts.length>=1 ) {
       if( dcChat.isSelfTalk() ) {
@@ -102,7 +92,7 @@ public class ConversationTitleView extends RelativeLayout {
       else {
         DcContact dcContact = dcContext.getContact(chatContacts[0]);
         isOnline = dcContact.wasSeenRecently();
-        if (profileView || !dcChat.isEncrypted()) {
+        if (!dcChat.isEncrypted()) {
           subtitleStr = dcContact.getAddr();
         } else if (dcContact.isBot()) {
           subtitleStr = context.getString(R.string.bot);
