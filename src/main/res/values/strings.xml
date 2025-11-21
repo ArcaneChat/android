@@ -9,7 +9,6 @@
   <string name="online">online</string>
   <string name="pink">Pink</string>
   <string name="gray">Gray</string>
-  <string name="public_bots">🤖 Public Bots</string>
   <string name="share_location_for_12_hours">For 12 hours</string>
   <string name="force_e2ee">Force End-To-End Encryption</string>
   <string name="disable_force_e2ee_warning">⚠️ If you disable this option, you will not be protected against sending unencrypted messages by accident. Only disable this if you want to send unencrypted e-mails with your classic e-mail account.</string>

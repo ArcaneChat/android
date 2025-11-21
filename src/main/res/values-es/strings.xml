@@ -7,7 +7,6 @@
   <string name="pink">Rosa</string>
   <string name="gray">Gris</string>
   <string name="share_location_for_12_hours">Por 12 horas</string>
-  <string name="public_bots">🤖 Bots Públicos</string>
   <string name="force_e2ee">Forzar el cifrado de extremo a extremo</string>
   <string name="disable_force_e2ee_warning">⚠️ Si desactivas esta opción, no estarás protegido contra el envío accidental de mensajes no cifrados. Desactiva esta opción únicamente si quieres enviar correos electrónicos no cifrados con tu cuenta de correo electrónico clásica.</string>
   <!-- End of custom strings -->
