@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /* Utility for text linkify-ing */
 public class Linkifier {
   private static final Pattern CMD_PATTERN = Pattern.compile("(?<=^|\\s)/[a-zA-Z][a-zA-Z@\\d_/.-]{0,254}");
-  private static final Pattern CUSTOM_PATTERN = Pattern.compile("(?<=^|\\s)(OPENPGP4FPR|openpgp4fpr|mumble|geo):[^ \\n]+");
+  private static final Pattern CUSTOM_PATTERN = Pattern.compile("(?<=^|\\s)(OPENPGP4FPR|openpgp4fpr|mumble|geo|gemini):[^ \\n]+");
   private static final Pattern PROXY_PATTERN = Pattern.compile("(?<=^|\\s)(SOCKS5|socks5|ss|SS):[^ \\n]+");
 
   private static void replaceURLSpan(Spannable messageBody) {
