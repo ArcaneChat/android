@@ -5,8 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.location.Location;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
+
+import androidx.core.content.ContextCompat;
 
 import org.thoughtcrime.securesms.connect.DcHelper;
 
@@ -23,11 +26,13 @@ public class DcLocationManager implements Observer {
     private final Context context;
     private DcLocation dcLocation = DcLocation.getInstance();
     private final LinkedList<Integer> pendingShareLastLocation = new LinkedList<>();
+    private boolean serviceBound = false;
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             Log.d(TAG, "background service connected");
             serviceBinder = (LocationBackgroundService.LocationBackgroundServiceBinder) service;
+            serviceBound = true;
             while (!pendingShareLastLocation.isEmpty()) {
                 shareLastLocation(pendingShareLastLocation.pop());
             }
@@ -37,6 +42,7 @@ public class DcLocationManager implements Observer {
         public void onServiceDisconnected(ComponentName name) {
             Log.d(TAG, "background service disconnected");
             serviceBinder = null;
+            serviceBound = false;
         }
     };
 
@@ -49,19 +55,29 @@ public class DcLocationManager implements Observer {
     }
 
     public void startLocationEngine() {
-        if (serviceBinder == null) {
+        if (serviceBinder == null && !serviceBound) {
             Intent intent = new Intent(context.getApplicationContext(), LocationBackgroundService.class);
+            // Start as foreground service
+            ContextCompat.startForegroundService(context, intent);
+            // Then bind to it
             context.bindService(intent, serviceConnection, BIND_AUTO_CREATE);
         }
     }
 
     public void stopLocationEngine() {
-        if (serviceBinder == null) {
+        if (serviceBinder == null && !serviceBound) {
             return;
         }
-        context.unbindService(serviceConnection);
-        serviceBinder.stop();
+        try {
+            context.unbindService(serviceConnection);
+            if (serviceBinder != null) {
+                serviceBinder.stop();
+            }
+        } catch (IllegalArgumentException e) {
+            Log.w(TAG, "Service not registered", e);
+        }
         serviceBinder = null;
+        serviceBound = false;
     }
 
     public void stopSharingLocation(int chatId) {

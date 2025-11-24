@@ -1,5 +1,9 @@
 package org.thoughtcrime.securesms.geolocation;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -8,11 +12,18 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+
+import org.thoughtcrime.securesms.ConversationListActivity;
+import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.notifications.NotificationCenter;
+import org.thoughtcrime.securesms.util.IntentUtils;
 
 public class LocationBackgroundService extends Service {
 
@@ -37,6 +48,14 @@ public class LocationBackgroundService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
+        
+        // Create notification channel if needed
+        createNotificationChannel();
+        
+        // Start foreground service with notification
+        startForeground(NotificationCenter.ID_LOCATION, createNotification());
+        
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
             Log.e(TAG, "Unable to initialize location service");
@@ -75,6 +94,40 @@ public class LocationBackgroundService extends Service {
         } catch (Exception ex) {
             Log.i(TAG, "fail to remove location listeners, ignore", ex);
         }
+    }
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                NotificationCenter.CH_LOCATION,
+                getString(R.string.location),
+                NotificationManager.IMPORTANCE_LOW
+            );
+            channel.setDescription("Location sharing notification");
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+    private Notification createNotification() {
+        Intent intent = new Intent(this, ConversationListActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+            this, 
+            0, 
+            intent, 
+            IntentUtils.FLAG_IMMUTABLE
+        );
+
+        return new NotificationCompat.Builder(this, NotificationCenter.CH_LOCATION)
+            .setContentTitle(getString(R.string.location_sharing_notification_title))
+            .setContentText(getString(R.string.location_sharing_notification_text))
+            .setSmallIcon(R.drawable.ic_location_on_white_24dp)
+            .setContentIntent(pendingIntent)
+            .setOngoing(true)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .build();
     }
 
     private void requestLocationUpdate(String provider) {

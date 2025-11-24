@@ -358,6 +358,8 @@
     <string name="copy_json">Copy JSON</string>
     <string name="replace_draft">Replace Draft</string>
     <string name="title_share_location">Share location with all group members</string>
+    <string name="location_sharing_notification_title">Sharing location</string>
+    <string name="location_sharing_notification_text">Location is being shared with chat members</string>
     <string name="device_talk">Device Messages</string>
     <string name="device_talk_subtitle">Locally generated messages</string>
     <string name="device_talk_explain">Messages in this chat are generated on your device to inform about app updates and problems during usage.</string>
