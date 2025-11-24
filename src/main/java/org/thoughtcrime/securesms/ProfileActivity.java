@@ -72,6 +72,12 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
 
     initializeResources();
 
+    // Apply window insets to root container for edge-to-edge
+    View rootView = findViewById(android.R.id.content).getRootView();
+    if (rootView != null) {
+      ViewUtil.applyWindowInsets(rootView, true, true, true, false);
+    }
+
     setSupportActionBar(this.toolbar);
     ActionBar supportActionBar = getSupportActionBar();
     if (supportActionBar != null) {

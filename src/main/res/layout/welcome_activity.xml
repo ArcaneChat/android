@@ -3,10 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="?attr/colorPrimary"
-    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -14,12 +12,10 @@
     android:gravity="center_horizontal"
     android:background="?android:attr/windowBackground"
     tools:context=".WelcomeActivity">
-
     <androidx.legacy.widget.Space
         android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-
     <ImageView
         android:id="@+id/welcome_icon"
         android:layout_width="wrap_content"
@@ -30,7 +26,6 @@
         android:paddingLeft="32dp"
         android:paddingRight="32dp"
         tools:ignore="contentDescription"/>
-
     <TextView
         android:id="@+id/welcome_header"
         android:layout_width="match_parent"
@@ -41,14 +36,12 @@
         android:text="@string/welcome_chat_over_email"
         android:textSize="22sp"
         android:textStyle="bold"/>
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal">
-
         <Button
             style="@style/ButtonPrimary"
             android:id="@+id/signup_button"
@@ -58,7 +51,6 @@
             android:paddingRight="24dp"
             android:layout_marginBottom="16dp"
             android:text="@string/onboarding_create_instant_account"/>
-
         <Button
             style="@style/ButtonSecondary"
             android:id="@+id/add_as_second_device_button"
@@ -68,7 +60,6 @@
             android:paddingRight="24dp"
             android:layout_marginBottom="16dp"
             android:text="@string/multidevice_receiver_title"/>
-
         <Button
             style="@style/ButtonSecondary"
             android:id="@+id/backup_button"
@@ -78,14 +69,10 @@
             android:paddingRight="24dp"
             android:layout_marginBottom="16dp"
             android:text="@string/import_backup_title"/>
-
     </LinearLayout>
-
     <androidx.legacy.widget.Space
         android:layout_weight="3"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-
 </LinearLayout>
-
 </RelativeLayout>

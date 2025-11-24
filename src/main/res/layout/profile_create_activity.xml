@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
     android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 <org.thoughtcrime.securesms.components.InputAwareLayout
         android:id="@+id/container"
         android:background="?android:attr/windowBackground"
@@ -14,7 +11,6 @@
         android:layout_height="match_parent"
         android:paddingTop="20dp"
         android:orientation="vertical">
-
     <TextView
         android:id="@+id/login_success_text"
         android:layout_width="match_parent"
@@ -26,25 +22,21 @@
         android:text=""
         android:textSize="16sp"
         android:textColor="?android:attr/textColorPrimary" />
-
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
                       android:layout_marginLeft="16dp"
                       android:layout_marginRight="16dp"
                       android:orientation="horizontal">
-
             <ImageView android:id="@+id/avatar"
                        android:layout_width="64dp"
                        android:layout_height="64dp"
                        android:contentDescription="@string/pref_profile_photo"
                        android:transitionName="avatar"/>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp">
-
                 <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/name_text"
                     android:layout_width="match_parent"
@@ -52,9 +44,7 @@
                     android:hint="@string/pref_your_name"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
-
         </LinearLayout>
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/status_text_layout"
         android:layout_width="match_parent"
@@ -62,7 +52,6 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp">
-
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/status_text"
             android:layout_width="match_parent"
@@ -72,7 +61,6 @@
             android:inputType="textMultiLine"
             android:maxLines="3" />
     </com.google.android.material.textfield.TextInputLayout>
-
     <TextView
         android:id="@+id/information_label"
         android:layout_width="match_parent"
@@ -83,7 +71,5 @@
         android:gravity="start"
         android:text="@string/pref_who_can_see_profile_explain"
         android:textColor="@color/gray50" />
-
 </org.thoughtcrime.securesms.components.InputAwareLayout>
-
 </FrameLayout>

@@ -1,25 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:fitsSystemWindows="true"
     android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?android:attr/windowBackground"
     android:orientation="vertical"
     android:gravity="center_horizontal">
-
     <LinearLayout
         android:id="@+id/top_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:orientation="vertical">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +38,6 @@
                 android:textColor="?attr/emoji_text_color"
                 android:textSize="16sp"/>
         </LinearLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -63,14 +58,11 @@
                 android:textColor="?attr/emoji_text_color"
                 android:textSize="16sp"/>
         </LinearLayout>
-
     </LinearLayout>
-
     <androidx.legacy.widget.Space
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -78,20 +70,15 @@
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:orientation="vertical">
-
         <com.journeyapps.barcodescanner.CompoundBarcodeView
             android:id="@+id/zxing_barcode_scanner"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignParentBottom="true" />
-
     </RelativeLayout>
-
     <androidx.legacy.widget.Space
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-
 </LinearLayout>
-
 </RelativeLayout>

@@ -284,6 +284,48 @@ public class ViewUtil {
     }
   }
 
+  /**
+   * Apply window insets to a view by adding padding to avoid system bars.
+   * This is the proper way to handle edge-to-edge display.
+   * 
+   * @param view The view to apply insets to
+   * @param left Whether to apply left inset
+   * @param top Whether to apply top inset
+   * @param right Whether to apply right inset
+   * @param bottom Whether to apply bottom inset
+   */
+  public static void applyWindowInsets(@NonNull View view, boolean left, boolean top, boolean right, boolean bottom) {
+    final int initialPaddingLeft = view.getPaddingLeft();
+    final int initialPaddingTop = view.getPaddingTop();
+    final int initialPaddingRight = view.getPaddingRight();
+    final int initialPaddingBottom = view.getPaddingBottom();
+    
+    ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+      androidx.core.graphics.Insets insets = windowInsets.getInsets(
+          WindowInsetsCompat.Type.systemBars()
+      );
+      
+      v.setPadding(
+          left ? initialPaddingLeft + insets.left : initialPaddingLeft,
+          top ? initialPaddingTop + insets.top : initialPaddingTop,
+          right ? initialPaddingRight + insets.right : initialPaddingRight,
+          bottom ? initialPaddingBottom + insets.bottom : initialPaddingBottom
+      );
+      
+      return windowInsets;
+    });
+  }
+
+  /**
+   * Apply window insets to a view by adding padding to avoid system bars.
+   * Convenience method that applies insets to all sides.
+   * 
+   * @param view The view to apply insets to
+   */
+  public static void applyWindowInsets(@NonNull View view) {
+    applyWindowInsets(view, true, true, true, true);
+  }
+
   // Checks if a selection is valid for a given Spinner view.
   // Returns given selection if valid.
   // Otherwise, to avoid ArrayIndexOutOfBoundsException, 0 is returned, assuming to refer to a good default.

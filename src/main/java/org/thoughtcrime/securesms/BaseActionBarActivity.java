@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
 import org.thoughtcrime.securesms.util.DynamicTheme;
@@ -33,9 +36,14 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     onPreCreate();
-    EdgeToEdge.enable(this);  // docs says to use: WindowCompat.enableEdgeToEdge(getWindow()); but it is not available
+    
+    // Enable edge-to-edge display
+    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    
     super.onCreate(savedInstanceState);
-    WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView()).setAppearanceLightStatusBars(false); // force white text in status bar
+    
+    // Force white text in status bar
+    WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView()).setAppearanceLightStatusBars(false);
   }
 
   @Override

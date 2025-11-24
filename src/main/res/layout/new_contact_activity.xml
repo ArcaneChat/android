@@ -4,11 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     android:background="?attr/colorPrimary"
     android:fillViewport="true"
     tools:context=".contacts.NewContactActivity">
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,21 +14,18 @@
         android:paddingBottom="16dp"
         android:background="?android:attr/windowBackground"
         android:animateLayoutChanges="true">
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_root_start"
             android:layout_width="wrap_content"
             android:layout_height="16dp"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="16dp" />
-
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_root_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name"
             android:layout_width="0dp"
@@ -38,16 +33,13 @@
             app:layout_constraintEnd_toEndOf="@id/guideline_root_end"
             app:layout_constraintStart_toStartOf="@id/guideline_root_start"
             app:layout_constraintTop_toTopOf="parent">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/name_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/name_desktop"
                 android:inputType="textPersonName" />
-
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email"
             android:layout_width="0dp"
@@ -56,16 +48,12 @@
             app:layout_constraintEnd_toEndOf="@id/guideline_root_end"
             app:layout_constraintStart_toStartOf="@id/guideline_root_start"
             app:layout_constraintTop_toBottomOf="@id/name">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/email_address"
                 android:inputType="textEmailAddress" />
-
         </com.google.android.material.textfield.TextInputLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>
