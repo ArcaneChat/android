@@ -25,6 +25,8 @@ import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.notifications.NotificationCenter;
 import org.thoughtcrime.securesms.util.IntentUtils;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class LocationBackgroundService extends Service {
 
     private static final int INITIAL_TIMEOUT = 1000 * 60 * 2;
@@ -33,7 +35,7 @@ public class LocationBackgroundService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 25F;
     ServiceLocationListener locationListener;
-    private boolean isForeground = false;
+    private final AtomicBoolean isForeground = new AtomicBoolean(false);
 
     private final IBinder mBinder = new LocationBackgroundServiceBinder();
 
@@ -51,13 +53,18 @@ public class LocationBackgroundService extends Service {
     public void onCreate() {
         super.onCreate();
         
-        initializeForegroundService();
-        
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
             Log.e(TAG, "Unable to initialize location service");
-            // Stop the service since we can't function without location manager
+            // Initialize foreground first, then stop
+            initializeForegroundService();
             stopForeground(true);
+            stopSelf();
+            return;
+        }
+
+        // Initialize foreground service after successful location manager setup
+        initializeForegroundService();
             stopSelf();
             return;
         }
@@ -104,10 +111,9 @@ public class LocationBackgroundService extends Service {
     }
 
     private void initializeForegroundService() {
-        if (!isForeground) {
+        if (isForeground.compareAndSet(false, true)) {
             createNotificationChannel();
             startForeground(NotificationCenter.ID_LOCATION, createNotification());
-            isForeground = true;
         }
     }
 
@@ -132,7 +138,7 @@ public class LocationBackgroundService extends Service {
             this, 
             0, 
             intent, 
-            IntentUtils.FLAG_IMMUTABLE
+            IntentUtils.FLAG_IMMUTABLE()
         );
 
         return new NotificationCompat.Builder(this, NotificationCenter.CH_LOCATION)
