@@ -314,6 +314,9 @@ public class ViewUtil {
       
       return windowInsets;
     });
+    
+    // Request the initial insets to be dispatched
+    ViewCompat.requestApplyInsets(view);
   }
 
   /**
