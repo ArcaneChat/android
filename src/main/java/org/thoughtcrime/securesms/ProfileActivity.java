@@ -73,7 +73,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
     initializeResources();
 
     // Apply window insets to root container for edge-to-edge
-    View rootView = findViewById(android.R.id.content).getRootView();
+    View rootView = findViewById(android.R.id.content);
     if (rootView != null) {
       ViewUtil.applyWindowInsets(rootView, true, true, true, false);
     }

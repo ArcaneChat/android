@@ -37,7 +37,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     onPreCreate();
     
-    // Enable edge-to-edge display
+    // Enable edge-to-edge display by allowing content to draw behind system bars
     WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
     
     super.onCreate(savedInstanceState);

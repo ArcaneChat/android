@@ -41,6 +41,7 @@ import androidx.annotation.IdRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
@@ -301,9 +302,7 @@ public class ViewUtil {
     final int initialPaddingBottom = view.getPaddingBottom();
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-      androidx.core.graphics.Insets insets = windowInsets.getInsets(
-          WindowInsetsCompat.Type.systemBars()
-      );
+      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
       
       v.setPadding(
           left ? initialPaddingLeft + insets.left : initialPaddingLeft,
@@ -315,8 +314,10 @@ public class ViewUtil {
       return windowInsets;
     });
     
-    // Request the initial insets to be dispatched
-    ViewCompat.requestApplyInsets(view);
+    // Request the initial insets to be dispatched if the view is attached
+    if (ViewCompat.isAttachedToWindow(view)) {
+      ViewCompat.requestApplyInsets(view);
+    }
   }
 
   /**
