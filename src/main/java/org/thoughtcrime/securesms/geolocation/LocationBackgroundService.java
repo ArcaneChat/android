@@ -33,6 +33,7 @@ public class LocationBackgroundService extends Service {
     private static final int LOCATION_INTERVAL = 1000;
     private static final float LOCATION_DISTANCE = 25F;
     ServiceLocationListener locationListener;
+    private boolean isForeground = false;
 
     private final IBinder mBinder = new LocationBackgroundServiceBinder();
 
@@ -50,11 +51,7 @@ public class LocationBackgroundService extends Service {
     public void onCreate() {
         super.onCreate();
         
-        // Create notification channel if needed
-        createNotificationChannel();
-        
-        // Start foreground service with notification - required for foreground services
-        startForeground(NotificationCenter.ID_LOCATION, createNotification());
+        initializeForegroundService();
         
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
@@ -82,11 +79,8 @@ public class LocationBackgroundService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
         
-        // Ensure foreground notification is shown even if onCreate hasn't been called yet
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel();
-            startForeground(NotificationCenter.ID_LOCATION, createNotification());
-        }
+        // Ensure foreground notification is shown (handles edge cases)
+        initializeForegroundService();
         
         return START_STICKY;
     }
@@ -106,6 +100,14 @@ public class LocationBackgroundService extends Service {
             locationManager.removeUpdates(locationListener);
         } catch (Exception ex) {
             Log.i(TAG, "fail to remove location listeners, ignore", ex);
+        }
+    }
+
+    private void initializeForegroundService() {
+        if (!isForeground) {
+            createNotificationChannel();
+            startForeground(NotificationCenter.ID_LOCATION, createNotification());
+            isForeground = true;
         }
     }
 

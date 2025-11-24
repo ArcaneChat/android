@@ -39,4 +39,12 @@ public class IntentUtils {
       return 0;
     }
   }
+
+  public static int FLAG_IMMUTABLE() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      return PendingIntent.FLAG_IMMUTABLE;
+    } else {
+      return 0;
+    }
+  }
 }
