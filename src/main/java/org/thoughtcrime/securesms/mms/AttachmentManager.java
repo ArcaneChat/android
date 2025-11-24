@@ -494,9 +494,9 @@ public class AttachmentManager {
                   dcLocationManager.shareLocation(durationInSeconds, chatId);
                 }
               });
-            })
-            .request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-            .execute();
+            });
+    permissionsBuilder.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
+    permissionsBuilder.execute();
   }
 
   private @Nullable Uri getSlideUri() {
