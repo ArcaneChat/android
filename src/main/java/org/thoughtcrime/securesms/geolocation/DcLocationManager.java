@@ -55,7 +55,7 @@ public class DcLocationManager implements Observer {
     }
 
     public void startLocationEngine() {
-        if (serviceBinder == null && !serviceBound) {
+        if (serviceBinder == null || !serviceBound) {
             Intent intent = new Intent(context.getApplicationContext(), LocationBackgroundService.class);
             // Start as foreground service
             ContextCompat.startForegroundService(context, intent);
