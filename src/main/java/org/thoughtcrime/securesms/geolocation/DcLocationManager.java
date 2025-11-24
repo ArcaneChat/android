@@ -65,7 +65,7 @@ public class DcLocationManager implements Observer {
     }
 
     public void stopLocationEngine() {
-        if (serviceBinder == null && !serviceBound) {
+        if (serviceBinder == null || !serviceBound) {
             return;
         }
         try {

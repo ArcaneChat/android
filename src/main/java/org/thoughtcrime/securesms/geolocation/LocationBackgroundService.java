@@ -53,14 +53,15 @@ public class LocationBackgroundService extends Service {
         // Create notification channel if needed
         createNotificationChannel();
         
-        // Start foreground service with notification
-        startForeground(NotificationCenter.ID_LOCATION, createNotification());
-        
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
             Log.e(TAG, "Unable to initialize location service");
+            stopSelf();
             return;
         }
+
+        // Start foreground service with notification after successful initialization
+        startForeground(NotificationCenter.ID_LOCATION, createNotification());
 
         locationListener = new ServiceLocationListener();
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
