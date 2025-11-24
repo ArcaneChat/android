@@ -56,7 +56,7 @@ public class LocationBackgroundService extends Service {
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         if (locationManager == null) {
             Log.e(TAG, "Unable to initialize location service");
-            // Initialize foreground first, then stop
+            // Must start foreground to avoid crash, then stop immediately
             initializeForegroundService();
             stopForeground(true);
             stopSelf();
