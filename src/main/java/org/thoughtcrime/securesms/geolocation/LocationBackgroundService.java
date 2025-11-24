@@ -65,9 +65,6 @@ public class LocationBackgroundService extends Service {
 
         // Initialize foreground service after successful location manager setup
         initializeForegroundService();
-            stopSelf();
-            return;
-        }
 
         locationListener = new ServiceLocationListener();
         Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
