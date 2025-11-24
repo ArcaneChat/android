@@ -3,9 +3,14 @@ package org.thoughtcrime.securesms;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +51,7 @@ public class TransportListActivity extends BaseActionBarActivity
             getSupportActionBar().setElevation(0);
         }
 
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinator_layout);
         recyclerView = findViewById(R.id.transport_list);
         fabAdd = findViewById(R.id.fab_add_transport);
 
@@ -54,6 +60,29 @@ public class TransportListActivity extends BaseActionBarActivity
         recyclerView.setAdapter(adapter);
 
         fabAdd.setOnClickListener(v -> openAddTransport());
+
+        // Handle window insets for edge-to-edge
+        ViewCompat.setOnApplyWindowInsetsListener(coordinatorLayout, (v, windowInsets) -> {
+            Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            
+            // Apply top inset to RecyclerView as padding
+            recyclerView.setPadding(
+                recyclerView.getPaddingLeft(),
+                insets.top,
+                recyclerView.getPaddingRight(),
+                insets.bottom
+            );
+            recyclerView.setClipToPadding(false);
+
+            // Apply bottom inset to FAB as margin
+            CoordinatorLayout.LayoutParams fabParams = (CoordinatorLayout.LayoutParams) fabAdd.getLayoutParams();
+            int fabMargin = (int) (16 * getResources().getDisplayMetrics().density);
+            fabParams.bottomMargin = insets.bottom + fabMargin;
+            fabParams.rightMargin = fabMargin;
+            fabAdd.setLayoutParams(fabParams);
+
+            return WindowInsetsCompat.CONSUMED;
+        });
 
         loadTransports();
     }

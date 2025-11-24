@@ -9,41 +9,32 @@
     android:minHeight="72dp"
     android:gravity="center_vertical">
 
+    <ImageView
+        android:id="@+id/main_transport_indicator"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:src="@drawable/ic_check_white_24dp"
+        android:tint="?attr/colorPrimary"
+        android:contentDescription="@string/main"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/transport_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <TextView
-                android:id="@+id/transport_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textSize="16sp"
-                android:textColor="?android:attr/textColorPrimary"
-                tools:text="user@example.com" />
-
-            <TextView
-                android:id="@+id/main_transport_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:text="@string/main"
-                android:textSize="12sp"
-                android:textColor="?attr/colorPrimary"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-        </LinearLayout>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="16sp"
+            android:textColor="?android:attr/textColorPrimary"
+            tools:text="user@example.com" />
 
         <TextView
             android:id="@+id/transport_server"

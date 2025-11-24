@@ -59,7 +59,7 @@ public class TransportListAdapter extends RecyclerView.Adapter<TransportListAdap
     static class TransportViewHolder extends RecyclerView.ViewHolder {
         private final TextView emailText;
         private final TextView serverText;
-        private final TextView mainIndicator;
+        private final ImageView mainIndicator;
         private final ImageView editButton;
         private final ImageView deleteButton;
 
