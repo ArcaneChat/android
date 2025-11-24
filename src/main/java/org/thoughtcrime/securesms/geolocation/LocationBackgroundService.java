@@ -8,6 +8,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.ServiceInfo;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -19,6 +20,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
 
 import org.thoughtcrime.securesms.ConversationListActivity;
 import org.thoughtcrime.securesms.R;
@@ -74,8 +76,9 @@ public class LocationBackgroundService extends Service {
             DcLocation.getInstance().updateLocation(lastLocation);
           }
         }
-        //requestLocationUpdate(LocationManager.NETWORK_PROVIDER);
+        // Request location updates from both GPS and network providers for better coverage
         requestLocationUpdate(LocationManager.GPS_PROVIDER);
+        requestLocationUpdate(LocationManager.NETWORK_PROVIDER);
         initialLocationUpdate();
     }
 
@@ -110,7 +113,15 @@ public class LocationBackgroundService extends Service {
     private void initializeForegroundService() {
         if (isForeground.compareAndSet(false, true)) {
             createNotificationChannel();
-            startForeground(NotificationCenter.ID_LOCATION, createNotification());
+            Notification notification = createNotification();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                // Android 14+ requires foregroundServiceType in startForeground
+                ServiceCompat.startForeground(this, NotificationCenter.ID_LOCATION, notification, 
+                    ServiceInfo.FOREGROUND_SERVICE_TYPE_LOCATION);
+            } else {
+                startForeground(NotificationCenter.ID_LOCATION, notification);
+            }
+            Log.d(TAG, "Foreground service started with notification");
         }
     }
 
