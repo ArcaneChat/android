@@ -296,25 +296,28 @@ public class ViewUtil {
    * @param bottom Whether to apply bottom inset
    */
   public static void applyWindowInsets(@NonNull View view, boolean left, boolean top, boolean right, boolean bottom) {
-    // Store the original padding as a tag to avoid accumulation on subsequent applications
-    final int originalPaddingLeft = view.getPaddingLeft();
-    final int originalPaddingTop = view.getPaddingTop();
-    final int originalPaddingRight = view.getPaddingRight();
-    final int originalPaddingBottom = view.getPaddingBottom();
-    
-    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left, originalPaddingLeft);
-    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top, originalPaddingTop);
-    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right, originalPaddingRight);
-    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom, originalPaddingBottom);
+    // Store the original padding as a tag only if not already stored
+    // This prevents losing the true original padding on subsequent calls
+    if (view.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left) == null) {
+      view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left, view.getPaddingLeft());
+      view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top, view.getPaddingTop());
+      view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right, view.getPaddingRight());
+      view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom, view.getPaddingBottom());
+    }
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
       Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
       
-      // Retrieve the original padding values from tags
-      int basePaddingLeft = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left);
-      int basePaddingTop = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top);
-      int basePaddingRight = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right);
-      int basePaddingBottom = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom);
+      // Retrieve the original padding values from tags with null checks
+      Integer leftTag = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left);
+      Integer topTag = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top);
+      Integer rightTag = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right);
+      Integer bottomTag = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom);
+      
+      int basePaddingLeft = leftTag != null ? leftTag : 0;
+      int basePaddingTop = topTag != null ? topTag : 0;
+      int basePaddingRight = rightTag != null ? rightTag : 0;
+      int basePaddingBottom = bottomTag != null ? bottomTag : 0;
       
       v.setPadding(
           left ? basePaddingLeft + insets.left : basePaddingLeft,
