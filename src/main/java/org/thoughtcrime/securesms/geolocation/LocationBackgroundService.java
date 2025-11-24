@@ -21,12 +21,16 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.location.LocationManagerCompat;
+import androidx.core.location.LocationRequestCompat;
 
 import org.thoughtcrime.securesms.ConversationListActivity;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.notifications.NotificationCenter;
 import org.thoughtcrime.securesms.util.IntentUtils;
 
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class LocationBackgroundService extends Service {
@@ -161,10 +165,28 @@ public class LocationBackgroundService extends Service {
 
     private void requestLocationUpdate(String provider) {
         try {
-            locationManager.requestLocationUpdates(
-                    provider, LOCATION_INTERVAL, LOCATION_DISTANCE,
-                    locationListener);
-        } catch (SecurityException | IllegalArgumentException  ex) {
+            // Check if provider is available
+            if (!locationManager.isProviderEnabled(provider)) {
+                Log.w(TAG, String.format("Provider %s is not enabled", provider));
+                return;
+            }
+            
+            // Use LocationManagerCompat for better compatibility with modern Android
+            LocationRequestCompat locationRequest = new LocationRequestCompat.Builder(LOCATION_INTERVAL)
+                .setMinUpdateDistanceMeters(LOCATION_DISTANCE)
+                .setQuality(LocationRequestCompat.QUALITY_HIGH_ACCURACY)
+                .build();
+            
+            Executor executor = ContextCompat.getMainExecutor(this);
+            LocationManagerCompat.requestLocationUpdates(
+                locationManager,
+                provider,
+                locationRequest,
+                executor,
+                locationListener
+            );
+            Log.d(TAG, String.format("Requested location updates from %s provider", provider));
+        } catch (SecurityException | IllegalArgumentException ex) {
             Log.e(TAG, String.format("Unable to request %s provider based location updates.", provider), ex);
         }
     }
@@ -175,9 +197,16 @@ public class LocationBackgroundService extends Service {
             if (gpsLocation != null && System.currentTimeMillis() - gpsLocation.getTime() < INITIAL_TIMEOUT) {
               locationListener.onLocationChanged(gpsLocation);
             }
-
+            // Also try network provider for initial location
+            Location networkLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (networkLocation != null && System.currentTimeMillis() - networkLocation.getTime() < INITIAL_TIMEOUT) {
+                // Use network location if GPS location is not available or network location is newer
+                if (gpsLocation == null || networkLocation.getTime() > gpsLocation.getTime()) {
+                    locationListener.onLocationChanged(networkLocation);
+                }
+            }
         } catch (NullPointerException | SecurityException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error getting initial location", e);
         }
     }
 
