@@ -296,19 +296,31 @@ public class ViewUtil {
    * @param bottom Whether to apply bottom inset
    */
   public static void applyWindowInsets(@NonNull View view, boolean left, boolean top, boolean right, boolean bottom) {
-    final int initialPaddingLeft = view.getPaddingLeft();
-    final int initialPaddingTop = view.getPaddingTop();
-    final int initialPaddingRight = view.getPaddingRight();
-    final int initialPaddingBottom = view.getPaddingBottom();
+    // Store the original padding as a tag to avoid accumulation on subsequent applications
+    final int originalPaddingLeft = view.getPaddingLeft();
+    final int originalPaddingTop = view.getPaddingTop();
+    final int originalPaddingRight = view.getPaddingRight();
+    final int originalPaddingBottom = view.getPaddingBottom();
+    
+    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left, originalPaddingLeft);
+    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top, originalPaddingTop);
+    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right, originalPaddingRight);
+    view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom, originalPaddingBottom);
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
       Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
       
+      // Retrieve the original padding values from tags
+      int basePaddingLeft = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left);
+      int basePaddingTop = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top);
+      int basePaddingRight = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_right);
+      int basePaddingBottom = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_bottom);
+      
       v.setPadding(
-          left ? initialPaddingLeft + insets.left : initialPaddingLeft,
-          top ? initialPaddingTop + insets.top : initialPaddingTop,
-          right ? initialPaddingRight + insets.right : initialPaddingRight,
-          bottom ? initialPaddingBottom + insets.bottom : initialPaddingBottom
+          left ? basePaddingLeft + insets.left : basePaddingLeft,
+          top ? basePaddingTop + insets.top : basePaddingTop,
+          right ? basePaddingRight + insets.right : basePaddingRight,
+          bottom ? basePaddingBottom + insets.bottom : basePaddingBottom
       );
       
       return windowInsets;
