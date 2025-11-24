@@ -81,12 +81,22 @@ public class LocationBackgroundService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
+        
+        // Ensure foreground notification is shown even if onCreate hasn't been called yet
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            createNotificationChannel();
+            startForeground(NotificationCenter.ID_LOCATION, createNotification());
+        }
+        
         return START_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
+        // Stop foreground notification
+        stopForeground(true);
 
         if (locationManager == null) {
             return;
