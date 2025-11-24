@@ -119,9 +119,20 @@ public class EditTransportActivity extends BaseActionBarActivity implements DcEv
         });
 
         EnteredLoginParam config = null;
+        String transportAddr = getIntent().getStringExtra(TransportListActivity.EXTRA_TRANSPORT_ADDR);
         try {
             List<EnteredLoginParam> relays = rpc.listTransports(accId);
-            if (!relays.isEmpty()) config = relays.get(0);
+            if (transportAddr != null) {
+                // Find the transport with the specified address
+                for (EnteredLoginParam transport : relays) {
+                    if (transportAddr.equals(transport.addr)) {
+                        config = transport;
+                        break;
+                    }
+                }
+            } else if (!relays.isEmpty()) {
+                config = relays.get(0);
+            }
         } catch (RpcException ignored) {}
 
         ActionBar actionBar = getSupportActionBar();
