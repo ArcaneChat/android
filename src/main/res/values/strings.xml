@@ -693,6 +693,7 @@
     <string name="add_transport">Add Transport</string>
     <string name="remove_transport">Remove Transport</string>
     <string name="edit_transport">Edit Transport</string>
+    <string name="main">Main</string>
     <!-- shown if a QR code was scanned that can be used as a transport -->
     <string name="confirm_add_transport">Add this transport?</string>
     <string name="invalid_transport_qr">The scanned QR code does not contain a valid transport.</string>

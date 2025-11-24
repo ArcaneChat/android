@@ -30,6 +30,7 @@ public class TransportListActivity extends BaseActionBarActivity
     private FloatingActionButton fabAdd;
     private Rpc rpc;
     private int accId;
+    private String mainTransportAddr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +68,11 @@ public class TransportListActivity extends BaseActionBarActivity
         Util.runOnBackground(() -> {
             try {
                 List<EnteredLoginParam> transports = rpc.listTransports(accId);
-                Util.runOnMain(() -> adapter.setTransports(transports));
+                mainTransportAddr = DcHelper.get(this, DcHelper.CONFIG_CONFIGURED_ADDRESS);
+                Util.runOnMain(() -> adapter.setTransports(transports, mainTransportAddr));
             } catch (RpcException e) {
-                Util.runOnMain(() -> adapter.setTransports(null));
+                mainTransportAddr = DcHelper.get(this, DcHelper.CONFIG_CONFIGURED_ADDRESS);
+                Util.runOnMain(() -> adapter.setTransports(null, mainTransportAddr));
             }
         });
     }
@@ -81,6 +84,17 @@ public class TransportListActivity extends BaseActionBarActivity
 
     @Override
     public void onTransportClick(EnteredLoginParam transport) {
+        // Clicking on a transport makes it the main transport
+        if (transport.addr != null && !transport.addr.equals(mainTransportAddr)) {
+            Util.runOnBackground(() -> {
+                DcHelper.getContext(this).setConfig(DcHelper.CONFIG_CONFIGURED_ADDRESS, transport.addr);
+                Util.runOnMain(this::loadTransports);
+            });
+        }
+    }
+
+    @Override
+    public void onTransportEdit(EnteredLoginParam transport) {
         Intent intent = new Intent(this, EditTransportActivity.class);
         intent.putExtra(EXTRA_TRANSPORT_ADDR, transport.addr);
         startActivity(intent);
