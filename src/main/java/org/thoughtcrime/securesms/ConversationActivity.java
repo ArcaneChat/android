@@ -210,7 +210,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     setContentView(R.layout.conversation_activity);
 
     // Apply window insets to root container for edge-to-edge
-    // Don't apply bottom insets to avoid interfering with keyboard handling
+    // Don't apply bottom insets to preserve keyboard resizing behavior and avoid double-padding with InputAwareLayout
     View rootView = findViewById(android.R.id.content);
     if (rootView != null) {
       ViewUtil.applyWindowInsets(rootView, true, true, true, false);

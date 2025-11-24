@@ -289,6 +289,10 @@ public class ViewUtil {
    * Apply window insets to a view by adding padding to avoid system bars.
    * This is the proper way to handle edge-to-edge display.
    * 
+   * This method stores the original padding values in view tags to ensure that
+   * padding doesn't accumulate on multiple inset applications. Original padding
+   * is preserved and only stored once per view.
+   * 
    * @param view The view to apply insets to
    * @param left Whether to apply left inset
    * @param top Whether to apply top inset
