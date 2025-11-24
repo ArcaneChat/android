@@ -10,11 +10,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ServiceInfo;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -22,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.location.LocationListenerCompat;
 import androidx.core.location.LocationManagerCompat;
 import androidx.core.location.LocationRequestCompat;
 
@@ -103,12 +102,12 @@ public class LocationBackgroundService extends Service {
         // Stop foreground notification
         stopForeground(true);
 
-        if (locationManager == null) {
+        if (locationManager == null || locationListener == null) {
             return;
         }
 
         try {
-            locationManager.removeUpdates(locationListener);
+            LocationManagerCompat.removeUpdates(locationManager, locationListener);
         } catch (Exception ex) {
             Log.i(TAG, "fail to remove location listeners, ignore", ex);
         }
@@ -221,30 +220,22 @@ public class LocationBackgroundService extends Service {
         }
     }
 
-    private class ServiceLocationListener implements LocationListener {
+    private class ServiceLocationListener implements LocationListenerCompat {
 
         @Override
         public void onLocationChanged(@NonNull Location location) {
             Log.d(TAG, "onLocationChanged: " + location);
-            if (location == null) {
-                return;
-            }
             DcLocation.getInstance().updateLocation(location);
         }
 
         @Override
         public void onProviderDisabled(@NonNull String provider) {
-            Log.e(TAG, "onProviderDisabled: " + provider);
+            Log.w(TAG, "onProviderDisabled: " + provider);
         }
 
         @Override
         public void onProviderEnabled(@NonNull String provider) {
-            Log.e(TAG, "onProviderEnabled: " + provider);
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.e(TAG, "onStatusChanged: " + provider + " status: " + status);
+            Log.d(TAG, "onProviderEnabled: " + provider);
         }
     }
 
