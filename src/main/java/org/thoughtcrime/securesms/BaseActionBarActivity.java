@@ -60,6 +60,12 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
         ViewUtil.applyWindowInsets(toolbar, false, true, false, false);
       }
     }
+    
+    // For activities without a custom toolbar, apply insets to status_bar_background view
+    View statusBarBackground = findViewById(R.id.status_bar_background);
+    if (statusBarBackground != null) {
+      ViewUtil.applyWindowInsetsAsHeight(statusBarBackground);
+    }
   }
 
   @Override
