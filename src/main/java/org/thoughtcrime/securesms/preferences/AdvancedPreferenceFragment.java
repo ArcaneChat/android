@@ -31,7 +31,7 @@ import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
 import org.thoughtcrime.securesms.ConversationActivity;
 import org.thoughtcrime.securesms.LogViewActivity;
 import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.EditTransportActivity;
+import org.thoughtcrime.securesms.TransportListActivity;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
@@ -166,7 +166,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       passwordAndAccount.setOnPreferenceClickListener(((preference) -> {
         boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.edit_transport), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT);
         if (!result) {
-          openRegistrationActivity();
+          openTransportListActivity();
         }
         return true;
       }));
@@ -203,7 +203,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT) {
-      openRegistrationActivity();
+      openTransportListActivity();
     }
   }
 
@@ -270,8 +270,8 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
   }
 
-  private void openRegistrationActivity() {
-    Intent intent = new Intent(requireActivity(), EditTransportActivity.class);
+  private void openTransportListActivity() {
+    Intent intent = new Intent(requireActivity(), TransportListActivity.class);
     startActivity(intent);
   }
 
