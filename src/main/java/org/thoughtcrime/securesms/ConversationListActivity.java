@@ -159,12 +159,6 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     searchAction             = findViewById(R.id.search_action);
     fragmentContainer        = findViewById(R.id.fragment_container);
 
-    // Apply window insets to root container for edge-to-edge
-    View container = findViewById(R.id.container);
-    if (container != null) {
-      ViewUtil.applyWindowInsets(container, true, true, true, false);
-    }
-
     Bundle bundle = new Bundle();
     conversationListFragment = initFragment(R.id.fragment_container, new ConversationListFragment(), bundle);
 

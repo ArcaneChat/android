@@ -209,13 +209,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR_OVERLAY);
     setContentView(R.layout.conversation_activity);
 
-    // Apply window insets to root container for edge-to-edge
-    // Don't apply bottom insets to preserve keyboard resizing behavior and avoid double-padding with InputAwareLayout
-    View rootView = findViewById(android.R.id.content);
-    if (rootView != null) {
-      ViewUtil.applyWindowInsets(rootView, true, true, true, false);
-    }
-
     TypedArray typedArray = obtainStyledAttributes(new int[] {R.attr.conversation_background});
     int color = typedArray.getColor(0, Color.WHITE);
     typedArray.recycle();
