@@ -883,11 +883,18 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
-    // Apply edge-to-edge insets: top padding to toolbar (via parent), bottom padding to input panel
+    // Apply edge-to-edge insets
+    // 1. Set status bar background height to match status bar inset
+    View statusBarBackground = findViewById(R.id.status_bar_background);
+    ViewUtil.applyWindowInsetsAsHeight(statusBarBackground);
+    
+    // 2. Apply top padding to the ActionBar toolbar so content is below status bar
     View toolbarParent = (View) supportActionBar.getCustomView().getParent();
     if (toolbarParent instanceof Toolbar) {
       ViewUtil.applyWindowInsets(toolbarParent, false, true, false, false);
     }
+    
+    // 3. Apply bottom padding to input panel for navigation bar
     ViewUtil.applyWindowInsets(inputPanel, false, false, false, true);
 
     container.addOnKeyboardShownListener(this);

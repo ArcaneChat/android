@@ -349,6 +349,30 @@ public class ViewUtil {
     applyWindowInsets(view, true, true, true, true);
   }
 
+  /**
+   * Apply the top status bar inset as the height of a view.
+   * This is useful for creating a colored status bar background view.
+   * @param view The view whose height should be set to the status bar inset
+   */
+  public static void applyWindowInsetsAsHeight(@NonNull View view) {
+    ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      
+      android.view.ViewGroup.LayoutParams params = v.getLayoutParams();
+      if (params != null) {
+        params.height = insets.top;
+        v.setLayoutParams(params);
+      }
+      
+      return windowInsets;
+    });
+    
+    // Request the initial insets to be dispatched if the view is attached
+    if (ViewCompat.isAttachedToWindow(view)) {
+      ViewCompat.requestApplyInsets(view);
+    }
+  }
+
   // Checks if a selection is valid for a given Spinner view.
   // Returns given selection if valid.
   // Otherwise, to avoid ArrayIndexOutOfBoundsException, 0 is returned, assuming to refer to a good default.
