@@ -6,11 +6,23 @@
     android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+  <!-- Status bar background - extends the toolbar color behind the status bar -->
+  <View
+      android:id="@+id/status_bar_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_alignParentTop="true"
+      android:background="?attr/colorPrimary"
+      android:elevation="5dp" />
+  <FrameLayout
+      android:id="@+id/fragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="?android:attr/windowBackground">
 <ScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?android:attr/windowBackground"
     tools:context=".EditTransportActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -339,4 +351,5 @@
             app:layout_constraintTop_toBottomOf="@id/cert_check" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
+  </FrameLayout>
 </RelativeLayout>

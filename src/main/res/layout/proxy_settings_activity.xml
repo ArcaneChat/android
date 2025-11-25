@@ -5,22 +5,35 @@
     android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground"
-    android:orientation="vertical"
-    tools:context=".proxy.ProxySettingsActivity">
-  <androidx.appcompat.widget.SwitchCompat
-      android:id="@+id/proxy_switch"
+  <!-- Status bar background - extends the toolbar color behind the status bar -->
+  <View
+      android:id="@+id/status_bar_background"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="16dp"
-      android:text="@string/proxy_use_proxy" />
-  <ListView
-      android:id="@+id/proxy_list"
-      android:paddingTop="10dp"
+      android:layout_height="0dp"
+      android:layout_alignParentTop="true"
+      android:background="?attr/colorPrimary"
+      android:elevation="5dp" />
+  <FrameLayout
+      android:id="@+id/fragment"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content" />
-</LinearLayout>
+      android:layout_height="match_parent"
+      android:background="?android:attr/windowBackground">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".proxy.ProxySettingsActivity">
+      <androidx.appcompat.widget.SwitchCompat
+          android:id="@+id/proxy_switch"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:padding="16dp"
+          android:text="@string/proxy_use_proxy" />
+      <ListView
+          android:id="@+id/proxy_list"
+          android:paddingTop="10dp"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
+    </LinearLayout>
+  </FrameLayout>
 </RelativeLayout>

@@ -4,32 +4,45 @@
     android:background="?attr/colorPrimary"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?android:attr/windowBackground"
-    android:orientation="vertical"
-    android:gravity="center_horizontal">
-    <androidx.legacy.widget.Space
-        android:layout_weight="2"
+  <!-- Status bar background - extends the toolbar color behind the status bar -->
+  <View
+      android:id="@+id/status_bar_background"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:layout_alignParentTop="true"
+      android:background="?attr/colorPrimary"
+      android:elevation="5dp" />
+  <FrameLayout
+      android:id="@+id/fragment"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="?android:attr/windowBackground">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:orientation="vertical">
-        <com.journeyapps.barcodescanner.CompoundBarcodeView
-            android:id="@+id/zxing_barcode_scanner"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <androidx.legacy.widget.Space
+            android:layout_weight="2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
-    <androidx.legacy.widget.Space
-        android:layout_weight="2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"/>
-</LinearLayout>
+            android:layout_height="0dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="6"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:orientation="vertical">
+            <com.journeyapps.barcodescanner.CompoundBarcodeView
+                android:id="@+id/zxing_barcode_scanner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_alignParentBottom="true" />
+        </RelativeLayout>
+        <androidx.legacy.widget.Space
+            android:layout_weight="2"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+    </LinearLayout>
+  </FrameLayout>
 </RelativeLayout>
