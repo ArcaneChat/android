@@ -883,6 +883,13 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
+    // Apply edge-to-edge insets: top padding to toolbar (via parent), bottom padding to input panel
+    View toolbarParent = (View) supportActionBar.getCustomView().getParent();
+    if (toolbarParent instanceof Toolbar) {
+      ViewUtil.applyWindowInsets(toolbarParent, false, true, false, false);
+    }
+    ViewUtil.applyWindowInsets(inputPanel, false, false, false, true);
+
     container.addOnKeyboardShownListener(this);
     container.addOnKeyboardHiddenListener(backgroundView);
     container.addOnKeyboardShownListener(backgroundView);
