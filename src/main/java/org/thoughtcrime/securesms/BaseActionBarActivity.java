@@ -48,12 +48,17 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   protected void onPostCreate(@Nullable Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
     
-    // Apply window insets to root content view after setContentView() has been called
-    // This ensures all activities get proper edge-to-edge padding by default
-    // Don't apply bottom insets to preserve keyboard resize behavior
-    View rootView = findViewById(android.R.id.content);
-    if (rootView != null) {
-      ViewUtil.applyWindowInsets(rootView, true, true, true, false);
+    // Apply window insets for edge-to-edge display
+    // The toolbar/app bar should extend behind the status bar with padding applied
+    View toolbar = findViewById(R.id.toolbar);
+    if (toolbar != null) {
+      // Check if toolbar is inside an AppBarLayout
+      View parent = (View) toolbar.getParent();
+      if (parent instanceof com.google.android.material.appbar.AppBarLayout) {
+        ViewUtil.applyWindowInsets(parent, false, true, false, false);
+      } else {
+        ViewUtil.applyWindowInsets(toolbar, false, true, false, false);
+      }
     }
   }
 
