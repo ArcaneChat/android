@@ -896,6 +896,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     
     // 3. Apply bottom padding to input panel for navigation bar
     ViewUtil.applyWindowInsets(inputPanel, false, false, false, true);
+    ViewUtil.applyWindowInsets(findViewById(R.id.fragment_content), false, true, false, false);
 
     container.addOnKeyboardShownListener(this);
     container.addOnKeyboardHiddenListener(backgroundView);

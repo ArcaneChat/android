@@ -62,7 +62,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     }
     
     // For activities without a custom toolbar, apply insets to status_bar_background view
-    // and add top padding to fragment container for status bar + action bar
+    // and add top padding to fragment container for status bar
     View statusBarBackground = findViewById(R.id.status_bar_background);
     if (statusBarBackground != null) {
       ViewUtil.applyWindowInsetsAsHeight(statusBarBackground);
@@ -70,13 +70,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
       // Also apply top padding to fragment container so content starts below the ActionBar
       View fragment = findViewById(R.id.fragment);
       if (fragment != null) {
-        // Get the action bar height
-        int actionBarHeight = 0;
-        android.util.TypedValue tv = new android.util.TypedValue();
-        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-          actionBarHeight = android.util.TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
-        }
-        ViewUtil.applyWindowInsetsWithActionBar(fragment, actionBarHeight);
+        ViewUtil.applyWindowInsets(fragment);
       }
     }
   }
