@@ -373,6 +373,40 @@ public class ViewUtil {
     }
   }
 
+  /**
+   * Apply the top status bar inset plus action bar size as top padding to a view.
+   * This is useful for fragment containers in activities using the default ActionBar.
+   * @param view The view to apply top padding to
+   * @param actionBarSize The action bar height in pixels
+   */
+  public static void applyWindowInsetsWithActionBar(@NonNull View view, int actionBarSize) {
+    // Store the original padding as a tag only if not already stored
+    if (view.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top) == null) {
+      view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top, view.getPaddingTop());
+    }
+    
+    ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      
+      Object topTagObj = v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top);
+      int basePaddingTop = (topTagObj instanceof Integer) ? (Integer) topTagObj : 0;
+      
+      v.setPadding(
+          v.getPaddingLeft(),
+          basePaddingTop + insets.top + actionBarSize,
+          v.getPaddingRight(),
+          v.getPaddingBottom()
+      );
+      
+      return windowInsets;
+    });
+    
+    // Request the initial insets to be dispatched if the view is attached
+    if (ViewCompat.isAttachedToWindow(view)) {
+      ViewCompat.requestApplyInsets(view);
+    }
+  }
+
   // Checks if a selection is valid for a given Spinner view.
   // Returns given selection if valid.
   // Otherwise, to avoid ArrayIndexOutOfBoundsException, 0 is returned, assuming to refer to a good default.
