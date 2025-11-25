@@ -1,6 +1,7 @@
 package org.thoughtcrime.securesms.util;
 
 import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
