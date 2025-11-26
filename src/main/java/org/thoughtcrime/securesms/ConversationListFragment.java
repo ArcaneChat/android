@@ -118,6 +118,9 @@ public class ConversationListFragment extends BaseConversationListFragment
       ViewUtil.applyWindowInsetsAsBottomMargin(fab);
     }
 
+    // Apply left and right insets to the list for landscape mode
+    ViewUtil.applyWindowInsets(list, true, false, true, false);
+
     list.setHasFixedSize(true);
     list.setLayoutManager(new LinearLayoutManager(getActivity()));
     list.setItemAnimator(new DeleteItemAnimator());
