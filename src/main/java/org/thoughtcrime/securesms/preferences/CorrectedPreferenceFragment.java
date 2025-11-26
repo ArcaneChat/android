@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -21,17 +22,17 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
   }
 
   @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
-    View lv = getView().findViewById(android.R.id.list);
+    View lv = view.findViewById(android.R.id.list);
     if (lv != null) {
-      lv.setPadding(0, 0, 0, 0);
-      // For edge-to-edge: apply bottom padding for navigation bar and enable clipToPadding false
+      // For edge-to-edge: apply left/right/bottom insets for navigation bar and enable clipToPadding false
       // so the list can scroll behind the navigation bar
       if (lv instanceof RecyclerView) {
         ((RecyclerView) lv).setClipToPadding(false);
       }
+      // Apply window insets for left, right, bottom but not top (top is handled by ActionBar)
       ViewUtil.applyWindowInsets(lv, true, false, true, true);
     }
   }
