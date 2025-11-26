@@ -114,6 +114,8 @@ public class ConversationListFragment extends BaseConversationListFragment
       emptyTitle.setText(R.string.archive_empty_hint);
     } else {
       fab.setVisibility(View.VISIBLE);
+      // Apply bottom inset to FAB to prevent it from being covered by the navigation bar
+      ViewUtil.applyWindowInsetsAsBottomMargin(fab);
     }
 
     list.setHasFixedSize(true);

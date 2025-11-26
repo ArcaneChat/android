@@ -407,6 +407,45 @@ public class ViewUtil {
     }
   }
 
+  /**
+   * Apply the bottom navigation bar inset as additional bottom margin to a view.
+   * This is useful for FABs and other floating elements that should stay above the navigation bar.
+   * @param view The view to apply the bottom margin inset to
+   */
+  public static void applyWindowInsetsAsBottomMargin(@NonNull View view) {
+    // Store the original bottom margin as a tag only if not already stored
+    if (view.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_margin_bottom) == null) {
+      ViewGroup.LayoutParams params = view.getLayoutParams();
+      if (params instanceof ViewGroup.MarginLayoutParams) {
+        view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_margin_bottom, 
+            ((ViewGroup.MarginLayoutParams) params).bottomMargin);
+      } else {
+        view.setTag(org.thoughtcrime.securesms.R.id.tag_window_insets_margin_bottom, 0);
+      }
+    }
+    
+    ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      
+      ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
+      if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
+        Object bottomMarginTag = v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_margin_bottom);
+        int baseMarginBottom = (bottomMarginTag instanceof Integer) ? (Integer) bottomMarginTag : 0;
+        
+        ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) layoutParams;
+        marginParams.bottomMargin = baseMarginBottom + insets.bottom;
+        v.setLayoutParams(marginParams);
+      }
+      
+      return windowInsets;
+    });
+    
+    // Request the initial insets to be dispatched if the view is attached
+    if (ViewCompat.isAttachedToWindow(view)) {
+      ViewCompat.requestApplyInsets(view);
+    }
+  }
+
   // Checks if a selection is valid for a given Spinner view.
   // Returns given selection if valid.
   // Otherwise, to avoid ArrayIndexOutOfBoundsException, 0 is returned, assuming to refer to a good default.
