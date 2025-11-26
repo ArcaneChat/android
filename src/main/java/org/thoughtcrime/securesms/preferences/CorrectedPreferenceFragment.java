@@ -8,8 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.thoughtcrime.securesms.components.CustomDefaultPreference;
+import org.thoughtcrime.securesms.util.ViewUtil;
 
 public abstract class CorrectedPreferenceFragment extends PreferenceFragmentCompat {
 
@@ -23,7 +25,15 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
     super.onActivityCreated(savedInstanceState);
 
     View lv = getView().findViewById(android.R.id.list);
-    if (lv != null) lv.setPadding(0, 0, 0, 0);
+    if (lv != null) {
+      lv.setPadding(0, 0, 0, 0);
+      // For edge-to-edge: apply bottom padding for navigation bar and enable clipToPadding false
+      // so the list can scroll behind the navigation bar
+      if (lv instanceof RecyclerView) {
+        ((RecyclerView) lv).setClipToPadding(false);
+      }
+      ViewUtil.applyWindowInsets(lv, true, false, true, true);
+    }
   }
 
   @Override
