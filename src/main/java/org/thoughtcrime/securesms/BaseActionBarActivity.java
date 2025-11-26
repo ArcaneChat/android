@@ -50,14 +50,15 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     
     // Apply window insets for edge-to-edge display
     // The toolbar/app bar should extend behind the status bar with padding applied
+    // Also apply left and right insets for landscape mode (navigation bars and display cutout)
     View toolbar = findViewById(R.id.toolbar);
     if (toolbar != null) {
       // Check if toolbar is inside an AppBarLayout
       View parent = (View) toolbar.getParent();
       if (parent instanceof com.google.android.material.appbar.AppBarLayout) {
-        ViewUtil.applyWindowInsets(parent, false, true, false, false);
+        ViewUtil.applyWindowInsets(parent, true, true, true, false);
       } else {
-        ViewUtil.applyWindowInsets(toolbar, false, true, false, false);
+        ViewUtil.applyWindowInsets(toolbar, true, true, true, false);
       }
     }
     
