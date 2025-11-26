@@ -286,6 +286,17 @@ public class ViewUtil {
   }
 
   /**
+   * Get combined insets from system bars (status bar, navigation bar) and display cutout areas.
+   * @param windowInsets The window insets to extract from
+   * @return Combined insets using the maximum values from system bars and display cutout
+   */
+  private static Insets getCombinedInsets(@NonNull WindowInsetsCompat windowInsets) {
+    Insets systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+    Insets displayCutout = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
+    return Insets.max(systemBars, displayCutout);
+  }
+
+  /**
    * Apply window insets to a view by adding padding to avoid system bars.
    * This is the proper way to handle edge-to-edge display.
    * 
@@ -310,7 +321,7 @@ public class ViewUtil {
     }
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      Insets insets = getCombinedInsets(windowInsets);
       
       // Retrieve the original padding values from tags with null checks
       Integer leftTag = (Integer) v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_left);
@@ -356,7 +367,7 @@ public class ViewUtil {
    */
   public static void applyWindowInsetsAsHeight(@NonNull View view) {
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      Insets insets = getCombinedInsets(windowInsets);
       
       android.view.ViewGroup.LayoutParams params = v.getLayoutParams();
       if (params != null) {
@@ -386,7 +397,7 @@ public class ViewUtil {
     }
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      Insets insets = getCombinedInsets(windowInsets);
       
       Object topTagObj = v.getTag(org.thoughtcrime.securesms.R.id.tag_window_insets_padding_top);
       int basePaddingTop = (topTagObj instanceof Integer) ? (Integer) topTagObj : 0;
@@ -425,7 +436,7 @@ public class ViewUtil {
     }
     
     ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
-      Insets insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+      Insets insets = getCombinedInsets(windowInsets);
       
       ViewGroup.LayoutParams layoutParams = v.getLayoutParams();
       if (layoutParams instanceof ViewGroup.MarginLayoutParams) {
