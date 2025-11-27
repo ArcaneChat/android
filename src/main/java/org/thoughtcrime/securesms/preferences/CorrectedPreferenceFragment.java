@@ -1,6 +1,7 @@
 package org.thoughtcrime.securesms.preferences;
 
 
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
@@ -26,8 +27,8 @@ public abstract class CorrectedPreferenceFragment extends PreferenceFragmentComp
     super.onViewCreated(view, savedInstanceState);
 
     View lv = view.findViewById(android.R.id.list);
-    if (lv != null) {
-      // For edge-to-edge: apply left/right/bottom insets for navigation bar and enable clipToPadding false
+    if (lv != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      // For edge-to-edge (API 23+ only): apply left/right/bottom insets for navigation bar and enable clipToPadding false
       // so the list can scroll behind the navigation bar
       if (lv instanceof RecyclerView) {
         ((RecyclerView) lv).setClipToPadding(false);

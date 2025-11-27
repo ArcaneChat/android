@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -36,7 +37,10 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     onPreCreate();
     
     // Enable edge-to-edge display by allowing app content to draw behind system bars (status bar, navigation bar)
-    WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    // Only enable on API 23+ where WindowInsets APIs work correctly
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    }
     
     super.onCreate(savedInstanceState);
     
@@ -47,6 +51,11 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   @Override
   protected void onPostCreate(@Nullable Bundle savedInstanceState) {
     super.onPostCreate(savedInstanceState);
+    
+    // Skip edge-to-edge insets on API < 23 where WindowInsets APIs don't work correctly
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+      return;
+    }
     
     // Apply window insets for edge-to-edge display
     // The toolbar/app bar should extend behind the status bar with padding applied

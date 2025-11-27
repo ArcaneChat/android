@@ -36,6 +36,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.provider.Browser;
@@ -883,20 +884,22 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
-    // Apply edge-to-edge insets
-    // 1. Set status bar background height to match status bar inset
-    View statusBarBackground = findViewById(R.id.status_bar_background);
-    ViewUtil.applyWindowInsetsAsHeight(statusBarBackground);
-    
-    // 2. Apply top padding to the ActionBar toolbar so content is below status bar
-    View toolbarParent = (View) supportActionBar.getCustomView().getParent();
-    if (toolbarParent instanceof Toolbar) {
-      ViewUtil.applyWindowInsets(toolbarParent, false, true, false, false);
+    // Apply edge-to-edge insets (only on API 23+ where WindowInsets APIs work correctly)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      // 1. Set status bar background height to match status bar inset
+      View statusBarBackground = findViewById(R.id.status_bar_background);
+      ViewUtil.applyWindowInsetsAsHeight(statusBarBackground);
+      
+      // 2. Apply top padding to the ActionBar toolbar so content is below status bar
+      View toolbarParent = (View) supportActionBar.getCustomView().getParent();
+      if (toolbarParent instanceof Toolbar) {
+        ViewUtil.applyWindowInsets(toolbarParent, false, true, false, false);
+      }
+      
+      // 3. Apply bottom padding to input panel for navigation bar
+      ViewUtil.applyWindowInsets(inputPanel, false, false, false, true);
+      ViewUtil.applyWindowInsets(findViewById(R.id.fragment_content), false, true, false, false);
     }
-    
-    // 3. Apply bottom padding to input panel for navigation bar
-    ViewUtil.applyWindowInsets(inputPanel, false, false, false, true);
-    ViewUtil.applyWindowInsets(findViewById(R.id.fragment_content), false, true, false, false);
 
     container.addOnKeyboardShownListener(this);
     container.addOnKeyboardHiddenListener(backgroundView);

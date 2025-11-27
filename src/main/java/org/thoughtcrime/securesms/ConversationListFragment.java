@@ -114,12 +114,16 @@ public class ConversationListFragment extends BaseConversationListFragment
       emptyTitle.setText(R.string.archive_empty_hint);
     } else {
       fab.setVisibility(View.VISIBLE);
-      // Apply bottom inset to FAB to prevent it from being covered by the navigation bar
-      ViewUtil.applyWindowInsetsAsBottomMargin(fab);
+      // Apply bottom inset to FAB to prevent it from being covered by the navigation bar (API 23+ only)
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        ViewUtil.applyWindowInsetsAsBottomMargin(fab);
+      }
     }
 
-    // Apply left and right insets to the list for landscape mode
-    ViewUtil.applyWindowInsets(list, true, false, true, false);
+    // Apply left and right insets to the list for landscape mode (API 23+ only)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      ViewUtil.applyWindowInsets(list, true, false, true, false);
+    }
 
     list.setHasFixedSize(true);
     list.setLayoutManager(new LinearLayoutManager(getActivity()));
