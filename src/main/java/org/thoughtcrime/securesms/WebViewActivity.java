@@ -26,6 +26,7 @@ import org.thoughtcrime.securesms.qr.QrCodeHandler;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.Util;
+import org.thoughtcrime.securesms.util.ViewUtil;
 
 import java.net.IDN;
 
@@ -36,6 +37,9 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
   private static final String TAG = WebViewActivity.class.getSimpleName();
 
   protected WebView webView;
+
+  /** Return true the window content should display fullscreen/edge-to-edge ex. in the integrated maps app */
+  protected boolean immersiveMode() { return false; }
 
   protected boolean shouldAskToOpenLink() { return false; }
 
@@ -62,10 +66,18 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
       actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setElevation(0); // TODO: use custom toolbar instead
     }
 
     webView = findViewById(R.id.webview);
+
+    if(immersiveMode()) {
+      // set a shadow in the status bar to make it more readable
+      findViewById(R.id.status_bar_background).setBackgroundResource(R.drawable.search_toolbar_shadow);
+    } else {
+      // add padding to avoid content hidden behind system bars
+      ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
+    }
+
     webView.setWebViewClient(new WebViewClient() {
       // IMPORTANT: this is will likely not be called inside iframes unless target=_blank is used in the anchor/link tag.
       // `shouldOverrideUrlLoading()` is called when the user clicks a URL,
@@ -79,7 +91,20 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
       // so, to support all systems, for now, using the old one seems to be the simplest way.
       @Override
       public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        if (url != null) return openOnlineUrl(url);
+        if (url != null) {
+          String schema = url.split(":")[0].toLowerCase();
+          switch (schema) {
+            case "http":
+            case "https":
+            case "gemini":
+            case "tel":
+            case "sms":
+            case "mailto":
+            case "openpgp4fpr":
+            case "geo":
+              return openOnlineUrl(url);
+          }
+        }
         return true; // returning `true` aborts loading
       }
 

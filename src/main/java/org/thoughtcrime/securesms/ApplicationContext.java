@@ -45,6 +45,7 @@ import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.SignalProtocolLoggerProvider;
 import org.thoughtcrime.securesms.util.Util;
+import org.thoughtcrime.securesms.webxdc.WebxdcGarbageCollectionWorker;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -240,6 +241,18 @@ public class ApplicationContext extends MultiDexApplication {
               ExistingPeriodicWorkPolicy.KEEP,
               fetchWorkRequest);
     }
+
+    PeriodicWorkRequest webxdcGarbageCollectionRequest = new PeriodicWorkRequest.Builder(
+            WebxdcGarbageCollectionWorker.class,
+            PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
+            TimeUnit.MILLISECONDS,
+            PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS,
+            TimeUnit.MILLISECONDS)
+            .build();
+    WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "WebxdcGarbageCollectionWorker",
+            ExistingPeriodicWorkPolicy.KEEP,
+            webxdcGarbageCollectionRequest);
   }
 
   public JobManager getJobManager() {
