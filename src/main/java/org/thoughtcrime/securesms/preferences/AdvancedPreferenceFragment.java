@@ -145,14 +145,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
     updateWebxdcStoreSummary();
 
-    Preference developerModeEnabled = this.findPreference("pref_developer_mode_enabled");
-    if (developerModeEnabled != null) {
-      developerModeEnabled.setOnPreferenceChangeListener((preference, newValue) -> {
-        WebView.setWebContentsDebuggingEnabled((Boolean) newValue);
-        return true;
-      });
-    }
-
     Preference proxySettings = this.findPreference("proxy_settings_button");
     if (proxySettings != null) {
       proxySettings.setOnPreferenceClickListener((preference) -> {
