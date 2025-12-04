@@ -1,15 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppCompatAlertDialogStyleLight" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/def_accent</item>
         <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
     </style>
 
     <style name="AppCompatAlertDialogStyleDark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="colorAccent">@color/def_accent</item>
         <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
         <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
         <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
+    </style>
+
+    <!-- Purple -->
+    <style name="AppCompatAlertDialogStylePurple" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/purple_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStylePurpleDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/purple_accent</item>
+    </style>
+
+    <!-- Green -->
+    <style name="AppCompatAlertDialogStyleGreen" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/green_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStyleGreenDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/green_accent</item>
+    </style>
+
+    <!-- Blue -->
+    <style name="AppCompatAlertDialogStyleBlue" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/blue_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStyleBlueDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/blue_accent</item>
+    </style>
+
+    <!-- Red -->
+    <style name="AppCompatAlertDialogStyleRed" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/red_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStyleRedDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/red_accent</item>
+    </style>
+
+    <!-- Pink -->
+    <style name="AppCompatAlertDialogStylePink" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/pink_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStylePinkDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/pink_accent</item>
+    </style>
+
+    <!-- Gray -->
+    <style name="AppCompatAlertDialogStyleGray" parent="AppCompatAlertDialogStyleLight">
+        <item name="colorAccent">@color/gray_accent</item>
+    </style>
+    <style name="AppCompatAlertDialogStyleGrayDark" parent="AppCompatAlertDialogStyleDark">
+        <item name="colorAccent">@color/gray_accent</item>
     </style>
 
     <style name="AlertDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
