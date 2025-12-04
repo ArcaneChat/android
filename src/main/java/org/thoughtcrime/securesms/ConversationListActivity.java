@@ -159,6 +159,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     searchAction             = findViewById(R.id.search_action);
     fragmentContainer        = findViewById(R.id.fragment_container);
 
+    // add margin to avoid content hidden behind system bars
+    ViewUtil.applyWindowInsetsAsMargin(searchToolbar, true, true, true, false);
+
     Bundle bundle = new Bundle();
     conversationListFragment = initFragment(R.id.fragment_container, new ConversationListFragment(), bundle);
 
@@ -447,9 +450,6 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       return true;
     } else if (itemId == R.id.menu_export_attachment) {
       handleSaveAttachment();
-    } else if (itemId == R.id.menu_public_bots) {
-      handleShowBot("botsindex@arcanechat.me", "https://i.delta.chat/#67889B0362BEDBFEE05ACD92C1D737FA632A9582&a=botsindex%40arcanechat.me&n=Public%20Bots&i=336MTEz38EH-RJxM9OKWygYK&s=TpVVGK6C4KrJmRG0bwHLalXt");
-      return true;
     }
 
     return false;
@@ -506,21 +506,6 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     selfAvatarContainer.setVisibility(View.VISIBLE);
     conversationListFragment.onNewIntent();
     invalidateOptionsMenu();
-  }
-
-  private void handleShowBot(String addr, String qrdata) {
-      final DcContext dcContext = DcHelper.getContext(this);
-      int contactId = dcContext.lookupContactIdByAddr(addr);
-      int chatId = 0;
-      if (contactId!=0 && dcContext.getChatIdByContactId(contactId)!=0) {
-          chatId = dcContext.createChatByContactId(contactId);
-      }
-      if (chatId != 0 && dcContext.getChat(chatId).isEncrypted()) {
-          openConversation(chatId, -1);
-      } else {
-          QrCodeHandler qrCodeHandler = new QrCodeHandler(this);
-          qrCodeHandler.handleQrData(qrdata);
-      }
   }
 
   @Override

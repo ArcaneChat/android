@@ -39,6 +39,7 @@ import org.thoughtcrime.securesms.service.NotificationController;
 import org.thoughtcrime.securesms.util.StorageUtil;
 import org.thoughtcrime.securesms.util.StreamUtil;
 import org.thoughtcrime.securesms.util.Util;
+import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.ProgressDialog;
 
 import java.io.File;
@@ -62,6 +63,9 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         setContentView(R.layout.welcome_activity);
+
+        // add padding to avoid content hidden behind system bars
+        ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
 
         findViewById(R.id.signup_button).setOnClickListener((v) -> startInstantOnboardingActivity());
         findViewById(R.id.add_as_second_device_button).setOnClickListener((v) -> startAddAsSecondDeviceActivity());

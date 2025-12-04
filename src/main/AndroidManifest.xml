@@ -55,6 +55,7 @@
                  android:requestLegacyExternalStorage="true"
                  tools:targetApi="TIRAMISU"
                  android:hasFragileUserData="true"
+                 android:enableOnBackInvokedCallback="false"
         >
 
     <!-- android car support, see https://developer.android.com/training/auto/start/,
@@ -233,7 +234,7 @@
               android:theme="@style/TextSecure.LightNoActionBar"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"/>
 
-    <activity android:name=".RegistrationActivity"
+    <activity android:name=".EditTransportActivity"
               android:launchMode="singleTask"
               android:windowSoftInputMode="stateUnchanged"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize"

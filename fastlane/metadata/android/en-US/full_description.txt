@@ -23,12 +23,11 @@ ArcaneChat is a Delta Chat client and was created with a focus on usability, goo
 <li>Multiple color themes/skins</li>
 <li>It is possible to disable profiles to completely disconnect them saving data/bandwidth</li>
 <li>You can easily see the connection status of all your profiles in the profile switcher</li>
-<li>A videochat instance is set by default</li>
 <li>Extra option to share location for 12 hours</li>
 <li>Clicking on a message with a POI location, will open the POI on the map</li>
 <li>Last-seen status of contacts is shown in your contact list, like in WhatsApp, Telegram, etc.</li>
 <li>Videos are played in loop, useful for short GIF videos</li>
-<li>Verified icon is shown in the chat list for the "Device Messages" chat</li>
+<li>Verified icon is shown in the chat list for the "Device Messages" and "Saved Messages" chat to avoid fishing attempts by scammer pretending to be the official chats</li>
 <li>Voice messages have more aggressive compression in "worse quality" mode to save data plan</li>
 <li>Automatic download of messages limited to 640KB by default</li>
 <li>Profile's display name is always shown in the app's title bar instead of the name of the app</li>
