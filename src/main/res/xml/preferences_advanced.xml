@@ -23,6 +23,10 @@
 
     <PreferenceCategory android:title="@string/pref_experimental_features">
 
+        <Preference
+            android:summary="@string/pref_experimental_features_explain"
+            android:selectable="false" />
+
         <Preference android:key="pref_webxdc_store_url"
             android:title="@string/webxdc_store_url"
             android:summary="@string/none"/>
