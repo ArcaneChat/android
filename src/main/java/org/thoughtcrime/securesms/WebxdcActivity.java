@@ -127,9 +127,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   public static void openWebxdcActivity(Context context, int msgId, boolean hideActionBar, String href) {
     if (!Util.isClickedRecently()) {
-      if (Prefs.isDeveloperModeEnabled(context)) {
-        WebView.setWebContentsDebuggingEnabled(true);
-      }
       context.startActivity(getWebxdcIntent(context, msgId, hideActionBar, href));
     }
   }
@@ -161,13 +158,17 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   }
 
   @Override
+  protected boolean immersiveMode() { return hideActionBar; }
+
+  @Override
   protected void onCreate(Bundle state, boolean ready) {
+    Bundle b = getIntent().getExtras();
+    hideActionBar = b.getBoolean(EXTRA_HIDE_ACTION_BAR, false);
+
     super.onCreate(state, ready);
     rpc = DcHelper.getRpc(this);
     initTTS();
 
-    Bundle b = getIntent().getExtras();
-    hideActionBar = b.getBoolean(EXTRA_HIDE_ACTION_BAR, false);
 
     webView.setWebChromeClient(new WebChromeClient() {
       @Override
@@ -300,6 +301,8 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     if (itemId == R.id.menu_add_to_home_screen) {
       addToHomeScreen(this, dcAppMsg.getId());
       return true;
+    } else if (itemId == R.id.webxdc_help) {
+      DcHelper.openHelp(this, "#webxdc");
     } else if (itemId == R.id.source_code) {
       IntentUtils.showInBrowser(this, sourceCodeUrl);
       return true;
@@ -341,17 +344,23 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     }
   }
 
+  @Override
+  protected boolean shouldAskToOpenLink() { return true; }
+
   // This is usually only called when internetAccess == true or for mailto/openpgp4fpr scheme,
   // because when internetAccess == false, the page is loaded inside an iframe,
-  // and WebViewClient.shouldOverrideUrlLoading is not called for HTTP(S) links inside the iframe
+  // and WebViewClient.shouldOverrideUrlLoading is not called for HTTP(S) links inside the iframe unless target=_blank is used
   @Override
   protected boolean openOnlineUrl(String url) {
     Log.i(TAG, "openOnlineUrl: " + url);
-    boolean openExternally = !internetAccess && !url.startsWith(baseURL +"/");
-    if (openExternally || url.startsWith("mailto:") || url.startsWith("openpgp4fpr:")) {
-      return super.openOnlineUrl(url);
+
+    // if there is internet access, allow internal loading of http
+    if (internetAccess && url.startsWith("http")) {
+      // returning `false` continues loading in WebView; returning `true` let WebView abort loading
+      return false;
     }
-    return false; // continue loading in the WebView
+
+    return super.openOnlineUrl(url);
   }
 
   @Override

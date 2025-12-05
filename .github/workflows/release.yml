@@ -60,7 +60,7 @@ jobs:
           ./gradlew assembleGplayRelease
           mv build/outputs/apk/gplay/release/*universal* build/outputs/apk/foss/release/ArcaneChat-gplay.apk
 
-      - name: Release
+      - name: Release on GitHub
         uses: softprops/action-gh-release@v1
         with:
           token: "${{ secrets.GITHUB_TOKEN }}"
@@ -68,3 +68,14 @@ jobs:
           prerelease: ${{ contains(github.event.ref, '-beta') }}
           fail_on_unmatched_files: true
           files: build/outputs/apk/foss/release/*.apk
+
+      - name: Release on ZapStore
+        run: |
+          export CHECKSUM=6e2c7cf6da53c3f1a78b523a6aacd6316dce3d74ace6f859c2676729ee439990
+          curl -sL https://cdn.zapstore.dev/$CHECKSUM -o zapstore
+          if echo "$CHECKSUM zapstore" | sha256sum -c --status; then
+            chmod +x zapstore
+            SIGN_WITH=${{ secrets.NOSTR_KEY }} ./zapstore publish --indexer-mode
+          else
+            echo "ERROR: checksum doesn't match!"
+          fi

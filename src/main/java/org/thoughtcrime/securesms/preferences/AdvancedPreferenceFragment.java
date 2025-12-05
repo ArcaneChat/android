@@ -31,7 +31,7 @@ import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
 import org.thoughtcrime.securesms.ConversationActivity;
 import org.thoughtcrime.securesms.LogViewActivity;
 import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.RegistrationActivity;
+import org.thoughtcrime.securesms.EditTransportActivity;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
@@ -56,7 +56,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   private static final String TAG = AdvancedPreferenceFragment.class.getSimpleName();
 
   private ListPreference showEmails;
-  CheckBoxPreference bccSelfCheckbox;
+  CheckBoxPreference multiDeviceCheckbox;
   CheckBoxPreference mvboxMoveCheckbox;
   CheckBoxPreference onlyFetchMvboxCheckbox;
   CheckBoxPreference webxdcRealtimeCheckbox;
@@ -74,12 +74,24 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       });
     }
 
-    bccSelfCheckbox = (CheckBoxPreference) this.findPreference("pref_bcc_self");
-    if (bccSelfCheckbox != null) {
-      bccSelfCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
+    multiDeviceCheckbox = (CheckBoxPreference) this.findPreference("pref_bcc_self");
+    if (multiDeviceCheckbox != null) {
+      multiDeviceCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
         boolean enabled = (Boolean) newValue;
-        dcContext.setConfigInt(CONFIG_BCC_SELF, enabled? 1 : 0);
-        return true;
+        if (enabled) {
+            dcContext.setConfigInt(CONFIG_BCC_SELF, 1);
+            return true;
+        } else {
+          new AlertDialog.Builder(requireContext())
+                  .setMessage(R.string.pref_multidevice_change_warn)
+                  .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
+                    dcContext.setConfigInt(CONFIG_BCC_SELF, 0);
+                    ((CheckBoxPreference)preference).setChecked(false);
+                  })
+                  .setNegativeButton(R.string.cancel, null)
+                  .show();
+          return false;
+        }
       });
     }
 
@@ -133,14 +145,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
     updateWebxdcStoreSummary();
 
-    Preference developerModeEnabled = this.findPreference("pref_developer_mode_enabled");
-    if (developerModeEnabled != null) {
-      developerModeEnabled.setOnPreferenceChangeListener((preference, newValue) -> {
-        WebView.setWebContentsDebuggingEnabled((Boolean) newValue);
-        return true;
-      });
-    }
-
     Preference proxySettings = this.findPreference("proxy_settings_button");
     if (proxySettings != null) {
       proxySettings.setOnPreferenceClickListener((preference) -> {
@@ -152,7 +156,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     Preference passwordAndAccount = this.findPreference("password_account_settings_button");
     if (passwordAndAccount != null) {
       passwordAndAccount.setOnPreferenceClickListener(((preference) -> {
-        boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.pref_password_and_account_settings), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT);
+        boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.edit_transport), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT);
         if (!result) {
           openRegistrationActivity();
         }
@@ -161,10 +165,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     }
 
     if (dcContext.isChatmail()) {
-      showEmails.setVisible(false);
-      bccSelfCheckbox.setVisible(false);
-      mvboxMoveCheckbox.setVisible(false);
-      onlyFetchMvboxCheckbox.setVisible(false);
+      findPreference("pref_category_legacy").setVisible(false);
     }
   }
 
@@ -182,7 +183,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     showEmails.setValue(value);
     updateListSummary(showEmails, value);
 
-    bccSelfCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_BCC_SELF));
+    multiDeviceCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_BCC_SELF));
     mvboxMoveCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_MVBOX_MOVE));
     onlyFetchMvboxCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
     webxdcRealtimeCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_WEBXDC_REALTIME_ENABLED));
@@ -260,7 +261,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   }
 
   private void openRegistrationActivity() {
-    Intent intent = new Intent(requireActivity(), RegistrationActivity.class);
+    Intent intent = new Intent(requireActivity(), EditTransportActivity.class);
     startActivity(intent);
   }
 

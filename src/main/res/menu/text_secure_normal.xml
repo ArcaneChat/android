@@ -28,11 +28,4 @@
     <item android:title="@string/menu_settings"
           android:id="@+id/menu_settings" />
 
-    <group android:id="@+id/extra_services" >
-
-      <item android:title="@string/public_bots"
-            android:id="@+id/menu_public_bots" />
-
-    </group>
-
 </menu>

@@ -30,7 +30,6 @@ public class PrivacyPreferenceFragment extends ListSummaryPreferenceFragment {
   private static final String TAG = PrivacyPreferenceFragment.class.getSimpleName();
 
   private CheckBoxPreference readReceiptsCheckbox;
-  private CheckBoxPreference showSystemContacts;
 
   private ListPreference autoDelDevice;
   private ListPreference autoDelServer;
@@ -38,13 +37,6 @@ public class PrivacyPreferenceFragment extends ListSummaryPreferenceFragment {
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
-
-    showSystemContacts = (CheckBoxPreference) this.findPreference("pref_show_system_contacts");
-    showSystemContacts.setOnPreferenceChangeListener((preference, newValue) -> {
-      boolean enabled = (Boolean) newValue;
-      dcContext.setConfigInt("ui.android.show_system_contacts", enabled? 1 : 0);
-      return true;
-    });
 
     readReceiptsCheckbox = (CheckBoxPreference) this.findPreference("pref_read_receipts");
     readReceiptsCheckbox.setOnPreferenceChangeListener(new ReadReceiptToggleListener());
@@ -57,19 +49,11 @@ public class PrivacyPreferenceFragment extends ListSummaryPreferenceFragment {
     autoDelServer = findPreference("autodel_server");
     autoDelServer.setOnPreferenceChangeListener(new AutodelChangeListener("delete_server_after"));
     if (dcContext.isChatmail()) {
-      autoDelServer.setEntries(new CharSequence[]{getString(R.string.automatic), getString(R.string.autodel_at_once)});
-      autoDelServer.setEntryValues(new CharSequence[]{"0", "1"});
-      if (dcContext.getConfigInt("delete_server_after") > 1) {
-        dcContext.setConfigInt("delete_server_after", 0 /*never/automatic*/);
-      }
+      autoDelServer.setVisible(false);
     }
 
     Preference screenSecurity = this.findPreference(Prefs.SCREEN_SECURITY_PREF);
     screenSecurity.setOnPreferenceChangeListener(new ScreenShotSecurityListener());
-
-    if (dcContext.isChatmail()) {
-      showSystemContacts.setVisible(false);
-    }
   }
 
   @Override
@@ -82,7 +66,6 @@ public class PrivacyPreferenceFragment extends ListSummaryPreferenceFragment {
     super.onResume();
     ((ApplicationPreferencesActivity)getActivity()).getSupportActionBar().setTitle(R.string.pref_privacy);
 
-    showSystemContacts.setChecked(0!=dcContext.getConfigInt("ui.android.show_system_contacts"));
     readReceiptsCheckbox.setChecked(0 != dcContext.getConfigInt("mdns_enabled"));
     initAutodelFromCore();
   }

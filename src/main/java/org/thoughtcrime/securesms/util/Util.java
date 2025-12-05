@@ -60,7 +60,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class Util {
   private static final String TAG = Util.class.getSimpleName();
-  private static final String INVITE_DOMAIN = "i.delta.chat";
+  public static final String INVITE_DOMAIN = "i.delta.chat";
 
   public static final Handler handler = new Handler(Looper.getMainLooper());
 
@@ -124,6 +124,18 @@ public class Util {
     System.arraycopy(cur, 0, ret, 0, N);
     ret[N] = val;
     return ret;
+  }
+
+  public static boolean contains(@Nullable int[] array, int val) {
+    if (array == null) {
+      return false;
+    }
+    for (int element : array) {
+      if (element == val) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static void wait(Object lock, long timeout) {
