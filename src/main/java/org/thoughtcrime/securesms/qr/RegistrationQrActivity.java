@@ -11,6 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.journeyapps.barcodescanner.camera.CameraSettings;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
@@ -105,6 +106,12 @@ public class RegistrationQrActivity extends BaseActionBarActivity {
     }
 
     private void init(CompoundBarcodeView barcodeScannerView, Intent intent, Bundle savedInstanceState) {
+        // Configure camera to use continuous autofocus mode which works better
+        // on devices with multiple cameras
+        CameraSettings settings = barcodeScannerView.getBarcodeView().getCameraSettings();
+        settings.setFocusMode(CameraSettings.FocusMode.CONTINUOUS);
+        barcodeScannerView.getBarcodeView().setCameraSettings(settings);
+
         capture = new CaptureManager(this, barcodeScannerView);
         capture.initializeFromIntent(intent, savedInstanceState);
         capture.decode();
