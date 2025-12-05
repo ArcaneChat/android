@@ -11,7 +11,7 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
-import com.journeyapps.barcodescanner.CameraSettings;
+import com.journeyapps.barcodescanner.camera.CameraSettings;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 
