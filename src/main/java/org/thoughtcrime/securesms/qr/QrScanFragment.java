@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.journeyapps.barcodescanner.camera.CameraSettings;
 import com.journeyapps.barcodescanner.CaptureManager;
 import com.journeyapps.barcodescanner.CompoundBarcodeView;
 import com.journeyapps.barcodescanner.DecoratedBarcodeView;
@@ -90,6 +91,12 @@ public class QrScanFragment extends Fragment {
 
     private void init(CompoundBarcodeView barcodeScannerView, Activity activity, Bundle savedInstanceState) {
         try {
+            // Configure camera to use continuous autofocus mode which works better
+            // on devices with multiple cameras
+            CameraSettings settings = barcodeScannerView.getBarcodeView().getCameraSettings();
+            settings.setFocusMode(CameraSettings.FocusMode.CONTINUOUS);
+            barcodeScannerView.getBarcodeView().setCameraSettings(settings);
+
             capture = new MyCaptureManager(activity, barcodeScannerView);
             capture.initializeFromIntent(activity.getIntent(), savedInstanceState);
             capture.decode();
