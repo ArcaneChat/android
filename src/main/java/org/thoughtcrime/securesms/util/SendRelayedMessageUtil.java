@@ -1,14 +1,11 @@
 package org.thoughtcrime.securesms.util;
 
-import static org.thoughtcrime.securesms.util.RelayUtil.getForwardedMessageIDs;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedText;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedSubject;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedHtml;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedType;
-import static org.thoughtcrime.securesms.util.RelayUtil.getSharedUris;
-import static org.thoughtcrime.securesms.util.RelayUtil.isForwarding;
-import static org.thoughtcrime.securesms.util.RelayUtil.isSharing;
-import static org.thoughtcrime.securesms.util.RelayUtil.resetRelayingMessageContent;
+import static org.thoughtcrime.securesms.util.ShareUtil.getForwardedMessageIDs;
+import static org.thoughtcrime.securesms.util.ShareUtil.getSharedText;
+import static org.thoughtcrime.securesms.util.ShareUtil.getSharedUris;
+import static org.thoughtcrime.securesms.util.ShareUtil.isForwarding;
+import static org.thoughtcrime.securesms.util.ShareUtil.isSharing;
+import static org.thoughtcrime.securesms.util.ShareUtil.resetRelayingMessageContent;
 
 import android.app.Activity;
 import android.content.ContentResolver;
@@ -69,9 +66,9 @@ public class SendRelayedMessageUtil {
     } else if (isSharing(activity)) {
       ArrayList<Uri> sharedUris = getSharedUris(activity);
       String sharedText = getSharedText(activity);
-      String subject = getSharedSubject(activity);
-      String sharedHtml = getHtml(activity, getSharedHtml(activity));
-      String msgType = getSharedType(activity);
+      String subject = ShareUtil.getSharedSubject(activity);
+      String sharedHtml = getHtml(activity, ShareUtil.getSharedHtml(activity));
+      String msgType = ShareUtil.getSharedType(activity);
       resetRelayingMessageContent(activity);
       Util.runOnAnyBackgroundThread(() -> {
         for (long chatId : chatIds) {

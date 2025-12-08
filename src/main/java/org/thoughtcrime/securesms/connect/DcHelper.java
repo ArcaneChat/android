@@ -35,7 +35,7 @@ import org.thoughtcrime.securesms.qr.QrActivity;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.FileUtils;
 import org.thoughtcrime.securesms.util.MediaUtil;
-import org.thoughtcrime.securesms.util.RelayUtil;
+import org.thoughtcrime.securesms.util.ShareUtil;
 import org.thoughtcrime.securesms.util.Util;
 
 import java.io.File;
@@ -299,17 +299,17 @@ public class DcHelper {
   public static void sendToChat(Context activity, byte[] data, String type, String fileName, String html, String subject, String text) {
       Intent intent = new Intent(activity, ShareActivity.class);
       intent.setAction(Intent.ACTION_SEND);
-      RelayUtil.setIsFromWebxdc(intent, true);
+      ShareUtil.setIsFromWebxdc(intent, true);
 
       if (data != null) {
           String mimeType = "application/octet-stream";
           Uri uri = PersistentBlobProvider.getInstance().create(activity, data, mimeType, fileName);
           intent.setType(mimeType);
           intent.putExtra(Intent.EXTRA_STREAM, uri);
-          RelayUtil.setSharedType(intent, type);
-          RelayUtil.setSharedTitle(intent, activity.getString(R.string.send_file_to, fileName));
+          ShareUtil.setSharedType(intent, type);
+          ShareUtil.setSharedTitle(intent, activity.getString(R.string.send_file_to, fileName));
       } else {
-          RelayUtil.setSharedTitle(intent, activity.getString(R.string.send_message_to));
+          ShareUtil.setSharedTitle(intent, activity.getString(R.string.send_message_to));
       }
 
       if (text != null) {
@@ -317,13 +317,13 @@ public class DcHelper {
       }
 
       if (subject != null) {
-          RelayUtil.setSharedSubject(intent, subject);
+          ShareUtil.setSharedSubject(intent, subject);
       }
 
       if (html != null) {
           String mimeType = "application/octet-stream";
           Uri uri = PersistentBlobProvider.getInstance().create(activity, html.getBytes(), mimeType, "index.html");
-          RelayUtil.setSharedHtml(intent, uri);
+          ShareUtil.setSharedHtml(intent, uri);
       }
 
       activity.startActivity(intent);

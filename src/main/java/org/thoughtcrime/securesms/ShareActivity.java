@@ -39,7 +39,7 @@ import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
 import org.thoughtcrime.securesms.util.MailtoUtil;
 import org.thoughtcrime.securesms.util.MediaUtil;
-import org.thoughtcrime.securesms.util.RelayUtil;
+import org.thoughtcrime.securesms.util.ShareUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -274,7 +274,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
       startActivity(composeIntent);
     } else {
       composeIntent = getBaseShareIntent(ConversationListRelayingActivity.class);
-      RelayUtil.setIsFromWebxdc(composeIntent, RelayUtil.isFromWebxdc(this));
+      ShareUtil.setIsFromWebxdc(composeIntent, ShareUtil.isFromWebxdc(this));
       ConversationListRelayingActivity.start(this, composeIntent);
     }
     finish();
@@ -283,11 +283,11 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
   private Intent getBaseShareIntent(final @NonNull Class<?> target) {
     final Intent intent = new Intent(this, target);
 
-    RelayUtil.setSharedTitle(intent, RelayUtil.getSharedTitle(this));
-    RelayUtil.setSharedType(intent, RelayUtil.getSharedType(this));
-    RelayUtil.setSharedSubject(intent, RelayUtil.getSharedSubject(this));
-    RelayUtil.setSharedHtml(intent, RelayUtil.getSharedHtml(this));
-    RelayUtil.setSharedUris(intent, resolvedExtras);
+    ShareUtil.setSharedTitle(intent, ShareUtil.getSharedTitle(this));
+    ShareUtil.setSharedType(intent, ShareUtil.getSharedType(this));
+    ShareUtil.setSharedSubject(intent, ShareUtil.getSharedSubject(this));
+    ShareUtil.setSharedHtml(intent, ShareUtil.getSharedHtml(this));
+    ShareUtil.setSharedUris(intent, resolvedExtras);
 
     String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
     if (text==null) {
@@ -298,7 +298,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
     }
 
     if (text != null) {
-      RelayUtil.setSharedText(intent, text.toString());
+      ShareUtil.setSharedText(intent, text.toString());
     }
 
     if (resolvedExtras.size() > 0) {
