@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="description">Descripción</string>
+  <string name="or_separator">o</string>
+  <string name="online">en línea</string>
+  <string name="pink">Rosa</string>
+  <string name="gray">Gris</string>
+  <string name="share_location_for_12_hours">Por 12 horas</string>
+
+  <!-- device messages for updates -->
+  <string name="device_welcome_message">🔮 Bienvenido a ArcaneChat✨\n\nPara ponerte en contacto con amigos:\n\n🤳🏻 Toca \"Código QR\" en la pantalla principal de ambos dispositivos. Elije \"Escanear código QR\" en un dispositivo y apúnta la cámara hacia el otro\n\n🔗 Si no estás en la misma habitación, comparte tu enlace de invitación usando \"Invitar amigos\" en el menú\n\n📢 Únete al [Canal Oficial de ArcaneChat](%1$s) para noticias sobre el desarrollo de la aplicación.</string>
+
+  <string name="update_2_33">🔮 ¿Qué hay de nuevo?\n\n★ Soporte para Android 16\n\n★ Mejorado el diseño para hacer mejor uso del espacio en pantalla\n\n★ Añadido color a los enlaces en las burbujas del chat\n\n★ Más protección de metadatos de los mensajes\n\n★ Arreglado problema con fallos inesperados de la aplicación\n\n★ Varios otros arreglos y pequeñas mejoras\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
+</resources>

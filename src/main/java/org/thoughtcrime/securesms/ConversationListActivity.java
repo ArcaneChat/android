@@ -118,7 +118,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     // it is not needed to keep all past update messages, however, when deleted, also the strings should be deleted.
     try {
       DcContext dcContext = DcHelper.getContext(this);
-      final String deviceMsgLabel = "update_2_25_0_android-b";
+      final String deviceMsgLabel = "update_2_33_1_android";
       if (!dcContext.wasDeviceMsgEverAdded(deviceMsgLabel)) {
         DcMsg msg = null;
         if (!getIntent().getBooleanExtra(FROM_WELCOME, false)) {
@@ -129,7 +129,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
           // Util.copy(inputStream, new FileOutputStream(outputFile));
           // msg.setFile(outputFile, "image/jpeg");
 
-          msg.setText(getString(R.string.update_2_25, "https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&x=MVPi07rQBEmHO4FRb3brpwDe&j=n8mkKqu42WAKKUCx1bQOVh23&s=RxuXoa0vhvTs0QLsWM45Ues0&a=adb%40arcanechat.me&n=adb&b=ArcaneChat+Channel", "https://arcanechat.me/#contribute"));
+          msg.setText(getString(R.string.update_2_33, "https://arcanechat.me/#contribute"));
         }
         dcContext.addDeviceMsg(deviceMsgLabel, msg);
 

@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <!-- custom strings -->
-  <string name="description">Descripción</string>
-  <string name="or_separator">o</string>
-  <string name="online">en línea</string>
-  <string name="pink">Rosa</string>
-  <string name="gray">Gris</string>
-  <string name="share_location_for_12_hours">Por 12 horas</string>
-  <string name="force_e2ee">Forzar el cifrado de extremo a extremo</string>
-  <string name="disable_force_e2ee_warning">⚠️ Si desactivas esta opción, no estarás protegido contra el envío accidental de mensajes no cifrados. Desactiva esta opción únicamente si quieres enviar correos electrónicos no cifrados con tu cuenta de correo electrónico clásica.</string>
-  <!-- End of custom strings -->
-
     <!-- common strings without special context -->
     <string name="app_name">Delta Chat</string>
     <string name="ok">OK</string>
@@ -1202,12 +1191,5 @@ Desactiva este ajuste solo si has eliminado este perfil de todos tus demás disp
     <string name="perm_enable_bg_already_done">Ya has permitido que Delta Chat reciba mensajes en segundo plano.\n\nSi los mensajes aún no llegan en segundo plano, compruebe también la configuración de su sistema.</string>
 
     <!-- device messages for updates -->
-    <string name="update_2_25">🔮 ¿Qué hay de nuevo?\n\n★ Ahora es posible crear canales con enlace de invitación. Únete al canal oficial (en inglés) de Delta Chat aquí: %1$s\n\n★ Ahorro de datos: reducido el tamaño de las notificaciones de lectura\n\n★ Ahora es posible guardar en el almacenamiento archivos compartidos por mini-apps\n\n★ Más protección de metadatos\n\n★ La creación de grupos se sincroniza immediatamente en todos tus dispositivos\n\n★ Arreglado el ordenamiento de multimedia en la galería del chat\n\n★ Varios otros arreglos y pequeñas mejoras\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
-
-    <string name="update_2_0">🔮 ¿Qué hay de nuevo?\n\n★ El cifrado del chat es ahora más confiable, no puede degradarse, por lo que los candados 🔒 en los mensajes ya no son necesarios.\n\n★ Los correos sin cifrado aparecerán en su propio chat y marcados con un símbolo de correo ✉️\n\n★ Nueva pantalla de perfil mejorado\n\n★ Nuevo botón para acceder rápidamente a las mini-apps del chat\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
-
-    <!-- deprecated -->
-    <string name="update_1_50_android">¿Qué hay de nuevo?\n\n❤️‍🔥 Nuevo selector de emojis con más emojis\n\n🎮 Aplicaciones de chat mejoradas: recibe notificaciones y abre aplicaciones en contexto, por ejemplo, abre una entrada de calendario agregada directamente\n\n👍 Recibe notificaciones sobre las reacciones a tus mensajes\n\n... 🛠️ CORRECCIONES y AÚN MÁS en %1$s</string>
-    <!-- deprecated -->
-    <string name="update_switch_profile_placement">ℹ️ Se movió la opción \"Cambiar perfil\": toca tu imagen de perfil en la esquina superior de la pantalla principal para agregar o cambiar perfiles 💡</string>
+    <string name="update_2_0">¿Qué hay de nuevo?\n\n💯 El cifrado de extremo a extremo es fiable y para siempre. ¡Se acabaron los candados 🔒!\n\n✉️ El correo electrónico clásico sin cifrado de extremo a extremo es marcado con un símbolo de carta.\n\n😻 Nueva pantalla de perfil mejorada para todos tus contactos.\n\n🔲 Nuevo botón para acceder rápidamente a las apps usadas en el chat.\n\n❤️ Dona para ayudarnos a mantener nuestra independencia y seguir mejorando: %1$s</string>
 </resources>

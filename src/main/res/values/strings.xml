@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <!-- custom strings -->
-  <string name="description">Description</string>
-  <string name="could_not_open_file">Could not open file</string>
-  <string name="menu_export_image">Export Image</string>
-  <!-- the word "or" to separate blocks in the user interface that are mutually exclusive -->
-  <string name="or_separator">or</string>
-  <string name="online">online</string>
-  <string name="pink">Pink</string>
-  <string name="gray">Gray</string>
-  <string name="share_location_for_12_hours">For 12 hours</string>
-  <string name="force_e2ee">Force End-To-End Encryption</string>
-  <string name="disable_force_e2ee_warning">⚠️ If you disable this option, you will not be protected against sending unencrypted messages by accident. Only disable this if you want to send unencrypted e-mails with your classic e-mail account.</string>
-  <!-- End of custom strings -->
-
     <!-- common strings without special context -->
     <string name="app_name">ArcaneChat</string>
     <string name="ok">OK</string>
@@ -1193,12 +1179,5 @@
     <string name="perm_enable_bg_already_done">You already allowed Delta Chat to receive messages in the background.\n\nIf messages still do not arrive in background, please also check your system settings.</string>
 
     <!-- device messages for updates -->
-    <string name="update_2_25">🔮 What\'s new?\n\n★ Now it is possible to create channels that have invite links! Join the official Delta Chat channel here: %1$s\n\n★ More metadata protection\n\n★ Better multi-device: synchronize group creation across devices\n\n★ Data saving: reduce size of read receipts\n\n★ Improved onboarding speed\n\n★ Now it is possible to save to storage files shared from inside in-chat apps\n\n★ Fixed sorting of old media in the chat\'s gallery\n\n★ Several other fixes and small improvements\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %2$s</string>
-
-    <string name="update_2_0">🔮 What\'s new?\n\n★ End-to-end encryption is reliable and forever now so padlocks 🔒 are not needed anymore.\n\n★ Classic email without end-to-end encryption is marked with a letter symbol ✉️\n\n★ New enhanced profile screen for all your contacts\n\n★ New button for quick access to apps used in a chat\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %1$s</string>
-
-    <!-- deprecated -->
-    <string name="update_1_50_android">What\'s new?\n\n❤️‍🔥 New emojis picker with more emoji\n\n🎮 Enhanced in-chat apps: Get notifications and open supporting apps in context, i.e. open an added calendar entry directly\n\n👍 Get notified about reactions to your messages\n\n... 🛠️ FIXES and EVEN MORE at %1$s</string>
-    <!-- deprecated -->
-    <string name="update_switch_profile_placement">ℹ️ \"Switch Profile\" option moved: Tap your profile image in the upper corner of the main screen to add or switch profiles 💡</string>
+    <string name="update_2_0">What\'s new?\n\n💯 End-to-end encryption is reliable and forever now. Padlocks 🔒 are gone!\n\n✉️ Classic email without end-to-end encryption is marked with a letter symbol\n\n😻 New enhanced profile screen for all your contacts\n\n🔲 New button for quick access to apps used in a chat\n\n❤️ Please donate to help us remain independent and continue to bring improvements: %1$s</string>
 </resources>
