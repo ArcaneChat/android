@@ -35,6 +35,8 @@ public class LinkPreviewFetcher {
     private static final int MAX_HTML_SIZE = 500000; // 500KB limit
     
     // Patterns for extracting Open Graph and basic HTML metadata
+    // Note: These patterns are simplified and may not handle all HTML variations.
+    // For production use with complex sites, consider using a proper HTML parser like Jsoup.
     private static final Pattern OG_TITLE_PATTERN = 
         Pattern.compile("<meta[^>]*property=['\"]og:title['\"][^>]*content=['\"]([^'\"]*)['\"][^>]*>", 
                        Pattern.CASE_INSENSITIVE);
@@ -124,13 +126,18 @@ public class LinkPreviewFetcher {
                 // Parse proxy configuration: host:port
                 String[] parts = proxyConfig.split(":");
                 if (parts.length >= 2) {
-                    String host = parts[0];
-                    int port = Integer.parseInt(parts[1]);
-                    
-                    Proxy proxy = new Proxy(Proxy.Type.SOCKS, 
-                                           new InetSocketAddress(host, port));
-                    connection = (HttpURLConnection) url.openConnection(proxy);
-                    Log.d(TAG, "Using SOCKS5 proxy: " + host + ":" + port);
+                    try {
+                        String host = parts[0];
+                        int port = Integer.parseInt(parts[1]);
+                        
+                        Proxy proxy = new Proxy(Proxy.Type.SOCKS, 
+                                               new InetSocketAddress(host, port));
+                        connection = (HttpURLConnection) url.openConnection(proxy);
+                        Log.d(TAG, "Using SOCKS5 proxy: " + host + ":" + port);
+                    } catch (NumberFormatException e) {
+                        Log.w(TAG, "Invalid proxy port, using direct connection", e);
+                        connection = (HttpURLConnection) url.openConnection();
+                    }
                 } else {
                     connection = (HttpURLConnection) url.openConnection();
                 }

@@ -75,6 +75,7 @@ import org.thoughtcrime.securesms.util.views.Stub;
 import org.thoughtcrime.securesms.calls.CallUtil;
 import org.thoughtcrime.securesms.linkpreview.LinkPreview;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewCache;
+import org.thoughtcrime.securesms.linkpreview.LinkPreviewExecutor;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewFetcher;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewUtil;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewView;
@@ -532,9 +533,9 @@ public class ConversationItem extends BaseConversationItem
       return;
     }
 
-    // Fetch preview asynchronously
+    // Fetch preview asynchronously using thread pool
     final String finalUrl = url;
-    new Thread(() -> {
+    LinkPreviewExecutor.getInstance().execute(() -> {
       try {
         LinkPreviewFetcher fetcher = new LinkPreviewFetcher(context);
         LinkPreview preview = fetcher.fetchPreview(finalUrl);
@@ -542,7 +543,7 @@ public class ConversationItem extends BaseConversationItem
         if (preview != null) {
           LinkPreviewCache.getInstance().put(finalUrl, preview);
         } else {
-          // Cache null result to avoid re-fetching
+          // Cache empty preview to avoid re-fetching failed URLs
           LinkPreview emptyPreview = new LinkPreview(finalUrl, null, null, null);
           LinkPreviewCache.getInstance().put(finalUrl, emptyPreview);
         }
@@ -558,7 +559,7 @@ public class ConversationItem extends BaseConversationItem
       } catch (Exception e) {
         Log.w(TAG, "Failed to fetch link preview", e);
       }
-    }).start();
+    });
   }
 
   private void setMediaAttributes(@NonNull DcMsg           messageRecord,
