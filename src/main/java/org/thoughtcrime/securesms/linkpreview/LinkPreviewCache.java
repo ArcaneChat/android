@@ -15,7 +15,7 @@ public class LinkPreviewCache {
 
     private static final int MAX_CACHE_SIZE = 100;
     
-    private static LinkPreviewCache instance;
+    private static volatile LinkPreviewCache instance;
     
     private final Map<String, LinkPreview> cache;
 

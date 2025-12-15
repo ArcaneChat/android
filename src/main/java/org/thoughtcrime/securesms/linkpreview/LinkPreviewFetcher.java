@@ -92,9 +92,14 @@ public class LinkPreviewFetcher {
                 }
 
                 String contentType = connection.getContentType();
-                if (contentType == null || !contentType.toLowerCase().contains("text/html")) {
-                    Log.d(TAG, "Skipping non-HTML content: " + contentType);
-                    return null;
+                if (contentType != null) {
+                    contentType = contentType.toLowerCase();
+                    if (!contentType.contains("text/html")) {
+                        Log.d(TAG, "Skipping non-HTML content: " + contentType);
+                        return null;
+                    }
+                } else {
+                    Log.d(TAG, "No content type specified, assuming HTML");
                 }
 
                 String html = readHtml(connection);
@@ -163,7 +168,8 @@ public class LinkPreviewFetcher {
             int totalSize = 0;
             
             while ((line = reader.readLine()) != null) {
-                totalSize += line.length();
+                // Account for both line content and newline character
+                totalSize += line.length() + 1;
                 if (totalSize > MAX_HTML_SIZE) {
                     Log.w(TAG, "HTML size exceeds limit, stopping read");
                     break;

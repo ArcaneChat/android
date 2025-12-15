@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -128,9 +129,16 @@ public class LinkPreviewView extends LinearLayout {
     private void openUrl(String url) {
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            getContext().startActivity(intent);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            
+            // Check if there's an app to handle the intent
+            if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+                getContext().startActivity(intent);
+            } else {
+                Log.w("LinkPreviewView", "No app available to open URL: " + url);
+            }
         } catch (Exception e) {
-            // Handle error silently - user may not have a browser
+            Log.w("LinkPreviewView", "Failed to open URL", e);
         }
     }
 

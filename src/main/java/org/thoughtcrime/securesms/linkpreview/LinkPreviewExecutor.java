@@ -11,7 +11,7 @@ public class LinkPreviewExecutor {
 
     private static final int THREAD_POOL_SIZE = 2;
     
-    private static LinkPreviewExecutor instance;
+    private static volatile LinkPreviewExecutor instance;
     private final ExecutorService executor;
 
     private LinkPreviewExecutor() {
