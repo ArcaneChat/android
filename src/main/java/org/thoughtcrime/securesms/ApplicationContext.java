@@ -58,9 +58,12 @@ import chat.delta.rpc.RpcException;
 public class ApplicationContext extends MultiDexApplication {
   private static final String TAG = ApplicationContext.class.getSimpleName();
 
-  public static DcAccounts      dcAccounts;
-  public Rpc                    rpc;
-  public DcContext              dcContext;
+  private static final Object initLock = new Object();
+  private static volatile boolean isInitialized = false;
+  
+  private static DcAccounts      dcAccounts;
+  private Rpc                    rpc;
+  private DcContext              dcContext;
   public DcLocationManager      dcLocationManager;
   public DcEventCenter          eventCenter;
   public NotificationCenter     notificationCenter;
@@ -73,6 +76,70 @@ public class ApplicationContext extends MultiDexApplication {
 
   public static ApplicationContext getInstance(@NonNull Context context) {
     return (ApplicationContext)context.getApplicationContext();
+  }
+
+  /**
+   * Get DcAccounts instance, waiting for initialization if necessary.
+   * This method is thread-safe and will block until initialization is complete.
+   */
+  public static DcAccounts getDcAccounts() {
+    synchronized (initLock) {
+      while (!isInitialized) {
+        try {
+          initLock.wait();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException("Interrupted while waiting for DcAccounts initialization", e);
+        }
+      }
+      return dcAccounts;
+    }
+  }
+
+  /**
+   * Get Rpc instance, waiting for initialization if necessary.
+   * This method is thread-safe and will block until initialization is complete.
+   */
+  public Rpc getRpc() {
+    synchronized (initLock) {
+      while (!isInitialized) {
+        try {
+          initLock.wait();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException("Interrupted while waiting for Rpc initialization", e);
+        }
+      }
+      return rpc;
+    }
+  }
+
+  /**
+   * Get DcContext instance, waiting for initialization if necessary.
+   * This method is thread-safe and will block until initialization is complete.
+   */
+  public DcContext getDcContext() {
+    synchronized (initLock) {
+      while (!isInitialized) {
+        try {
+          initLock.wait();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException("Interrupted while waiting for DcContext initialization", e);
+        }
+      }
+      return dcContext;
+    }
+  }
+
+  /**
+   * Set DcContext instance. This should only be called by AccountManager.
+   * This method is thread-safe.
+   */
+  public void setDcContext(DcContext context) {
+    synchronized (initLock) {
+      this.dcContext = context;
+    }
   }
 
   @Override
@@ -110,66 +177,87 @@ public class ApplicationContext extends MultiDexApplication {
 
     System.loadLibrary("native-utils");
 
-    dcAccounts = new DcAccounts(new File(getFilesDir(), "accounts").getAbsolutePath());
-    Log.i(TAG, "DcAccounts created");
-    rpc = new Rpc(new FFITransport(dcAccounts.getJsonrpcInstance()));
-    Log.i(TAG, "Rpc created");
-    AccountManager.getInstance().migrateToDcAccounts(this);
-
-    // October-2025 migration: delete deprecated "permanent channel" id
-    NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-    notificationManager.deleteNotificationChannel("dc_foreground_notification_ch");
-    // end October-2025 migration
-
-    int[] allAccounts = dcAccounts.getAll();
-    Log.i(TAG, "Number of profiles: " + allAccounts.length);
-    for (int accountId : allAccounts) {
-      DcContext ac = dcAccounts.getAccount(accountId);
-      if (!ac.isOpen()) {
+    // Initialize DcAccounts in background to avoid ANR during SQL migrations
+    Util.runOnBackground(() -> {
+      synchronized (initLock) {
         try {
-          DatabaseSecret secret = DatabaseSecretProvider.getOrCreateDatabaseSecret(this, accountId);
-          boolean res = ac.open(secret.asString());
-          if (res) Log.i(TAG, "Successfully opened account " + accountId + ", path: " + ac.getBlobdir());
-          else Log.e(TAG, "Error opening account " + accountId + ", path: " + ac.getBlobdir());
+          Log.i(TAG, "Starting DcAccounts initialization in background");
+          dcAccounts = new DcAccounts(new File(getFilesDir(), "accounts").getAbsolutePath());
+          Log.i(TAG, "DcAccounts created");
+          rpc = new Rpc(new FFITransport(dcAccounts.getJsonrpcInstance()));
+          Log.i(TAG, "Rpc created");
+          AccountManager.getInstance().migrateToDcAccounts(ApplicationContext.this);
+
+          // October-2025 migration: delete deprecated "permanent channel" id
+          NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ApplicationContext.this);
+          notificationManager.deleteNotificationChannel("dc_foreground_notification_ch");
+          // end October-2025 migration
+
+          int[] allAccounts = dcAccounts.getAll();
+          Log.i(TAG, "Number of profiles: " + allAccounts.length);
+          for (int accountId : allAccounts) {
+            DcContext ac = dcAccounts.getAccount(accountId);
+            if (!ac.isOpen()) {
+              try {
+                DatabaseSecret secret = DatabaseSecretProvider.getOrCreateDatabaseSecret(ApplicationContext.this, accountId);
+                boolean res = ac.open(secret.asString());
+                if (res) Log.i(TAG, "Successfully opened account " + accountId + ", path: " + ac.getBlobdir());
+                else Log.e(TAG, "Error opening account " + accountId + ", path: " + ac.getBlobdir());
+              } catch (Exception e) {
+                Log.e(TAG, "Failed to open account " + accountId + ", path: " + ac.getBlobdir() + ": " + e);
+                e.printStackTrace();
+              }
+            }
+
+            // 2025.11.12: this is needed until core starts ignoring "delete_server_after" for chatmail
+            if (ac.isChatmail()) {
+              ac.setConfig("delete_server_after", null); // reset
+            }
+          }
+          if (allAccounts.length == 0) {
+            try {
+              rpc.addAccount();
+            } catch (RpcException e) {
+              e.printStackTrace();
+            }
+          }
+          dcContext = dcAccounts.getSelectedAccount();
+          notificationCenter = new NotificationCenter(ApplicationContext.this);
+          eventCenter = new DcEventCenter(ApplicationContext.this);
+          
+          // Mark as initialized before starting threads that depend on it
+          isInitialized = true;
+          initLock.notifyAll();
+          Log.i(TAG, "DcAccounts initialization complete");
+
+          // Start event loop thread
+          new Thread(() -> {
+            Log.i(TAG, "Starting event loop");
+            DcEventEmitter emitter = dcAccounts.getEventEmitter();
+            Log.i(TAG, "DcEventEmitter obtained");
+            while (true) {
+              DcEvent event = emitter.getNextEvent();
+              if (event==null) {
+                break;
+              }
+              eventCenter.handleEvent(event);
+            }
+            Log.i("DeltaChat", "shutting down event handler");
+          }, "eventThread").start();
+
+          // set translations before starting I/O to avoid sending untranslated MDNs (issue #2288)
+          DcHelper.setStockTranslations(ApplicationContext.this);
+
+          dcAccounts.startIo();
         } catch (Exception e) {
-          Log.e(TAG, "Failed to open account " + accountId + ", path: " + ac.getBlobdir() + ": " + e);
-          e.printStackTrace();
+          Log.e(TAG, "Fatal error during DcAccounts initialization", e);
+          // Mark as initialized even on error to avoid deadlock
+          isInitialized = true;
+          initLock.notifyAll();
+          throw new RuntimeException("Failed to initialize DcAccounts", e);
         }
       }
-
-      // 2025.11.12: this is needed until core starts ignoring "delete_server_after" for chatmail
-      if (ac.isChatmail()) {
-        ac.setConfig("delete_server_after", null); // reset
-      }
-    }
-    if (allAccounts.length == 0) {
-      try {
-        rpc.addAccount();
-      } catch (RpcException e) {
-        e.printStackTrace();
-      }
-    }
-    dcContext = dcAccounts.getSelectedAccount();
-    notificationCenter = new NotificationCenter(this);
-    eventCenter = new DcEventCenter(this);
-    new Thread(() -> {
-      Log.i(TAG, "Starting event loop");
-      DcEventEmitter emitter = dcAccounts.getEventEmitter();
-      Log.i(TAG, "DcEventEmitter obtained");
-      while (true) {
-        DcEvent event = emitter.getNextEvent();
-        if (event==null) {
-          break;
-        }
-        eventCenter.handleEvent(event);
-      }
-      Log.i("DeltaChat", "shutting down event handler");
-    }, "eventThread").start();
-
-    // set translations before starting I/O to avoid sending untranslated MDNs (issue #2288)
-    DcHelper.setStockTranslations(this);
-
-    dcAccounts.startIo();
+    });
 
     new ForegroundDetector(ApplicationContext.getInstance(this));
 
@@ -180,7 +268,7 @@ public class ApplicationContext extends MultiDexApplication {
         @Override
         public void onAvailable(@NonNull android.net.Network network) {
           Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
-          dcAccounts.maybeNetwork();
+          getDcAccounts().maybeNetwork();
         }
 
         @Override
