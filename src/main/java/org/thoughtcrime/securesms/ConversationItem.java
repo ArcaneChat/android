@@ -589,6 +589,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       //noinspection ConstantConditions
       int duration = messageRecord.getDuration();
@@ -615,6 +616,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       //noinspection ConstantConditions
       documentViewStub.get().setDocument(new DocumentSlide(context, messageRecord));
@@ -634,6 +636,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       webxdcViewStub.get().setWebxdc(messageRecord, context.getString(R.string.webxdc_app));
       webxdcViewStub.get().setWebxdcClickListener(new ThumbnailClickListener());
@@ -652,6 +655,7 @@ public class ConversationItem extends BaseConversationItem
       if (webxdcViewStub.resolved())     webxdcViewStub.get().setVisibility(View.GONE);
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())       callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       vcardViewStub.get().setVcard(glideRequests, new VcardSlide(context, messageRecord), rpc);
       vcardViewStub.get().setVcardClickListener(new ThumbnailClickListener());
@@ -692,6 +696,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       Slide slide = MediaUtil.getSlideForMsg(context, messageRecord);
 
@@ -732,6 +737,7 @@ public class ConversationItem extends BaseConversationItem
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       bodyBubble.setBackgroundColor(Color.TRANSPARENT);
 

@@ -168,7 +168,7 @@ public class LinkPreviewFetcher {
             int totalSize = 0;
             
             while ((line = reader.readLine()) != null) {
-                // Account for both line content and newline character
+                // Account for line content + manually added newline (readLine strips newlines)
                 totalSize += line.length() + 1;
                 if (totalSize > MAX_HTML_SIZE) {
                     Log.w(TAG, "HTML size exceeds limit, stopping read");

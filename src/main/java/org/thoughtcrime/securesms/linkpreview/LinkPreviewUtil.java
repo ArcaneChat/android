@@ -14,7 +14,9 @@ import java.util.regex.Pattern;
 public class LinkPreviewUtil {
 
     // Pattern to match HTTP/HTTPS URLs in text
-    // Matches URLs but excludes trailing punctuation that's likely not part of the URL
+    // Matches URLs but uses lookahead to exclude trailing sentence punctuation
+    // Note: This may occasionally exclude valid URLs ending with these characters
+    // Trade-off chosen to improve common case where URLs are followed by punctuation
     private static final Pattern URL_PATTERN = Pattern.compile(
         "https?://[^\\s<>\"]+?(?=[\\s<>\"]|[.,;:!?']+(?:\\s|$)|$)",
         Pattern.CASE_INSENSITIVE
