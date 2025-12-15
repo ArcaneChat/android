@@ -133,8 +133,9 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Set DcContext instance. This should only be called by AccountManager.
-   * This method is thread-safe.
+   * Set DcContext instance. This should only be called by AccountManager when switching accounts,
+   * which only happens after initial initialization is complete.
+   * This method is thread-safe but does NOT trigger initialization or notify waiting threads.
    */
   public void setDcContext(DcContext context) {
     synchronized (initLock) {
@@ -268,6 +269,8 @@ public class ApplicationContext extends MultiDexApplication {
         @Override
         public void onAvailable(@NonNull android.net.Network network) {
           Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
+          // getDcAccounts() will wait for initialization to complete before calling maybeNetwork()
+          // This is intentional - early network events should wait for proper initialization
           getDcAccounts().maybeNetwork();
         }
 
