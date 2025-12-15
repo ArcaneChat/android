@@ -144,6 +144,7 @@ public class LinkPreviewView extends LinearLayout {
 
     /**
      * Clears the preview and hides the view.
+     * Note: This method calls setVisibility(GONE) internally for consistency with other view management.
      */
     public void clear() {
         setVisibility(View.GONE);

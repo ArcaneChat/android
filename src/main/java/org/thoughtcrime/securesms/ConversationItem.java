@@ -78,7 +78,6 @@ import org.thoughtcrime.securesms.linkpreview.LinkPreviewCache;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewExecutor;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewFetcher;
 import org.thoughtcrime.securesms.linkpreview.LinkPreviewUtil;
-import org.thoughtcrime.securesms.linkpreview.LinkPreviewView;
 
 import java.util.List;
 import java.util.Set;
