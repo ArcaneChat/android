@@ -786,6 +786,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       return future;
     }
 
+    inputPanel.setSubject(draft.getSubject());
+
     final String text = TextUtils.isEmpty(sharedText)? draft.getText() : sharedText;
     if(!text.isEmpty()) {
       composeText.setText(text);
@@ -977,10 +979,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (dcChat.canSend()) {
       composePanel.setVisibility(View.VISIBLE);
       attachmentManager.setHidden(false);
+      inputPanel.setSubjectVisible(!dcChat.isEncrypted());
     } else {
       composePanel.setVisibility(View.GONE);
       attachmentManager.setHidden(true);
       hideSoftKeyboard();
+      inputPanel.setSubjectVisible(false);
     }
   }
 
@@ -1063,12 +1067,14 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     Optional<QuoteModel> quote = inputPanel.getQuote();
     boolean editing = isEditing;
+    final String subject = inputPanel.getSubject();
 
     // for a quick ui feedback, we clear the related controls immediately on sending messages.
     // for drafts, however, we do not change the controls, the activity may be resumed.
     if (action==ACTION_SEND_OUT) {
       composeText.setText("");
       inputPanel.clearQuote();
+      inputPanel.clearSubject();
     }
 
     Util.runOnAnyBackgroundThread(() -> {
@@ -1131,6 +1137,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       if (quote.isPresent()) {
         if (msg == null) msg = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
         msg.setQuote(quote.get().getQuotedMsg());
+      }
+
+      if (!subject.isEmpty() && msg != null) {
+        msg.setSubject(subject);
       }
 
       if (action==ACTION_SEND_OUT) {

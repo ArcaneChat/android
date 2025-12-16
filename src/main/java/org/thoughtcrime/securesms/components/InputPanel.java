@@ -56,6 +56,7 @@ public class InputPanel extends ConstraintLayout
   private QuoteView       quoteView;
   private EmojiToggle     emojiToggle;
   private ComposeText     composeText;
+  private android.widget.EditText subjectText;
   private View            quickCameraToggle;
   private View            quickAudioToggle;
   private View            buttonToggle;
@@ -91,6 +92,7 @@ public class InputPanel extends ConstraintLayout
     this.quoteView              = findViewById(R.id.quote_view);
     this.emojiToggle            = findViewById(R.id.emoji_toggle);
     this.composeText            = findViewById(R.id.embedded_text_editor);
+    this.subjectText            = findViewById(R.id.subject_text);
     this.quickCameraToggle      = findViewById(R.id.quick_camera_toggle);
     this.quickAudioToggle       = findViewById(R.id.quick_audio_toggle);
     this.buttonToggle           = findViewById(R.id.button_toggle);
@@ -196,6 +198,30 @@ public class InputPanel extends ConstraintLayout
 
   public void clickOnComposeInput() {
     composeText.performClick();
+  }
+
+  public void setSubjectVisible(boolean visible) {
+    subjectText.setVisibility(visible ? View.VISIBLE : View.GONE);
+    emojiToggle.setVisibility(!visible ? View.VISIBLE : View.GONE);
+  }
+
+  public String getSubject() {
+    if (subjectText != null && subjectText.getVisibility() == View.VISIBLE) {
+      return subjectText.getText().toString().trim();
+    }
+    return "";
+  }
+
+  public void clearSubject() {
+    if (subjectText != null) {
+      subjectText.setText("");
+    }
+  }
+
+  public void setSubject(String subject) {
+    if (subjectText != null && subject != null) {
+      subjectText.setText(subject);
+    }
   }
 
   public void setMediaKeyboard(@NonNull MediaKeyboard mediaKeyboard) {
