@@ -82,6 +82,8 @@ import org.thoughtcrime.securesms.util.SendRelayedMessageUtil;
 import org.thoughtcrime.securesms.util.StorageUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
+import chat.delta.rpc.types.SecurejoinSource;
+import chat.delta.rpc.types.SecurejoinUiPath;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -495,7 +497,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
 
       if (uri.getScheme().equalsIgnoreCase(OPENPGP4FPR) || Util.isInviteURL(uri)) {
         QrCodeHandler qrCodeHandler = new QrCodeHandler(this);
-        qrCodeHandler.handleQrData(uri.toString());
+        qrCodeHandler.handleQrData(uri.toString(), SecurejoinSource.ExternalLink, null);
       }
     }
   }
@@ -577,7 +579,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       case IntentIntegrator.REQUEST_CODE:
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         QrCodeHandler qrCodeHandler = new QrCodeHandler(this);
-        qrCodeHandler.onScanPerformed(scanResult);
+        qrCodeHandler.onScanPerformed(scanResult, SecurejoinUiPath.QrIcon);
         break;
       default:
         break;

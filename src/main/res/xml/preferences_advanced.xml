@@ -32,6 +32,11 @@
             android:summary="@string/none"/>
 
         <org.thoughtcrime.securesms.components.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_stats_sending"
+            android:title="@string/send_stats_to_devs" />
+
+        <org.thoughtcrime.securesms.components.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="pref_webxdc_realtime_enabled"
             android:summary="@string/enable_realtime_explain"

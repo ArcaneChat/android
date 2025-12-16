@@ -1,8 +1,11 @@
 # Delta Chat Android Changelog
 
-## Unreleased
+## v2.34.0
+2025-12
 
 * Allow to add relay from clipboard or image if camera permission is not granted
+* Avoid crash in the "View Log" screen
+* Update to core 2.34.0
 
 ## v2.33.1
 2025-12
@@ -10,6 +13,7 @@
 * Target Android 16
 * Change color of links in text messages
 * Improve edge-to-edge support
+* Add the option (opt-in) to send anonymous statistics to Delta Chat's developers
 * Metadata protection: protect message recipients
 * Allow to withdraw channel invite links and QR codes
 * Allow to open externally links clicked inside in-chat apps
