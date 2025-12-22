@@ -3,6 +3,9 @@
     <external-cache-path name="external_cache" path="." />
     <external-files-path name="external_files" path="." />
 
+    <!-- this is needed for access to the cache dir in SD card -->
+    <root-path name="external_root" path="/storage/" />
+
     <external-path name="external_pictures" path="Pictures"/>
     <external-path name="external_video" path="Movies"/>
     <external-path name="external_audio" path="Music"/>
