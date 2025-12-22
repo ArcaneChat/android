@@ -122,8 +122,25 @@ public class PersistentBlobProvider {
   }
 
   public Uri createForExternal(@NonNull Context context, @NonNull String mimeType) throws IOException, IllegalStateException, NullPointerException {
-    File target = new File(getExternalDir(context), System.currentTimeMillis() + "." + getExtensionFromMimeType(mimeType));
-    return FileProviderUtil.getUriFor(context, target);
+    long timestamp = System.currentTimeMillis();
+    String filename = timestamp + "." + getExtensionFromMimeType(mimeType);
+    
+    // Try external cache first
+    try {
+      File externalDir = getExternalDir(context);
+      File target = new File(externalDir, filename);
+      return FileProviderUtil.getUriFor(context, target);
+    } catch (IllegalArgumentException e) {
+      // FileProvider doesn't support the external cache path (e.g., on removable SD card)
+      // Fall back to internal cache
+      Log.w(TAG, "FileProvider doesn't support external cache path, falling back to internal cache", e);
+      File internalDir = context.getCacheDir();
+      if (internalDir == null) {
+        throw new IOException("no cache directory available");
+      }
+      File target = new File(internalDir, filename);
+      return FileProviderUtil.getUriFor(context, target);
+    }
   }
 
   public boolean delete(@NonNull Context context, @NonNull Uri uri) {
