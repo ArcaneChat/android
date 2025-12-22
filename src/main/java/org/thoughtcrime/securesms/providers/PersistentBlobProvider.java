@@ -131,8 +131,10 @@ public class PersistentBlobProvider {
       File target = new File(externalDir, filename);
       return FileProviderUtil.getUriFor(context, target);
     } catch (IllegalArgumentException e) {
-      // FileProvider doesn't support the external cache path (e.g., on removable SD card)
-      // Fall back to internal cache
+      // FileProvider doesn't support the external cache path (e.g., on removable SD card).
+      // Note: getExternalDir() already falls back to internal cache when external cache is null,
+      // but when external cache exists on a removable SD card, FileProvider may reject it.
+      // In that case, we explicitly use internal cache which FileProvider always supports.
       Log.w(TAG, "FileProvider doesn't support external cache path, falling back to internal cache", e);
       File internalDir = context.getCacheDir();
       if (internalDir == null) {
