@@ -59,6 +59,8 @@ jobs:
           rm build/outputs/apk/foss/release/*universal*
           ./gradlew assembleGplayRelease
           mv build/outputs/apk/gplay/release/*universal* build/outputs/apk/foss/release/ArcaneChat-gplay.apk
+          mv build/outputs/mapping/fossRelease/mapping.txt build/outputs/mapping/fossRelease/mapping-foss.txt
+          mv build/outputs/mapping/gplayRelease/mapping.txt build/outputs/mapping/fossRelease/mapping-gplay.txt
 
       - name: Release on GitHub
         uses: softprops/action-gh-release@v1
@@ -67,7 +69,9 @@ jobs:
           body: '[<img src="store/get-it-on-gplay.png" alt="Get it on Google Play" height="48">](https://play.google.com/store/apps/details?id=com.github.arcanechat) [<img src="store/get-it-on-fdroid.png" alt="Get it on F-Droid" height="48">](https://f-droid.org/packages/chat.delta.lite) [<img src="store/get-it-on-github.png" alt="Get it on GitHub" height="48">](https://github.com/ArcaneChat/android/releases/latest/download/ArcaneChat-gplay.apk)'
           prerelease: ${{ contains(github.event.ref, '-beta') }}
           fail_on_unmatched_files: true
-          files: build/outputs/apk/foss/release/*.apk
+          files: |
+            build/outputs/apk/foss/release/*.apk
+            build/outputs/mapping/fossRelease/mapping-*.txt
 
       - name: Release on ZapStore
         run: |
