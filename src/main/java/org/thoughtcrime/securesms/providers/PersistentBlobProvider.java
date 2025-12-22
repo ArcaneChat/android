@@ -122,8 +122,7 @@ public class PersistentBlobProvider {
   }
 
   public Uri createForExternal(@NonNull Context context, @NonNull String mimeType) throws IOException, IllegalStateException, NullPointerException {
-    long timestamp = System.currentTimeMillis();
-    String filename = timestamp + "." + getExtensionFromMimeType(mimeType);
+    String filename = System.currentTimeMillis() + "." + getExtensionFromMimeType(mimeType);
     
     // Try external cache first
     try {
