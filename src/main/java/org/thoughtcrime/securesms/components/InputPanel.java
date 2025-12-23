@@ -202,6 +202,7 @@ public class InputPanel extends ConstraintLayout
 
   public void setSubjectVisible(boolean visible) {
     subjectText.setVisibility(visible ? View.VISIBLE : View.GONE);
+    // don't make it visible if visible is false to avoid showing it while recording audio and an event triggers setSubjectVisible(false)
     if (visible) emojiToggle.setVisibility(View.GONE);
   }
 
