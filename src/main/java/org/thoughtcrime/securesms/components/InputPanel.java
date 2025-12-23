@@ -202,7 +202,7 @@ public class InputPanel extends ConstraintLayout
 
   public void setSubjectVisible(boolean visible) {
     subjectText.setVisibility(visible ? View.VISIBLE : View.GONE);
-    emojiToggle.setVisibility(!visible ? View.VISIBLE : View.GONE);
+    if (visible) emojiToggle.setVisibility(View.GONE);
   }
 
   public String getSubject() {
