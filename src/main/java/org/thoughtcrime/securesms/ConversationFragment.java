@@ -150,10 +150,6 @@ public class ConversationFragment extends MessageSelectorFragment
                 this::handleReplyMessage
         ).attachToRecyclerView(list);
 
-        // setLayerType() is needed to allow larger items (long texts in our case)
-        // with hardware layers, drawing may result in errors as "OpenGLRenderer: Path too large to be rendered into a texture"
-        list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-
         return view;
     }
 
