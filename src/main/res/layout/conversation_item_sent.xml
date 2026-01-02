@@ -52,6 +52,7 @@
             android:id="@+id/body_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="@dimen/message_bubble_max_width"
             android:orientation="vertical"
             android:layout_toLeftOf="@+id/indicators_parent"
             android:layout_toStartOf="@+id/indicators_parent"

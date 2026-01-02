@@ -82,10 +82,6 @@ public class ConversationFragment extends MessageSelectorFragment
 
     private static final int SCROLL_ANIMATION_THRESHOLD = 50;
     private static final int CODE_ADD_EDIT_CONTACT      = 77;
-    
-    // Screen width threshold (in dp) for applying software layer.
-    // Foldable devices typically have inner screens >= 1200dp width.
-    private static final int FOLDABLE_SCREEN_WIDTH_THRESHOLD_DP = 1200;
 
     private final ActionModeCallback actionModeCallback     = new ActionModeCallback();
     private final ItemClickListener  selectionClickListener = new ConversationFragmentItemClickListener();
@@ -154,24 +150,9 @@ public class ConversationFragment extends MessageSelectorFragment
                 this::handleReplyMessage
         ).attachToRecyclerView(list);
 
-        // Conditionally apply software layer only on smaller screens to avoid memory overflow on foldables.
-        // Background: Setting LAYER_TYPE_SOFTWARE was added to fix "OpenGL: Path too large to be rendered
-        // into a texture" errors when rendering long text messages with hardware acceleration.
-        // However, software layers have fixed memory limits (~11MB) that are exceeded on devices with
-        // large screens (foldables need ~18MB+), causing RecyclerView not to display.
-        //
-        // Solution: Only apply software layer on screens smaller than 1200dp width (typical foldable threshold).
-        // On foldables and tablets, use default rendering (LAYER_TYPE_NONE) which leverages RecyclerView's
-        // efficient view recycling to avoid memory issues.
-        //
-        // References:
-        // - RecyclerView design: https://developer.android.com/reference/androidx/recyclerview/widget/RecyclerView
-        // - Layer types: https://developer.android.com/reference/android/view/View#setLayerType(int,%20android.graphics.Paint)
-        // - Foldable best practices: https://developer.android.com/guide/topics/large-screens/learn-about-foldables
-        int screenWidthDp = getResources().getConfiguration().screenWidthDp;
-        if (screenWidthDp < FOLDABLE_SCREEN_WIDTH_THRESHOLD_DP) {
-            list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        }
+        // setLayerType() is needed to allow larger items (long texts in our case)
+        // with hardware layers, drawing may result in errors as "OpenGLRenderer: Path too large to be rendered into a texture"
+        list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         return view;
     }

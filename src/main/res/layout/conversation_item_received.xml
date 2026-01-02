@@ -69,6 +69,7 @@
             android:id="@+id/body_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="@dimen/message_bubble_max_width"
             android:layout_marginRight="@dimen/message_bubble_edge_margin"
             android:layout_marginEnd="@dimen/message_bubble_edge_margin"
             android:layout_marginLeft="6dp"
