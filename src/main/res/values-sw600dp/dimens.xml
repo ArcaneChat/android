@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Limit bubble width on large screens (tablets/foldables) to prevent software layer overflow -->
+    <!-- Limit bubble width on large screens (tablets/foldable devices) to prevent software layer overflow -->
     <dimen name="message_bubble_max_width">600dp</dimen>
 </resources>

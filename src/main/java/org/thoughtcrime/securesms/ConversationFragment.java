@@ -152,6 +152,8 @@ public class ConversationFragment extends MessageSelectorFragment
 
         // setLayerType() is needed to allow larger items (long texts in our case)
         // with hardware layers, drawing may result in errors as "OpenGLRenderer: Path too large to be rendered into a texture"
+        // On foldable devices with large screens, software layer can exceed memory limits (~11MB).
+        // To prevent this, message bubble width is constrained via maxWidth in layout files.
         list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
         return view;
