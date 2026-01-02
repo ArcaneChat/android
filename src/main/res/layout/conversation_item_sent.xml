@@ -40,13 +40,23 @@
             android:id="@+id/reply_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_alignStart="@id/body_bubble"
-            android:layout_alignTop="@id/body_bubble"
-            android:layout_alignBottom="@id/body_bubble"
+            android:layout_alignStart="@id/body_bubble_wrapper"
+            android:layout_alignTop="@id/body_bubble_wrapper"
+            android:layout_alignBottom="@id/body_bubble_wrapper"
             android:alpha="0"
             app:srcCompat="?menu_reply_icon"
             android:tint="?icon_tint"
-            android:layout_alignLeft="@id/body_bubble" />
+            android:layout_alignLeft="@id/body_bubble_wrapper" />
+
+        <FrameLayout
+            android:id="@+id/body_bubble_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/indicators_parent"
+            android:layout_toStartOf="@+id/indicators_parent"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginLeft="@dimen/message_bubble_edge_margin"
+            android:layout_marginStart="@dimen/message_bubble_edge_margin">
 
         <LinearLayout
             android:id="@+id/body_bubble"
@@ -54,11 +64,6 @@
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/message_bubble_max_width"
             android:orientation="vertical"
-            android:layout_toLeftOf="@+id/indicators_parent"
-            android:layout_toStartOf="@+id/indicators_parent"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_marginLeft="@dimen/message_bubble_edge_margin"
-            android:layout_marginStart="@dimen/message_bubble_edge_margin"
             android:clipToPadding="false"
             android:clipChildren="false"
             android:background="@color/white"
@@ -229,12 +234,14 @@
 
         </LinearLayout>
 
+        </FrameLayout>
+
         <org.thoughtcrime.securesms.reactions.ReactionsConversationView
             android:id="@+id/reactions_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/body_bubble"
-            android:layout_alignEnd="@id/body_bubble"
+            android:layout_below="@id/body_bubble_wrapper"
+            android:layout_alignEnd="@id/body_bubble_wrapper"
             android:layout_marginTop="-4dp"
             android:orientation="horizontal"
             app:message_type="outgoing" />
