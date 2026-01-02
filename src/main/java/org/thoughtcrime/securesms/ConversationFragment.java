@@ -82,6 +82,10 @@ public class ConversationFragment extends MessageSelectorFragment
 
     private static final int SCROLL_ANIMATION_THRESHOLD = 50;
     private static final int CODE_ADD_EDIT_CONTACT      = 77;
+    
+    // Screen width threshold (in dp) for applying software layer.
+    // Foldable devices typically have inner screens >= 1200dp width.
+    private static final int FOLDABLE_SCREEN_WIDTH_THRESHOLD_DP = 1200;
 
     private final ActionModeCallback actionModeCallback     = new ActionModeCallback();
     private final ItemClickListener  selectionClickListener = new ConversationFragmentItemClickListener();
@@ -165,7 +169,7 @@ public class ConversationFragment extends MessageSelectorFragment
         // - Layer types: https://developer.android.com/reference/android/view/View#setLayerType(int,%20android.graphics.Paint)
         // - Foldable best practices: https://developer.android.com/guide/topics/large-screens/learn-about-foldables
         int screenWidthDp = getResources().getConfiguration().screenWidthDp;
-        if (screenWidthDp < 1200) {
+        if (screenWidthDp < FOLDABLE_SCREEN_WIDTH_THRESHOLD_DP) {
             list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
