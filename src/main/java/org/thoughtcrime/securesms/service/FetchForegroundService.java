@@ -91,11 +91,22 @@ public final class FetchForegroundService extends Service {
     try {
       startForeground(NotificationCenter.ID_FETCH, notification);
     } catch (Exception e) {
-      Log.w(TAG, "Failed to start foreground service", e);
+      Log.w(TAG, "Failed to start foreground service, falling back to synchronous fetch", e);
       synchronized (SERVICE_LOCK) {
         service = null;
       }
       stopSelf();
+      // Fallback to synchronous fetching when foreground service fails
+      fetchingSynchronously = true;
+      if (ApplicationContext.getDcAccounts().backgroundFetch(10)) {
+        synchronized (STOP_NOTIFIER) {
+          while (fetchingSynchronously) {
+            try {
+              STOP_NOTIFIER.wait();
+            } catch (InterruptedException ex) {}
+          }
+        }
+      }
       return;
     }
 
