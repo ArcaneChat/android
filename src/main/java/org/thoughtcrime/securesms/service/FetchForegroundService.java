@@ -91,7 +91,7 @@ public final class FetchForegroundService extends Service {
     try {
       startForeground(NotificationCenter.ID_FETCH, notification);
     } catch (Exception e) {
-      Log.w(TAG, "Failed to start foreground service: " + e);
+      Log.w(TAG, "Failed to start foreground service", e);
       stopSelf();
       return;
     }
