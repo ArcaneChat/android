@@ -88,7 +88,13 @@ public final class FetchForegroundService extends Service {
       .setSmallIcon(R.drawable.notification_permanent)
       .build();
 
-    startForeground(NotificationCenter.ID_FETCH, notification);
+    try {
+      startForeground(NotificationCenter.ID_FETCH, notification);
+    } catch (Exception e) {
+      Log.w(TAG, "Failed to start foreground service: " + e);
+      stopSelf();
+      return;
+    }
 
     Util.runOnAnyBackgroundThread(() -> {
       Log.i(TAG, "Starting fetch");
