@@ -1,5 +1,20 @@
 # Delta Chat Android Changelog
 
+## Unreleased
+
+* Don't notify notification-to-all from in-chat apps if the chat is muted
+* Allow to see inbox quota for all relays in connectivity screen
+* Update to core 2.36.0
+
+## v2.35.0
+2026-01
+
+* Protect profile deletion and relays management with system lock/pin
+* Fix: Remove address from profile switcher
+* Fix: Avoid crash if the system doesn't allow to start foreground service
+* Remove deprecated "real-time apps" switch
+* Update to core 2.35.0
+
 ## v2.34.0
 2025-12
 

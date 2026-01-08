@@ -87,10 +87,6 @@ public class AccountSelectionListItem extends LinearLayout {
       }
 
       addrOrTag = dcContext.getConfig(CONFIG_PRIVATE_TAG);
-      if ("".equals(addrOrTag) && !dcContext.isChatmail()) {
-        addrOrTag = self.getAddr();
-      }
-
       unreadCount = dcContext.getFreshMsgs().length;
 
       enableSwitch.setChecked(dcContext.isEnabled());

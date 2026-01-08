@@ -81,10 +81,6 @@
     <string name="always_load_remote_images">Toujours charger les images distantes</string>
     <string name="once">Une fois</string>
     <string name="show_warning">Montrer l\'avertissement</string>
-    <!-- deprecated, UI must not offer an option to show the password -->
-    <string name="show_password">Afficher le mot de passe</string>
-    <!-- deprecated, UI must not offer an option to show the password -->
-    <string name="hide_password">Masquer le mot de passe</string>
     <string name="not_now">Pas maintenant</string>
     <string name="never">Jamais</string>
     <string name="one_moment">Un instant …</string>
@@ -120,6 +116,18 @@
     <!-- Refers to the time a contact was last seen. Shown below contact name in the profile. The placeholder will be replaced by a relative point in time as "3 minutes ago" (see https://momentjs.com for more examples and languages)-->
     <string name="last_seen_relative">Dernière activité %1$s</string>
     <string name="last_seen_unknown">Vu·e pour la dernière fois : inconnu</string>
+    <!-- Shown in call duration. Avoid abbreviations, prefer full words ex. "N seconds". -->
+    <plurals name="n_seconds_ext">
+        <item quantity="one">%d seconde</item>
+        <item quantity="many">%d secondes</item>
+        <item quantity="other">%d secondes</item>
+    </plurals>
+    <!-- Shown in call duration. Avoid abbreviations, prefer full words ex. "N minutes". -->
+    <plurals name="n_minutes_ext">
+        <item quantity="one">%d minute</item>
+        <item quantity="many">%d minutes</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
     <!-- Shown beside messages that are "N minutes old". Prefer short strings, or well-known abbreviations. -->
     <plurals name="n_minutes">
         <item quantity="one">%d min</item>
@@ -169,6 +177,7 @@
         <item quantity="many">%d Sélectionnés</item>
         <item quantity="other">%d Sélectionnés</item>
     </plurals>
+    <string name="selected_colon">Sélectionné:</string>
     <string name="self">Moi</string>
     <string name="draft">Brouillon</string>
     <string name="image">Image</string>
@@ -201,6 +210,7 @@
     <string name="images_and_videos">Images et vidéos</string>
     <string name="file">Fichier</string>
     <string name="files">Fichiers</string>
+    <string name="files_attach_hint">Envoyer les fichiers au format original et les images en non compressé</string>
     <!-- "Files" here means the "Files Selector App" or "Files Manager App" -->
     <string name="choose_from_files">Choisir depuis vos fichiers</string>
     <string name="choose_from_gallery">Choisir depuis la gallerie</string>
@@ -389,18 +399,17 @@
     <!-- get confirmations -->
     <!-- confirmation for leaving groups or channels. If a subject is needed, "Are you sure you want to leave the chat?" would work as well -->
     <string name="ask_leave_group">Êtes-vous sûr de vouloir quitter la discussion ?</string>
+    <plurals name="ask_delete_chat">
+        <item quantity="one">Supprimer %d discussion ?</item>
+        <item quantity="many">Supprimer %d discussions ?</item>
+        <item quantity="other">Supprimer %d discussions ?</item>
+    </plurals>
     <string name="ask_delete_named_chat">Supprimer la conversation \"%1$s\" de tous vos appareils ?</string>
     <string name="ask_delete_message">Supprimer ce message de tous vos appareils ?</string>
     <plurals name="ask_delete_messages">
         <item quantity="one">Effacer %d message ici et sur le serveur ?</item>
         <item quantity="many">Effacer %d messages ici et sur le serveur ?</item>
         <item quantity="other">Effacer %d messages ici et sur le serveur  ?</item>
-    </plurals>
-    <!-- deprecated, use ask_delete_messages -->
-    <plurals name="ask_delete_messages_simple">
-        <item quantity="one">Supprimer %d message ?</item>
-        <item quantity="many">Supprimer %d messages ?</item>
-        <item quantity="other">Supprimer %d messages ?</item>
     </plurals>
     <string name="ask_forward">Faire suivre les messages à %1$s ?</string>
     <string name="ask_forward_multiple">Faire suivre les messages à %1$d discussions ?</string>
@@ -473,8 +482,6 @@
 
     <!-- mailing lists -->
     <string name="mailing_list">Liste de diffusion</string>
-    <!-- deprecated -->
-    <string name="mailing_list_profile_info">Les changements du nom et de l\'avatar de la liste de diffusion s\'appliquent uniquement sur cet appareil.</string>
 
     <!-- webxdc -->
     <!-- "Start..." button for an app -->
@@ -577,7 +584,7 @@
     <string name="incoming_messages">Messages entrants</string>
     <!-- Headline for the "Outbox" eg. in the "Connectivity" view -->
     <string name="outgoing_messages">Messages sortants</string>
-    <!-- Headline in the "Connectivity" view. Placeholder will be replaced by a domain -->
+    <!-- deprecated -->
     <string name="storage_on_domain">Espace de stockage sur %1$s</string>
     <string name="connectivity">Connectivité</string>
     <!-- Shown in the title bar if the app is "Not connected"; prefer short strings. -->
@@ -697,6 +704,7 @@
     <!-- first placeholder is replaced by the number of files (always 2 or more); second placeholder is replaced by a chat name -->
     <string name="ask_send_files_to_chat">Envoyer %1$d fichiers à « %2$s » ?</string>
     <string name="ask_send_files_to_selected_chats">Envoyer %1$d fichier(s) à %2$d discussions ?</string>
+    <string name="videos_sent_without_recoding">(Les vidéos sont envoyés au format original, en conséquence volumineux. Pour envoyer des fichiers de plus petite taille, joignez-les séparément.)</string>
     <string name="share_text_multiple_chats">Envoyer ce texte à %1$d discussions ?\n\n« %2$s »</string>
     <string name="share_abort">Partage annulé en raison de permissions manquantes.</string>
 
@@ -772,6 +780,10 @@
     <string name="pref_background_btn_default">Utilisez l\'image par défaut</string>
     <string name="pref_background_btn_gallery">Sélectionner depuis la galerie</string>
     <string name="pref_imap_folder_warn_disable_defaults">Si vous désactivez cette option, assurez-vous que votre serveur et vos autres clients sont configurés en conséquence.\n\nSinon des choses pourraient ne pas fonctionner du tout.</string>
+    <!-- No need to be literal here, you can also use "Use Multiple Devices", "Support Multiple Devices" or other fitting terms. However, it should fit to the wording or your language at https://delta.chat/help  -->
+    <string name="pref_multidevice">Mode multi-appareils</string>
+    <string name="pref_multidevice_explain">Synchronise vos messages avec vos autres appareils. Activé automatiquement lors de l\'ajout d\'un second appareil</string>
+    <string name="pref_multidevice_change_warn">Le mode multi-appareils doit être activé quand vous utilisez le mêmeprofil/compte sur plusieurs appareils. Désactivez cette option seulement si vousavez supprimé le profil de vos autres appareils.\n\nDésactiver le mode alors que vous utilisez le compte sur de multiples appareils causera le manquement de messages et autres problèmes.</string>
     <string name="pref_auto_folder_moves">Déplacer automatiquement vers le dossier DeltaChat</string>
     <string name="pref_only_fetch_mvbox_title">Ne consulter que le dossier DeltaChat</string>
     <string name="pref_show_emails">Voir les courriels classiques</string>
@@ -779,6 +791,7 @@
     <string name="pref_show_emails_accepted_contacts">Pour les contacts acceptés</string>
     <string name="pref_show_emails_all">Tout</string>
     <string name="pref_experimental_features">Fonctionnalités expérimentales</string>
+    <string name="pref_experimental_features_explain">Ces fonctionnalités peuvent être instable et être changées ou supprimées dans le futur</string>
     <string name="pref_on_demand_location_streaming">Envoi de la géolocalisation à la demande</string>
     <string name="pref_background_default">Image par défaut</string>
     <string name="pref_background_default_color">Couleur par défaut</string>
@@ -805,7 +818,6 @@
     <string name="disable_imap_idle_explain">N\'utilisez pas d\'extension IMAP IDLE, même si elle est prise en charge par votre serveur, car elle provoque des retards dans la récupération des messages. Activez cette option uniquement pour effectuer des tests.</string>
     <string name="send_stats_to_devs">Envoyer les statistiques aux développeurs Delta Chat</string>
     <string name="stats_msg_body">La pièce jointe contient des statistiques d\'usage anonymisés, qui nous aide à améliorer Delta Chat. Merci !</string>
-
 
     <!-- Emoji picker and categories -->
     <string name="emoji_search_results">Résultats de la recherche</string>
@@ -969,20 +981,17 @@
     <string name="qrshow_join_group_title">QR code d\'invitation</string>
     <!-- This text is shown inside the "QR code card" with very limited space; please formulate the text as short as possible therefore. The placeholder will be replaced by the group name, eg. "Scan to join group \"Testing group\"" -->
     <string name="qrshow_join_group_hint">Scannez ceci pour rejoindre le groupe \"%1$s\".</string>
+    <string name="qrshow_join_channel_hint">Scanner pour rejoindre le canal \"%1$s\"</string>
     <string name="qrshow_join_contact_title">QR code d\'invitation</string>
     <!-- This text is shown inside the "QR code card" with very limited space; please formulate the text as short as possible therefore. The placeholder will be replaced by the profile name eg. "Scan to chat with Alice" -->
     <string name="qrshow_join_contact_hint">Scanner pour discuter avec %1$s</string>
     <string name="qrshow_join_contact_no_connection_toast">Pas de connexion Internet, ne peut pas effectuer la configuration du QR code.</string>
     <string name="qraccount_ask_create_and_login">Créer une nouvelle adresse de courriel sur « %1$s » et se connecter ici ?</string>
-    <!-- deprecated, use confirm_add_transport when scanning such a QR code from the main scanner -->
-    <string name="qraccount_ask_create_and_login_another">Créer une nouvelle adresse de courriel sur « %1$s » et s\'y connecter ?\n\nVotre compte existant ne sera pas supprimé. Utilisez l\'élément de menu « Changer de compte » pour passer d\'un compte à l\'autre.</string>
     <string name="set_name_and_avatar_explain">Choisissez un nom que vos contacts reconnaîtrons. Vous pouvez également définir une image pour votre profile.</string>
     <string name="please_enter_name">Veuillez saisir un nom.</string>
     <string name="qraccount_qr_code_cannot_be_used">Le code QR scanné ne peut pas être utilisé pour ouvrir un nouveau compte.</string>
     <!-- the placeholder will be replaced by the address of the profile -->
     <string name="qrlogin_ask_login">Se connecter au compte « %1$s » ?</string>
-    <!-- deprecated, use confirm_add_transport when scanning such a QR code from the main scanner -->
-    <string name="qrlogin_ask_login_another">Se connecter à « %1$s » ?\n\nVotre compte existant ne sera pas supprimé. Utiliser l\'élément de menu « Changer de compte » pour passer d\'un compte à l\'autre.</string>
     <!-- first placeholder will be replaced by name of the inviter, second placeholder will be replaced by the name of the inviter. -->
     <string name="secure_join_started">%1$s vous a invité à rejoindre ce groupe.\n\nEn attente de la réponse de l’appareil de %2$s…</string>
     <!-- first placeholder will be replaced by name of the inviter, second placeholder will be replaced by the name of the inviter. -->

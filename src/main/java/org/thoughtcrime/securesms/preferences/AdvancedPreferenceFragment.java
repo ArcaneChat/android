@@ -7,7 +7,6 @@ import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_MVBOX_MOVE;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_ONLY_FETCH_MVBOX;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_STATS_SENDING;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SHOW_EMAILS;
-import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_WEBXDC_REALTIME_ENABLED;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,8 +32,8 @@ import org.thoughtcrime.securesms.relay.RelayListActivity;
 import org.thoughtcrime.securesms.StatsSending;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
-import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.ScreenLockUtil;
 import org.thoughtcrime.securesms.util.StreamUtil;
 import org.thoughtcrime.securesms.util.Util;
 
@@ -57,7 +55,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   CheckBoxPreference multiDeviceCheckbox;
   CheckBoxPreference mvboxMoveCheckbox;
   CheckBoxPreference onlyFetchMvboxCheckbox;
-  CheckBoxPreference webxdcRealtimeCheckbox;
 
   @Override
   public void onCreate(Bundle paramBundle) {
@@ -123,15 +120,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       }));
     }
 
-    webxdcRealtimeCheckbox = (CheckBoxPreference) this.findPreference("pref_webxdc_realtime_enabled");
-    if (webxdcRealtimeCheckbox != null) {
-      webxdcRealtimeCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
-        boolean enabled = (Boolean) newValue;
-        dcContext.setConfigInt(CONFIG_WEBXDC_REALTIME_ENABLED, enabled? 1 : 0);
-        return true;
-      });
-    }
-
     Preference submitDebugLog = this.findPreference("pref_view_log");
     if (submitDebugLog != null) {
       submitDebugLog.setOnPreferenceClickListener(new ViewLogListener());
@@ -170,7 +158,10 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     Preference relayListBtn = this.findPreference("pref_relay_list_button");
     if (relayListBtn != null) {
       relayListBtn.setOnPreferenceClickListener(((preference) -> {
-        openRelayListActivity();
+        boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.transports), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT);
+        if (!result) {
+          openRelayListActivity();
+        }
         return true;
       }));
     }
@@ -198,7 +189,6 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     multiDeviceCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_BCC_SELF));
     mvboxMoveCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_MVBOX_MOVE));
     onlyFetchMvboxCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
-    webxdcRealtimeCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_WEBXDC_REALTIME_ENABLED));
   }
 
   @Override
