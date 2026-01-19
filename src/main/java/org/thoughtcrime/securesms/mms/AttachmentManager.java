@@ -484,7 +484,7 @@ public class AttachmentManager {
     // for rationale dialog requirements
     Permissions.PermissionsBuilder permissionsBuilder = Permissions.with(activity)
             .ifNecessary()
-            .withRationaleDialog("To share your live location with chat members, allow ArcaneChat to use your location data.\n\nTo make live location work gaplessly, location data is used even when the app is closed or not in use.", R.drawable.ic_location_on_white_24dp)
+            .withRationaleDialog("To share your live location with chat members, allow ArcaneChat to use your location data.", R.drawable.ic_location_on_white_24dp)
             .withPermanentDenialDialog(activity.getString(R.string.perm_explain_access_to_location_denied))
             .onAllGranted(() -> {
               ShareLocationDialog.show(activity, durationInSeconds -> {
@@ -495,11 +495,7 @@ public class AttachmentManager {
                 }
               });
             });
-    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-      permissionsBuilder.request(Manifest.permission.ACCESS_BACKGROUND_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
-    } else {
-      permissionsBuilder.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
-    }
+    permissionsBuilder.request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
     permissionsBuilder.execute();
   }
 
