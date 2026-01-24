@@ -4,7 +4,18 @@
 
 * Don't notify notification-to-all from in-chat apps if the chat is muted
 * Allow to see inbox quota for all relays in connectivity screen
-* Update to core 2.36.0
+* Truncate file names in the middle, not at the end; important information are more often at the end
+* Remove email address from user profile
+* Mark external links with " ↗" to make them clear
+* Make QR code larger on "Add Second Device" screen
+* Add indication for blocked contacts in user profile
+* Show hint for empty contact search results
+* Fix: Show dialog if pasted QR codes are invalid
+* Fix: Refresh chat list when returning from conversation if selected profile changed
+* Fix: Update menu when using "select all" in contact selection
+* Fix: Avoid empty profiles after using "add as second device" from welcome screen
+* Fix multi-device seen messages synchronization when using multiple relays
+* Update to core 2.39.0
 
 ## v2.35.0
 2026-01

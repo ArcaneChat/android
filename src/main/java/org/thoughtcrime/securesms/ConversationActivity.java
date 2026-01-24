@@ -57,6 +57,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -196,6 +197,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private boolean    isSecurityInitialized    = false;
   private boolean successfulForwardingAttempt = false;
   private boolean isEditing = false;
+  private boolean switchedProfile = false;
 
   @Override
   protected void onCreate(Bundle state, boolean ready) {
@@ -235,6 +237,17 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           }
         });
       }
+    });
+
+    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            if (container.isInputOpen()) {
+                container.hideCurrentInput(composeText);
+            } else {
+                handleReturnToConversationList();
+            }
+        }
     });
 
     DcEventCenter eventCenter = DcHelper.getEventCenter(this);
@@ -569,15 +582,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
-  public void onBackPressed() {
-    if (container.isInputOpen()){
-      container.hideCurrentInput(composeText);
-    } else {
-      handleReturnToConversationList();
-    }
-  }
-
-  @Override
   public void onKeyboardShown() {
     inputPanel.onKeyboardShown();
   }
@@ -610,6 +614,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
   private void handleReturnToConversationList(@Nullable Bundle extras) {
+    if (switchedProfile) { // force refreshing of chatlist
+      if (extras == null) extras = new Bundle();
+      extras.putInt(ConversationListFragment.RELOAD_LIST, 1);
+    }
+
     boolean archived = getIntent().getBooleanExtra(FROM_ARCHIVED_CHATS_EXTRA, false);
     Intent intent = new Intent(this, (archived ? ConversationListArchiveActivity.class : ConversationListActivity.class));
     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -960,6 +969,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void initializeResources() {
     int accountId = getIntent().getIntExtra(ACCOUNT_ID_EXTRA, dcContext.getAccountId());
     if (accountId != dcContext.getAccountId()) {
+      switchedProfile = true;
       AccountManager.getInstance().switchAccount(context, accountId);
       fragment.dcContext = dcContext = context.getDcContext();
       initializeBackground();

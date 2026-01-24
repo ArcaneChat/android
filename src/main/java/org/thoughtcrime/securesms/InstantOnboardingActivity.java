@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -41,7 +40,6 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
 import org.thoughtcrime.securesms.components.AvatarSelector;
-import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.contacts.avatars.ResourceContactPhoto;
@@ -56,6 +54,7 @@ import org.thoughtcrime.securesms.relay.RelayListActivity;
 import org.thoughtcrime.securesms.scribbles.ScribbleActivity;
 import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.TextUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.ProgressDialog;
@@ -76,7 +75,6 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
   private static final String INSTANCES_URL = "https://chatmail.at/relays";
   private static final String DEFAULT_CHATMAIL_HOST = "arcanechat.me";
 
-  public static final String FROM_WELCOME = "from_welcome";
   private static final int REQUEST_CODE_AVATAR = 1;
 
   private ImageView avatar;
@@ -107,9 +105,9 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
     Objects.requireNonNull(getSupportActionBar()).setTitle(R.string.onboarding_create_instant_account);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    boolean fromWelcome  = getIntent().getBooleanExtra(FROM_WELCOME, false);
+    boolean configured  = DcHelper.getContext(this).isConfigured() == 1;
 
-    if (DcHelper.getContext(this).isConfigured() == 1) {
+    if (configured) {
       // if account is configured it means we didn't come from Welcome screen nor from QR scanner,
       // instead, user clicked a dcaccount:// URI directly, so we need to just offer to add a new relay
       Uri uri = getIntent().getData();
@@ -117,24 +115,10 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
         Intent intent = new Intent(this, RelayListActivity.class);
         intent.putExtra(RelayListActivity.EXTRA_QR_DATA, uri.toString());
         startActivity(intent);
-        finish();
-        return;
       }
-      // if URI is unexpectedly null, then fallback to new profile creation
-      AccountManager.getInstance().beginAccountCreation(this);
+      finish();
+      return;
     }
-
-    getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(!fromWelcome) {
-      @Override
-      public void handleOnBackPressed() {
-        AccountManager accountManager = AccountManager.getInstance();
-        if (accountManager.canRollbackAccountCreation(InstantOnboardingActivity.this)) {
-          accountManager.rollbackAccountCreation(InstantOnboardingActivity.this);
-        } else {
-          finish();
-        }
-      }
-    });
 
     isDcLogin = false;
     providerHost = DEFAULT_CHATMAIL_HOST;
@@ -341,7 +325,10 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
 
     signUpBtn.setOnClickListener(view -> createProfile());
 
-    findViewById(R.id.use_other_server).setOnClickListener((v) -> {
+    Button otherServerButton = findViewById(R.id.use_other_server);
+    otherServerButton.setText(
+      TextUtil.markAsExternal(getString(R.string.instant_onboarding_other_server)));
+    otherServerButton.setOnClickListener((v) -> {
       IntentUtils.showInBrowser(this, INSTANCES_URL);
     });
     findViewById(R.id.login_button).setOnClickListener((v) -> {
@@ -365,9 +352,11 @@ public class InstantOnboardingActivity extends BaseActionBarActivity implements 
       }
 
       if (DEFAULT_CHATMAIL_HOST.equals(providerHost)) {
-        privacyPolicyBtn.setText(getString(R.string.instant_onboarding_agree_default2, providerHost));
+        privacyPolicyBtn.setText(TextUtil.markAsExternal(
+          getString(R.string.instant_onboarding_agree_default2, providerHost)));
       } else {
-        privacyPolicyBtn.setText(getString(R.string.instant_onboarding_agree_instance, providerHost));
+        privacyPolicyBtn.setText(TextUtil.markAsExternal(
+          getString(R.string.instant_onboarding_agree_instance, providerHost)));
       }
     }
   }

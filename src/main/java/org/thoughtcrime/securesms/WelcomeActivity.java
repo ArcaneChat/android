@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
@@ -36,6 +37,7 @@ import org.thoughtcrime.securesms.qr.QrCodeHandler;
 import org.thoughtcrime.securesms.qr.RegistrationQrActivity;
 import org.thoughtcrime.securesms.service.GenericForegroundService;
 import org.thoughtcrime.securesms.service.NotificationController;
+import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.StorageUtil;
 import org.thoughtcrime.securesms.util.StreamUtil;
 import org.thoughtcrime.securesms.util.Util;
@@ -68,13 +70,45 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
         ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
 
         findViewById(R.id.signup_button).setOnClickListener((v) -> startInstantOnboardingActivity());
-        findViewById(R.id.add_as_second_device_button).setOnClickListener((v) -> startAddAsSecondDeviceActivity());
+        findViewById(R.id.add_as_second_device_button).setOnClickListener((v) -> showSignInDialogWithPermission());
         findViewById(R.id.backup_button).setOnClickListener((v) -> startImportBackup());
 
         registerForEvents();
         initializeActionBar();
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                AccountManager accountManager = AccountManager.getInstance();
+                if (accountManager.canRollbackAccountCreation(WelcomeActivity.this)) {
+                    accountManager.rollbackAccountCreation(WelcomeActivity.this);
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
+
         DcHelper.maybeShowMigrationError(this);
+    }
+
+    private void showSignInDialogWithPermission() {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+          && !Prefs.getBooleanPreference(this, Prefs.ASKED_FOR_NOTIFICATION_PERMISSION, false)) {
+              Prefs.setBooleanPreference(this, Prefs.ASKED_FOR_NOTIFICATION_PERMISSION, true);
+              Permissions.with(this)
+                .request(Manifest.permission.POST_NOTIFICATIONS)
+                .ifNecessary()
+                .onAllGranted(() -> {
+                    startAddAsSecondDeviceActivity();
+                })
+                .onAnyDenied(() -> {
+                    startAddAsSecondDeviceActivity();
+                })
+                .execute();
+        } else {
+            startAddAsSecondDeviceActivity();
+        }
     }
 
     protected void initializeActionBar() {
@@ -97,7 +131,7 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
 
         switch (item.getItemId()) {
         case android.R.id.home:
-            onBackPressed();
+            getOnBackPressedDispatcher().onBackPressed();
             return true;
         }
 
@@ -129,12 +163,6 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
-    }
-
-    private void startInstantOnboardingActivity() {
-        Intent intent = new Intent(this, InstantOnboardingActivity.class);
-        intent.putExtra(InstantOnboardingActivity.FROM_WELCOME, true);
-        startActivity(intent);
     }
 
     private void startAddAsSecondDeviceActivity() {
@@ -350,16 +378,6 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        AccountManager accountManager = AccountManager.getInstance();
-        if (accountManager.canRollbackAccountCreation(this)) {
-            accountManager.rollbackAccountCreation(this);
-        } else {
-            super.onBackPressed();
         }
     }
 }
