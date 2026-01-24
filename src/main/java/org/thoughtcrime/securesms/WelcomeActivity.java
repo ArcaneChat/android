@@ -69,7 +69,7 @@ public class WelcomeActivity extends BaseActionBarActivity implements DcEventCen
         // add padding to avoid content hidden behind system bars
         ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
 
-        findViewById(R.id.signup_button).setOnClickListener((v) -> startInstantOnboardingActivity());
+        findViewById(R.id.signup_button).setOnClickListener((v) -> startActivity(new Intent(this, InstantOnboardingActivity.class)));
         findViewById(R.id.add_as_second_device_button).setOnClickListener((v) -> showSignInDialogWithPermission());
         findViewById(R.id.backup_button).setOnClickListener((v) -> startImportBackup());
 
