@@ -182,6 +182,15 @@
                 android:layout_marginLeft="@dimen/message_bubble_horizontal_padding"
                 android:layout_marginRight="@dimen/message_bubble_horizontal_padding" />
 
+            <ViewStub
+                android:id="@+id/link_preview_stub"
+                android:layout="@layout/link_preview_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/message_bubble_top_padding"
+                android:layout_marginLeft="@dimen/message_bubble_horizontal_padding"
+                android:layout_marginRight="@dimen/message_bubble_horizontal_padding" />
+
             <org.thoughtcrime.securesms.components.emoji.AutoScaledEmojiTextView
                 android:id="@+id/conversation_item_body"
                 android:layout_width="wrap_content"
