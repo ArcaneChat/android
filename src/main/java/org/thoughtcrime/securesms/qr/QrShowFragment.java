@@ -54,15 +54,8 @@ public class QrShowFragment extends Fragment implements DcEventCenter.DcEventDel
 
     private DcContext dcContext;
 
-    private View.OnClickListener scanClicklistener;
-
     public QrShowFragment() {
-        this(null);
-    }
-
-    public QrShowFragment(View.OnClickListener scanClicklistener) {
         super();
-        this.scanClicklistener = scanClicklistener;
     }
 
     @Override
@@ -79,9 +72,14 @@ public class QrShowFragment extends Fragment implements DcEventCenter.DcEventDel
         dcContext = DcHelper.getContext(getActivity());
         dcEventCenter = DcHelper.getEventCenter(getActivity());
 
-        Bundle extras = getActivity().getIntent().getExtras();
-        if (extras != null) {
-            chatId = extras.getInt(CHAT_ID);
+        // First try to get chatId from fragment arguments, then fall back to activity intent
+        if (getArguments() != null && getArguments().containsKey(CHAT_ID)) {
+            chatId = getArguments().getInt(CHAT_ID);
+        } else {
+            Bundle extras = getActivity().getIntent().getExtras();
+            if (extras != null) {
+                chatId = extras.getInt(CHAT_ID);
+            }
         }
 
         dcEventCenter.addObserver(DcContext.DC_EVENT_SECUREJOIN_INVITER_PROGRESS, this);
@@ -108,9 +106,16 @@ public class QrShowFragment extends Fragment implements DcEventCenter.DcEventDel
 
         view.findViewById(R.id.share_link_button).setOnClickListener((v) -> showInviteLinkDialog());
         Button scanBtn = view.findViewById(R.id.scan_qr_button);
-        if (scanClicklistener != null) {
+        
+        // Check if the activity implements View.OnClickListener to provide scan functionality
+        View.OnClickListener scanClickListener = null;
+        if (getActivity() instanceof View.OnClickListener) {
+            scanClickListener = (View.OnClickListener) getActivity();
+        }
+        
+        if (scanClickListener != null) {
             scanBtn.setVisibility(View.VISIBLE);
-            scanBtn.setOnClickListener(scanClicklistener);
+            scanBtn.setOnClickListener(scanClickListener);
         } else {
             scanBtn.setVisibility(View.GONE);
         }

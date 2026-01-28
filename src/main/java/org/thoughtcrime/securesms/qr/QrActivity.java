@@ -69,7 +69,7 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
 
         scanRelay = getIntent().getBooleanExtra(EXTRA_SCAN_RELAY, false);
 
-        qrShowFragment = new QrShowFragment(this);
+        qrShowFragment = new QrShowFragment();
         tabLayout = ViewUtil.findById(this, R.id.tab_layout);
         viewPager = ViewUtil.findById(this, R.id.pager);
         ProfilePagerAdapter adapter = new ProfilePagerAdapter(this, getSupportFragmentManager());

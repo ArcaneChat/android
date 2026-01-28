@@ -47,20 +47,39 @@ import chat.delta.rpc.RpcException;
 public class AccountSelectionListFragment extends DialogFragment implements DcEventCenter.DcEventDelegate
 {
   private static final String TAG = AccountSelectionListFragment.class.getSimpleName();
-  private final ConversationListActivity activity;
+  private static final String ARG_SELECT_ONLY = "select_only";
+  
+  private ConversationListActivity activity;
   private RecyclerView recyclerView;
   private AccountSelectionListAdapter adapter;
-  private final boolean selectOnly;
+  private boolean selectOnly;
 
-  public AccountSelectionListFragment(ConversationListActivity activity, boolean selectOnly) {
+  public AccountSelectionListFragment() {
     super();
-    this.activity = activity;
-    this.selectOnly = selectOnly;
+  }
+
+  public static AccountSelectionListFragment newInstance(boolean selectOnly) {
+    AccountSelectionListFragment fragment = new AccountSelectionListFragment();
+    Bundle args = new Bundle();
+    args.putBoolean(ARG_SELECT_ONLY, selectOnly);
+    fragment.setArguments(args);
+    return fragment;
   }
 
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
+    if (getArguments() != null) {
+      selectOnly = getArguments().getBoolean(ARG_SELECT_ONLY);
+    }
+    
+    // Get the activity from the context - must be ConversationListActivity
+    if (getActivity() instanceof ConversationListActivity) {
+      activity = (ConversationListActivity) getActivity();
+    } else {
+      throw new IllegalStateException("AccountSelectionListFragment must be attached to ConversationListActivity");
+    }
+    
     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
             .setTitle(R.string.switch_account)
             .setNegativeButton(R.string.cancel, null);
