@@ -62,10 +62,6 @@ public class ReactionsDetailsFragment extends DialogFragment implements DcEventC
       msgId = getArguments().getInt(ARG_MSG_ID, 0);
     }
     
-    if (msgId == 0) {
-      Log.w(TAG, "ReactionsDetailsFragment created without valid msgId");
-    }
-    
     adapter = new ReactionRecipientsAdapter(requireActivity(), GlideApp.with(requireActivity()), new ListClickListener());
 
     LayoutInflater inflater = requireActivity().getLayoutInflater();
