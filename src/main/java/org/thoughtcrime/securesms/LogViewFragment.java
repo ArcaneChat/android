@@ -129,7 +129,7 @@ public class LogViewFragment extends Fragment {
     return logFile;
   }
 
-  private static String grabLogcat(LogViewFragment fragment) {
+  public static String grabLogcat() {
     String command = "logcat -v threadtime -d -t 10000 *:I";
     try {
       final Process         process        = Runtime.getRuntime().exec(command);
@@ -165,7 +165,7 @@ public class LogViewFragment extends Fragment {
       if (fragment == null) return null;
 
       return "**This log may contain sensitive information. If you want to post it publicly you may examine and edit it beforehand.**\n\n" +
-          buildDescription(fragment) + "\n" + grabLogcat(fragment);
+          buildDescription(fragment) + "\n" + grabLogcat();
     }
 
     @Override
