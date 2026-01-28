@@ -69,8 +69,9 @@ public class AccountSelectionListFragment extends DialogFragment implements DcEv
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
+    // Retrieve selectOnly from arguments (defaults to false if not present)
     if (getArguments() != null) {
-      selectOnly = getArguments().getBoolean(ARG_SELECT_ONLY);
+      selectOnly = getArguments().getBoolean(ARG_SELECT_ONLY, false);
     }
     
     // Get the activity from the context - must be ConversationListActivity
