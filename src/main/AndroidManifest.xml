@@ -360,6 +360,7 @@
     <activity android:name=".WebxdcActivity"
               android:label=""
               android:theme="@style/TextSecure.LightTheme"
+              android:windowSoftInputMode="adjustPan"
               android:configChanges="touchscreen|keyboard|keyboardHidden|orientation|screenLayout|screenSize|uiMode">
     </activity>
 

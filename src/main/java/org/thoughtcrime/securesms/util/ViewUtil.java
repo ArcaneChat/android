@@ -515,7 +515,12 @@ public class ViewUtil {
           basePaddingBottom + insets.bottom
       );
 
-      return windowInsets;
+      // Consume IME insets to prevent them from affecting child views (like WebView)
+      // This stops the double-padding issue where both window resize and inset padding occur
+      WindowInsetsCompat consumed = new WindowInsetsCompat.Builder(windowInsets)
+          .setInsets(WindowInsetsCompat.Type.ime(), Insets.NONE)
+          .build();
+      return consumed;
     });
 
     // Request the initial insets to be dispatched if the view is attached
