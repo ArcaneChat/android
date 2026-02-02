@@ -317,6 +317,27 @@ public class ViewUtil {
   }
 
   /**
+   * Get combined insets from status bar, navigation bar and display cutout areas,
+   * excluding the IME (soft keyboard).
+   * 
+   * @param windowInsets The window insets to extract from
+   * @return Combined insets excluding IME
+   */
+  private static Insets getCombinedInsetsExcludingIme(@NonNull WindowInsetsCompat windowInsets) {
+    Insets systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+    Insets displayCutout = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
+    Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
+    
+    Insets combined = Insets.max(systemBars, displayCutout);
+    
+    // Subtract IME insets from the bottom only, as IME only affects bottom inset
+    // This ensures navigation bar insets are preserved while keyboard insets are excluded
+    int bottomWithoutIme = Math.max(0, combined.bottom - Math.max(0, ime.bottom - combined.bottom));
+    
+    return Insets.of(combined.left, combined.top, combined.right, bottomWithoutIme);
+  }
+
+  /**
    * Apply window insets to a view by adding margin to avoid drawing it behind system bars.
    * Convenience method that applies insets to all sides.
    * 
@@ -440,6 +461,58 @@ public class ViewUtil {
           top ? basePaddingTop + insets.top : basePaddingTop,
           right ? basePaddingRight + insets.right : basePaddingRight,
           bottom ? basePaddingBottom + insets.bottom : basePaddingBottom
+      );
+
+      return windowInsets;
+    });
+
+    // Request the initial insets to be dispatched if the view is attached
+    if (view.isAttachedToWindow()) {
+      ViewCompat.requestApplyInsets(view);
+    }
+  }
+
+  /**
+   * Apply window insets to a view by adding padding to avoid drawing elements behind system bars,
+   * excluding IME (soft keyboard) insets. This is useful for views that should respect navigation
+   * bars but handle keyboard resizing through the window's soft input mode.
+   * 
+   * This method stores the original padding values in view tags to ensure that
+   * padding doesn't accumulate on multiple inset applications.
+   * 
+   * @param view The view to apply insets to
+   */
+  public static void applyWindowInsetsExcludingIme(@NonNull View view) {
+    // Only enable on API 30+ where WindowInsets APIs work correctly
+    if (!isEdgeToEdgeSupported()) return;
+
+    // Store the original padding as a tag only if not already stored
+    // This prevents losing the true original padding on subsequent calls
+    if (view.getTag(R.id.tag_window_insets_padding_left) == null) {
+      view.setTag(R.id.tag_window_insets_padding_left, view.getPaddingLeft());
+      view.setTag(R.id.tag_window_insets_padding_top, view.getPaddingTop());
+      view.setTag(R.id.tag_window_insets_padding_right, view.getPaddingRight());
+      view.setTag(R.id.tag_window_insets_padding_bottom, view.getPaddingBottom());
+    }
+
+    ViewCompat.setOnApplyWindowInsetsListener(view, (v, windowInsets) -> {
+      Insets insets = getCombinedInsetsExcludingIme(windowInsets);
+
+      // Retrieve the original padding values from tags with null checks
+      Integer leftTag = (Integer) v.getTag(R.id.tag_window_insets_padding_left);
+      Integer topTag = (Integer) v.getTag(R.id.tag_window_insets_padding_top);
+      Integer rightTag = (Integer) v.getTag(R.id.tag_window_insets_padding_right);
+      Integer bottomTag = (Integer) v.getTag(R.id.tag_window_insets_padding_bottom);
+      int basePaddingLeft = leftTag != null ? leftTag : 0;
+      int basePaddingTop = topTag != null ? topTag : 0;
+      int basePaddingRight = rightTag != null ? rightTag : 0;
+      int basePaddingBottom = bottomTag != null ? bottomTag : 0;
+
+      v.setPadding(
+          basePaddingLeft + insets.left,
+          basePaddingTop + insets.top,
+          basePaddingRight + insets.right,
+          basePaddingBottom + insets.bottom
       );
 
       return windowInsets;
