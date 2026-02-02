@@ -34,7 +34,9 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ProfileFragment extends Fragment
              implements ProfileAdapter.ItemClickListener, DcEventCenter.DcEventDelegate {
@@ -323,8 +325,10 @@ public class ProfileFragment extends Fragment
         }
         
         // Remove members that were unchecked
+        // Use HashSet for O(1) lookup performance
+        Set<Integer> selectedSet = new HashSet<>(selected);
         for (int currentMemberId : currentMembers) {
-          if (!selected.contains(currentMemberId)) {
+          if (!selectedSet.contains(currentMemberId)) {
             dcContext.removeContactFromChat(chatId, currentMemberId);
           }
         }
