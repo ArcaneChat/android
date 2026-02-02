@@ -327,8 +327,7 @@ public class ViewUtil {
     Insets systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
     Insets displayCutout = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
     
-    // We want system bars (status + navigation) and display cutout, but NOT the IME keyboard
-    // systemBars already contains navigation bar without keyboard, so just use it directly
+    // Combine systemBars (which excludes IME) with displayCutout using max to handle notches/cutouts
     Insets combined = Insets.max(systemBars, displayCutout);
     
     return combined;
