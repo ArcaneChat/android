@@ -23,7 +23,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Activity container for selecting a list of contacts.
@@ -34,6 +36,9 @@ import java.util.List;
 public class ContactMultiSelectionActivity extends ContactSelectionActivity {
 
   public static final String CONTACTS_EXTRA = "contacts_extra";
+  public static final String REMOVED_CONTACTS_EXTRA = "removed_contacts_extra";
+  
+  private ArrayList<Integer> preselectedContacts;
 
   @Override
   protected void onCreate(Bundle icicle, boolean ready) {
@@ -44,6 +49,9 @@ public class ContactMultiSelectionActivity extends ContactSelectionActivity {
     // it's a bit confusing having one "X" button on the left and one on the right -
     // and the "clear search" button is not that important.
     getToolbar().setUseClearButton(false);
+    
+    // Store preselected contacts to track which ones were removed
+    preselectedContacts = getIntent().getIntegerArrayListExtra(ContactSelectionListFragment.PRESELECTED_CONTACTS);
   }
 
   @Override
@@ -72,6 +80,19 @@ public class ContactMultiSelectionActivity extends ContactSelectionActivity {
     Intent resultIntent = getIntent();
     List<Integer> selectedContacts = contactsFragment.getSelectedContacts();
     resultIntent.putIntegerArrayListExtra(CONTACTS_EXTRA, new ArrayList<>(selectedContacts));
+    
+    // Calculate which contacts were removed (preselected but not in final selection)
+    if (preselectedContacts != null) {
+      Set<Integer> selectedSet = new HashSet<>(selectedContacts);
+      ArrayList<Integer> removedContacts = new ArrayList<>();
+      for (Integer preselectedId : preselectedContacts) {
+        if (!selectedSet.contains(preselectedId)) {
+          removedContacts.add(preselectedId);
+        }
+      }
+      resultIntent.putIntegerArrayListExtra(REMOVED_CONTACTS_EXTRA, removedContacts);
+    }
+    
     setResult(RESULT_OK, resultIntent);
   }
 }

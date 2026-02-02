@@ -34,9 +34,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ProfileFragment extends Fragment
              implements ProfileAdapter.ItemClickListener, DcEventCenter.DcEventDelegate {
@@ -312,11 +310,9 @@ public class ProfileFragment extends Fragment
     super.onActivityResult(requestCode, resultCode, data);
     if (requestCode==REQUEST_CODE_PICK_CONTACT && resultCode==Activity.RESULT_OK && data!=null) {
       List<Integer> selected = data.getIntegerArrayListExtra(ContactMultiSelectionActivity.CONTACTS_EXTRA);
+      List<Integer> removed = data.getIntegerArrayListExtra(ContactMultiSelectionActivity.REMOVED_CONTACTS_EXTRA);
       if(selected == null) return;
       Util.runOnAnyBackgroundThread(() -> {
-        // Get current members
-        int[] currentMembers = dcContext.getChatContacts(chatId);
-        
         // Add new members
         for (Integer contactId : selected) {
           if (contactId != null) {
@@ -324,12 +320,12 @@ public class ProfileFragment extends Fragment
           }
         }
         
-        // Remove members that were unchecked
-        // Use HashSet for O(1) lookup performance
-        Set<Integer> selectedSet = new HashSet<>(selected);
-        for (int currentMemberId : currentMembers) {
-          if (!selectedSet.contains(currentMemberId)) {
-            dcContext.removeContactFromChat(chatId, currentMemberId);
+        // Remove members that were explicitly unchecked
+        if (removed != null) {
+          for (Integer contactId : removed) {
+            if (contactId != null) {
+              dcContext.removeContactFromChat(chatId, contactId);
+            }
           }
         }
       });
