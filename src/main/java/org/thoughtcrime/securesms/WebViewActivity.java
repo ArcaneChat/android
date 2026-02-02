@@ -77,7 +77,8 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
       findViewById(R.id.status_bar_background).setBackgroundResource(R.drawable.search_toolbar_shadow);
     } else {
       // add padding to avoid content hidden behind system bars
-      ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
+      // Don't apply bottom inset to avoid double-padding when keyboard appears
+      ViewUtil.applyWindowInsets(findViewById(R.id.content_container), true, true, true, false);
     }
 
     webView.setWebViewClient(new WebViewClient() {
