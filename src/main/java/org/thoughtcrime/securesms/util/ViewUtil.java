@@ -326,15 +326,12 @@ public class ViewUtil {
   private static Insets getCombinedInsetsExcludingIme(@NonNull WindowInsetsCompat windowInsets) {
     Insets systemBars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
     Insets displayCutout = windowInsets.getInsets(WindowInsetsCompat.Type.displayCutout());
-    Insets ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime());
     
+    // We want system bars (status + navigation) and display cutout, but NOT the IME keyboard
+    // systemBars already contains navigation bar without keyboard, so just use it directly
     Insets combined = Insets.max(systemBars, displayCutout);
     
-    // Subtract IME insets from the bottom only, as IME only affects bottom inset
-    // This ensures navigation bar insets are preserved while keyboard insets are excluded
-    int bottomWithoutIme = Math.max(0, combined.bottom - Math.max(0, ime.bottom - combined.bottom));
-    
-    return Insets.of(combined.left, combined.top, combined.right, bottomWithoutIme);
+    return combined;
   }
 
   /**
@@ -479,6 +476,10 @@ public class ViewUtil {
    * 
    * This method stores the original padding values in view tags to ensure that
    * padding doesn't accumulate on multiple inset applications.
+   * 
+   * Note: This feature is only enabled on API 30+ (Android 11+) where WindowInsets APIs
+   * work correctly. On older API levels, the method returns early and the view will use
+   * default system bar handling (content may be drawn behind system bars).
    * 
    * @param view The view to apply insets to
    */
