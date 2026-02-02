@@ -312,9 +312,20 @@ public class ProfileFragment extends Fragment
       List<Integer> selected = data.getIntegerArrayListExtra(ContactMultiSelectionActivity.CONTACTS_EXTRA);
       if(selected == null) return;
       Util.runOnAnyBackgroundThread(() -> {
+        // Get current members
+        int[] currentMembers = dcContext.getChatContacts(chatId);
+        
+        // Add new members
         for (Integer contactId : selected) {
-          if (contactId!=null) {
+          if (contactId != null) {
             dcContext.addContactToChat(chatId, contactId);
+          }
+        }
+        
+        // Remove members that were unchecked
+        for (int currentMemberId : currentMembers) {
+          if (!selected.contains(currentMemberId)) {
+            dcContext.removeContactFromChat(chatId, currentMemberId);
           }
         }
       });
