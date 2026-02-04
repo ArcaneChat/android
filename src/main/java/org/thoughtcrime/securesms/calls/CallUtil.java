@@ -23,10 +23,18 @@ public class CallUtil {
   }
 
   public static void startCall(Activity activity, int chatId, boolean audioOnly) {
+    String[] permissions = audioOnly
+        ? new String[] { Manifest.permission.RECORD_AUDIO }
+        : new String[] { Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO };
+
+    String permissionExplanation = audioOnly
+        ? activity.getString(R.string.perm_explain_access_to_mic_denied)
+        : activity.getString(R.string.perm_explain_access_to_camera_denied);
+
     Permissions.with(activity)
-      .request(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO)
+      .request(permissions)
       .ifNecessary()
-      .withPermanentDenialDialog(activity.getString(R.string.perm_explain_access_to_camera_denied))
+      .withPermanentDenialDialog(permissionExplanation)
       .onAllGranted(() -> {
           int accId = DcHelper.getContext(activity).getAccountId();
           startCall(activity, accId, chatId, audioOnly);
