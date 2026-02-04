@@ -28,8 +28,8 @@ public class CallUtil {
         : new String[] { Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO };
 
     String permissionExplanation = audioOnly
-        ? activity.getString(R.string.perm_explain_access_to_mic_denied)
-        : activity.getString(R.string.perm_explain_access_to_camera_denied);
+        ? activity.getString(R.string.perm_explain_access_to_mic_for_calls_denied)
+        : activity.getString(R.string.perm_explain_access_to_camera_and_mic_denied);
 
     Permissions.with(activity)
       .request(permissions)
