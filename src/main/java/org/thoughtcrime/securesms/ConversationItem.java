@@ -68,10 +68,16 @@ import org.thoughtcrime.securesms.util.Linkifier;
 import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.MarkdownUtil;
 import org.thoughtcrime.securesms.util.MediaUtil;
+import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.Stub;
 import org.thoughtcrime.securesms.calls.CallUtil;
+import org.thoughtcrime.securesms.linkpreview.LinkPreview;
+import org.thoughtcrime.securesms.linkpreview.LinkPreviewCache;
+import org.thoughtcrime.securesms.linkpreview.LinkPreviewExecutor;
+import org.thoughtcrime.securesms.linkpreview.LinkPreviewFetcher;
+import org.thoughtcrime.securesms.linkpreview.LinkPreviewUtil;
 
 import java.util.List;
 import java.util.Set;
@@ -124,6 +130,7 @@ public class ConversationItem extends BaseConversationItem
   private           Stub<BorderlessImageView>       stickerStub;
   private           Stub<VcardView>                 vcardViewStub;
   private           Stub<CallItemView>              callViewStub;
+  private @NonNull  Stub<org.thoughtcrime.securesms.linkpreview.LinkPreviewView> linkPreviewStub;
   private @Nullable EventListener                   eventListener;
 
   private int measureCalls;
@@ -159,6 +166,7 @@ public class ConversationItem extends BaseConversationItem
     this.stickerStub             = new Stub<>(findViewById(R.id.sticker_view_stub));
     this.vcardViewStub           = new Stub<>(findViewById(R.id.vcard_view_stub));
     this.callViewStub            = new Stub<>(findViewById(R.id.call_view_stub));
+    this.linkPreviewStub         = new Stub<>(findViewById(R.id.link_preview_stub));
     this.groupSenderHolder       =            findViewById(R.id.group_sender_holder);
     this.quoteView               =            findViewById(R.id.quote_view);
     this.container               =            findViewById(R.id.container);
@@ -206,6 +214,7 @@ public class ConversationItem extends BaseConversationItem
     setMessageShape(messageRecord);
     setMediaAttributes(messageRecord, showSender);
     setBodyText(messageRecord);
+    setLinkPreview(messageRecord);
     setBubbleState(messageRecord);
     setContactPhoto();
     setGroupMessageStatus();
@@ -481,6 +490,80 @@ public class ConversationItem extends BaseConversationItem
     }
   }
 
+  private void setLinkPreview(DcMsg messageRecord) {
+    // Only show link previews for text messages
+    if (messageRecord.getType() != DcMsg.DC_MSG_TEXT) {
+      if (linkPreviewStub.resolved()) {
+        linkPreviewStub.get().clear();
+      }
+      return;
+    }
+
+    // Check if link previews are enabled
+    if (!Prefs.areLinkPreviewsEnabled(context)) {
+      if (linkPreviewStub.resolved()) {
+        linkPreviewStub.get().clear();
+      }
+      return;
+    }
+
+    // Check if message has a URL
+    String messageText = messageRecord.getText();
+    if (!LinkPreviewUtil.containsUrl(messageText)) {
+      if (linkPreviewStub.resolved()) {
+        linkPreviewStub.get().clear();
+      }
+      return;
+    }
+
+    String url = LinkPreviewUtil.extractFirstUrl(messageText);
+    if (url == null) {
+      if (linkPreviewStub.resolved()) {
+        linkPreviewStub.get().clear();
+      }
+      return;
+    }
+
+    // Check cache first
+    LinkPreview cachedPreview = LinkPreviewCache.getInstance().get(url);
+    if (cachedPreview != null) {
+      if (cachedPreview.hasContent()) {
+        linkPreviewStub.get().bind(cachedPreview, glideRequests);
+      } else if (linkPreviewStub.resolved()) {
+        linkPreviewStub.get().clear();
+      }
+      return;
+    }
+
+    // Fetch preview asynchronously using thread pool
+    final String finalUrl = url;
+    LinkPreviewExecutor.getInstance().execute(() -> {
+      try {
+        LinkPreviewFetcher fetcher = new LinkPreviewFetcher(context);
+        LinkPreview preview = fetcher.fetchPreview(finalUrl);
+        
+        if (preview != null) {
+          LinkPreviewCache.getInstance().put(finalUrl, preview);
+        } else {
+          // Cache empty preview to avoid re-fetching failed URLs
+          LinkPreview emptyPreview = new LinkPreview(finalUrl, null, null, null);
+          LinkPreviewCache.getInstance().put(finalUrl, emptyPreview);
+        }
+
+        // Update UI on main thread
+        post(() -> {
+          if (preview != null && preview.hasContent()) {
+            linkPreviewStub.get().bind(preview, glideRequests);
+          } else if (linkPreviewStub.resolved()) {
+            linkPreviewStub.get().clear();
+          }
+        });
+      } catch (Exception e) {
+        Log.w(TAG, "Failed to fetch link preview", e);
+      }
+    });
+  }
+
   private void setMediaAttributes(@NonNull DcMsg           messageRecord,
                                            boolean         showSender)
   {
@@ -508,6 +591,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       //noinspection ConstantConditions
       int duration = messageRecord.getDuration();
@@ -534,6 +618,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       //noinspection ConstantConditions
       documentViewStub.get().setDocument(new DocumentSlide(context, messageRecord));
@@ -553,6 +638,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       webxdcViewStub.get().setWebxdc(messageRecord, context.getString(R.string.webxdc_app));
       webxdcViewStub.get().setWebxdcClickListener(new ThumbnailClickListener());
@@ -571,6 +657,7 @@ public class ConversationItem extends BaseConversationItem
       if (webxdcViewStub.resolved())     webxdcViewStub.get().setVisibility(View.GONE);
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())       callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       vcardViewStub.get().setVcard(glideRequests, new VcardSlide(context, messageRecord), rpc);
       vcardViewStub.get().setVcardClickListener(new ThumbnailClickListener());
@@ -611,6 +698,7 @@ public class ConversationItem extends BaseConversationItem
       if (stickerStub.resolved())        stickerStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       Slide slide = MediaUtil.getSlideForMsg(context, messageRecord);
 
@@ -651,6 +739,7 @@ public class ConversationItem extends BaseConversationItem
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setVisibility(View.GONE);
       if (vcardViewStub.resolved())      vcardViewStub.get().setVisibility(View.GONE);
       if (callViewStub.resolved())      callViewStub.get().setVisibility(View.GONE);
+      if (linkPreviewStub.resolved())    linkPreviewStub.get().clear();
 
       bodyBubble.setBackgroundColor(Color.TRANSPARENT);
 

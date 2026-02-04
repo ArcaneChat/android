@@ -200,6 +200,7 @@
     <string name="images_and_videos">Images and Videos</string>
     <string name="file">File</string>
     <string name="files">Files</string>
+    <string name="link_preview_image">Link preview image</string>
     <string name="files_attach_hint">Send original files and uncompressed images</string>
     <!-- "Files" here means the "Files Selector App" or "Files Manager App" -->
     <string name="choose_from_files">Choose from Files</string>
@@ -751,6 +752,8 @@
     <string name="pref_incognito_keyboard">Incognito Keyboard</string>
     <!-- Translators: Must indicate that there is no guarantee as the system may not honor our request. -->
     <string name="pref_incognito_keyboard_explain">Request keyboard to disable personalized learning</string>
+    <string name="pref_link_previews">Link Previews</string>
+    <string name="pref_link_previews_explain">Show preview cards for shared links. Previews are fetched using your proxy settings.</string>
     <string name="pref_read_receipts">Read Receipts</string>
     <string name="pref_read_receipts_explain">If read receipts are disabled, you won\'t be able to see read receipts from others.</string>
     <string name="pref_server">Server</string>

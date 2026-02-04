@@ -25,6 +25,12 @@
         android:summary="@string/pref_incognito_keyboard_explain"
         android:title="@string/pref_incognito_keyboard" />
 
+    <org.thoughtcrime.securesms.components.SwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="pref_link_previews"
+        android:summary="@string/pref_link_previews_explain"
+        android:title="@string/pref_link_previews" />
+
     <PreferenceCategory android:title="@string/delete_old_messages">
         <ListPreference
             android:key="autodel_device"

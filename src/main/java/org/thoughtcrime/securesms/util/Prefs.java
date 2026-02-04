@@ -60,6 +60,9 @@ public class Prefs {
   public  static final String  ALWAYS_LOAD_REMOTE_CONTENT = "pref_always_load_remote_content";
   public  static final boolean ALWAYS_LOAD_REMOTE_CONTENT_DEFAULT = false;
 
+  public  static final String  LINK_PREVIEWS = "pref_link_previews";
+  public  static final boolean LINK_PREVIEWS_DEFAULT = true;
+
   public  static final String LAST_DEVICE_MSG_LABEL            = "pref_last_device_msg_id";
   public  static final String WEBXDC_STORE_URL_PREF            = "pref_webxdc_store_url";
   public  static final String DEFAULT_WEBXDC_STORE_URL         = "https://webxdc.org/apps/";
@@ -274,6 +277,14 @@ public class Prefs {
   public static boolean getAlwaysLoadRemoteContent(Context context) {
     return getBooleanPreference(context, Prefs.ALWAYS_LOAD_REMOTE_CONTENT,
       Prefs.ALWAYS_LOAD_REMOTE_CONTENT_DEFAULT);
+  }
+
+  public static boolean areLinkPreviewsEnabled(Context context) {
+    return getBooleanPreference(context, Prefs.LINK_PREVIEWS, LINK_PREVIEWS_DEFAULT);
+  }
+
+  public static void setLinkPreviewsEnabled(Context context, boolean value) {
+    setBooleanPreference(context, LINK_PREVIEWS, value);
   }
 
   // generic preference functions

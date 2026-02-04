@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/link_preview_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="0dp"
+    app:cardBackgroundColor="?attr/conversation_item_quote_background_color"
+    app:strokeWidth="1dp"
+    app:strokeColor="?attr/conversation_item_quote_background_color">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <!-- Preview Image -->
+        <ImageView
+            android:id="@+id/link_preview_image"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            android:contentDescription="@string/link_preview_image"
+            tools:visibility="visible"
+            tools:src="@drawable/ic_image_light" />
+
+        <!-- Text Content Container -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="4dp">
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/link_preview_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="?attr/conversation_item_quote_text_color"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="Example Link Title Goes Here" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/link_preview_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:textColor="?attr/conversation_item_quote_text_color"
+                android:alpha="0.7"
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:visibility="gone"
+                tools:visibility="visible"
+                tools:text="This is a description of the link that provides additional context about what the user will find when they click." />
+
+            <!-- URL/Domain -->
+            <TextView
+                android:id="@+id/link_preview_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textSize="11sp"
+                android:textColor="?attr/conversation_item_quote_text_color"
+                android:alpha="0.5"
+                android:maxLines="1"
+                android:ellipsize="middle"
+                tools:text="https://example.com/article/123" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
