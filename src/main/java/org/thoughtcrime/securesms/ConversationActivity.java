@@ -570,7 +570,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       WebxdcActivity.openMaps(this, chatId);
       return true;
     } else if (itemId == R.id.menu_start_call) {
-      CallUtil.startCall(this, chatId);
+      showCallOptionsDialog();
       return true;
     } else if (itemId == R.id.menu_all_media) {
       handleAllMedia();
@@ -695,6 +695,22 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       return;
     }
     dcChat = dcContext.getChat(chatId);
+  }
+
+  private void showCallOptionsDialog() {
+    CharSequence[] items = {
+        getString(R.string.start_audio_call),
+        getString(R.string.start_video_call)
+    };
+
+    new AlertDialog.Builder(this)
+        .setTitle(R.string.start_call)
+        .setItems(items, (dialog, which) -> {
+          boolean audioOnly = (which == 0);
+          CallUtil.startCall(this, chatId, audioOnly);
+        })
+        .setNegativeButton(R.string.cancel, null)
+        .show();
   }
 
   private void handleDeleteChat() {
