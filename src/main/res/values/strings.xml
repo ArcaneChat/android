@@ -380,6 +380,8 @@
 
     <!-- the action "to call someone", used as a tooltip for the "phone" icon. not: "the call" -->
     <string name="start_call">Call</string>
+    <string name="start_audio_call">Audio Call</string>
+    <string name="start_video_call">Video Call</string>
     <!-- the action "to answer" or to "accept" or to "pick up" a call. not: "the answer" -->
     <string name="answer_call">Answer</string>
     <!-- the action "to decline" a call, not: "the decline" -->
@@ -1088,8 +1090,8 @@
     <string name="name_desktop">Name</string>
     <string name="select_group_image_desktop">Select Group Image</string>
     <string name="export_backup_desktop">Export Backup</string>
-    <string name="message_detail_sent_desktop">sent</string>
-    <string name="message_detail_received_desktop">received</string>
+    <string name="message_detail_sent_desktop">Sent</string>
+    <string name="message_detail_received_desktop">Received</string>
     <string name="menu.view.developer.open.log.folder">Open the Log Folder</string>
     <string name="menu.view.developer.open.current.log.file">Open Current Logfile</string>
     <string name="explain_desktop_minimized_disabled_tray_pref" tools:ignore="TypographyDashes">Tray icon cannot be disabled as Delta Chat was started with the --minimized option.</string>

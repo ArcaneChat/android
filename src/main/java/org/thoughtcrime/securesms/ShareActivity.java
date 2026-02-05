@@ -104,26 +104,25 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
     resolvedExtras = new ArrayList<>();
 
     List<Uri> streamExtras = new ArrayList<>();
+    if (MailtoUtil.isMailto(getIntent().getData())) {
+      String[] extraEmail = getIntent().getStringArrayExtra(Intent.EXTRA_EMAIL);
+      if (extraEmail == null || extraEmail.length == 0) {
+        getIntent().putExtra(Intent.EXTRA_EMAIL, MailtoUtil.getRecipients(getIntent().getData()));
+      }
+      String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
+      if (text == null || text.isEmpty()) {
+        getIntent().putExtra(Intent.EXTRA_TEXT, MailtoUtil.getText(getIntent().getData()));
+      }
+    }
+
     if (Intent.ACTION_SEND.equals(getIntent().getAction()) &&
             getIntent().getParcelableExtra(Intent.EXTRA_STREAM) != null) {
         Uri uri = getIntent().getParcelableExtra(Intent.EXTRA_STREAM);
         streamExtras.add(uri);
     } else if (getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM) != null) {
       streamExtras = getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-    } else {
-        Uri uri = getIntent().getData();
-        if (MailtoUtil.isMailto(uri)) {
-            String[] extraEmail = getIntent().getStringArrayExtra(Intent.EXTRA_EMAIL);
-            if (extraEmail == null || extraEmail.length == 0) {
-                getIntent().putExtra(Intent.EXTRA_EMAIL, MailtoUtil.getRecipients(uri));
-            }
-            String text = getIntent().getStringExtra(Intent.EXTRA_TEXT);
-            if (text == null || text.isEmpty()) {
-                getIntent().putExtra(Intent.EXTRA_TEXT, MailtoUtil.getText(uri));
-            }
-        } else if (uri != null) {
-            streamExtras.add(uri);
-        }
+    } else if (uri != null) {
+      streamExtras.add(uri);
     }
 
     if (needsFilePermission(streamExtras)) {
@@ -265,6 +264,7 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
       }
 
       chatId = dcContext.createChatByContactId(contactId);
+      accId = dcContext.getAccountId();
     }
     Intent composeIntent;
     if (accId != -1 && chatId != -1) {
