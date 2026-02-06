@@ -354,7 +354,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
   private @Nullable String getGroupName() {
     String ret = groupName.getText() != null ? groupName.getText().toString() : null;
-    if(ret!=null) {
+    if(ret != null) {
       ret = ret.trim();
       if(ret.isEmpty()) {
         ret = null;
@@ -365,7 +365,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
   private @Nullable String getDescription() {
     String ret = descriptionText.getText() != null ? descriptionText.getText().toString() : null;
-    if(ret!=null) {
+    if(ret != null) {
       ret = ret.trim();
       if(ret.isEmpty()) {
         ret = null;
