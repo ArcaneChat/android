@@ -41,6 +41,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
@@ -52,6 +53,7 @@ import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcMsg;
 
 import org.thoughtcrime.securesms.ConversationAdapter.ItemClickListener;
+import org.thoughtcrime.securesms.components.audioplay.AudioPlaybackViewModel;
 import org.thoughtcrime.securesms.components.reminder.DozeReminder;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
@@ -101,6 +103,7 @@ public class ConversationFragment extends MessageSelectorFragment
     private StickyHeaderDecoration      dateDecoration;
     private View                        scrollToBottomButton;
     private View                        floatingLocationButton;
+    private View                        bottomDivider;
     private AddReactionView             addReactionView;
     private TextView                    noMessageTextView;
     private Timer                       reloadTimer;
@@ -108,6 +111,8 @@ public class ConversationFragment extends MessageSelectorFragment
     public boolean isPaused;
     private Debouncer markseenDebouncer;
     private Rpc rpc;
+    private boolean pendingAddBottomInsets;
+    private boolean pendingRemoveBottomInsets;
 
     @Override
     public void onCreate(Bundle icicle) {
@@ -141,6 +146,7 @@ public class ConversationFragment extends MessageSelectorFragment
         floatingLocationButton = ViewUtil.findById(view, R.id.floating_location_button);
         addReactionView        = ViewUtil.findById(view, R.id.add_reaction_view);
         noMessageTextView      = ViewUtil.findById(view, R.id.no_messages_text_view);
+        bottomDivider          = ViewUtil.findById(view, R.id.bottom_divider);
 
         scrollToBottomButton.setOnClickListener(v -> scrollToBottom());
 
@@ -159,18 +165,32 @@ public class ConversationFragment extends MessageSelectorFragment
         // with hardware layers, drawing may result in errors as "OpenGLRenderer: Path too large to be rendered into a texture"
         list.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
+        if (pendingAddBottomInsets) {
+          bottomDivider.setVisibility(View.GONE);
+          ViewUtil.forceApplyWindowInsets(list, false, true, false, true);
+          ViewUtil.forceApplyWindowInsetsAsMargin(scrollToBottomButton, true, true, true, true);
+          pendingAddBottomInsets = false;
+        }
+
+        if (pendingRemoveBottomInsets) {
+          bottomDivider.setVisibility(View.VISIBLE);
+          ViewUtil.forceApplyWindowInsets(list, false, true, false, false);
+          ViewUtil.forceApplyWindowInsetsAsMargin(scrollToBottomButton, true, true, true, false);
+          pendingRemoveBottomInsets = false;
+        }
+
         return view;
     }
 
     @Override
-    public void onActivityCreated(Bundle bundle) {
-        super.onActivityCreated(bundle);
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         initializeResources();
         initializeListAdapter();
     }
 
-    private void setNoMessageText() {
+  private void setNoMessageText() {
         DcChat dcChat = getListAdapter().getChat();
         if(dcChat.isMultiUser()){
             if (dcChat.isInBroadcast() || dcChat.isOutBroadcast()) {
@@ -195,6 +215,28 @@ public class ConversationFragment extends MessageSelectorFragment
             String message = getString(R.string.chat_new_one_to_one_hint, dcChat.getName());
             noMessageTextView.setText(message);
         }
+    }
+
+    public void handleAddBottomInsets() {
+      if (bottomDivider != null) {
+        bottomDivider.setVisibility(View.GONE);
+        ViewUtil.forceApplyWindowInsets(list, false, true, false, true);
+        ViewUtil.forceApplyWindowInsetsAsMargin(scrollToBottomButton, false, false, false, true);
+        pendingAddBottomInsets = false;
+      } else {
+        pendingAddBottomInsets = true;
+      }
+    }
+
+    public void handleRemoveBottomInsets() {
+      if (bottomDivider != null) {
+        bottomDivider.setVisibility(View.VISIBLE);
+        ViewUtil.forceApplyWindowInsets(list, false, true, false, false);
+        ViewUtil.forceApplyWindowInsetsAsMargin(scrollToBottomButton, false, false, false, false);
+        pendingRemoveBottomInsets = false;
+      } else {
+        pendingRemoveBottomInsets = true;
+      }
     }
 
     @Override
@@ -291,6 +333,10 @@ public class ConversationFragment extends MessageSelectorFragment
         if (this.recipient != null && this.chatId != -1) {
             ConversationAdapter adapter = new ConversationAdapter(getActivity(), this.recipient.getChat(), GlideApp.with(this), selectionClickListener, this.recipient);
             list.setAdapter(adapter);
+            AudioPlaybackViewModel playbackViewModel =
+              new ViewModelProvider(requireActivity()).get(AudioPlaybackViewModel.class);
+            adapter.setPlaybackViewModel(playbackViewModel);
+            adapter.setAudioPlayPauseListener(((ConversationActivity) requireActivity()));
 
             if (dateDecoration != null) {
                 list.removeItemDecoration(dateDecoration);
@@ -407,7 +453,14 @@ public class ConversationFragment extends MessageSelectorFragment
     }
 
     public void handleClearChat() {
-        handleDeleteMessages((int) chatId, getListAdapter().getMessageIds());
+        AudioPlaybackViewModel playbackViewModel =
+          new ViewModelProvider(requireActivity()).get(AudioPlaybackViewModel.class);
+
+        handleDeleteMessages(
+          (int) chatId,
+          getListAdapter().getMessageIds(),
+          playbackViewModel::stopByIds,
+          playbackViewModel::stopByIds);
     }
 
     private ConversationAdapter getListAdapter() {
@@ -940,12 +993,15 @@ public class ConversationFragment extends MessageSelectorFragment
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             hideAddReactionView();
           int itemId = item.getItemId();
+          AudioPlaybackViewModel playbackViewModel =
+            new ViewModelProvider(requireActivity()).get(AudioPlaybackViewModel.class);
+
           if (itemId == R.id.menu_context_copy) {
             handleCopyMessage(getListAdapter().getSelectedItems());
             actionMode.finish();
             return true;
           } else if (itemId == R.id.menu_context_delete_message) {
-            handleDeleteMessages((int) chatId, getListAdapter().getSelectedItems());
+            handleDeleteMessages((int) chatId, getListAdapter().getSelectedItems(), playbackViewModel::stopByIds, playbackViewModel::stopByIds);
             return true;
           } else if (itemId == R.id.menu_context_share) {
             DcHelper.openForViewOrShare(getContext(), getSelectedMessageRecord(getListAdapter().getSelectedItems()).getId(), Intent.ACTION_SEND);
