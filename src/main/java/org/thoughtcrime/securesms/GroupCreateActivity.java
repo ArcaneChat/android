@@ -63,6 +63,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
   private boolean unencrypted;
   private boolean broadcast;
   private EditText     groupName;
+  private EditText     descriptionText;
   private ListView     lv;
   private ImageView    avatar;
   private Bitmap       avatarBmp;
@@ -140,6 +141,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
     lv                  = ViewUtil.findById(this, R.id.selected_contacts_list);
     avatar              = ViewUtil.findById(this, R.id.avatar);
     groupName           = ViewUtil.findById(this, R.id.group_name);
+    descriptionText     = ViewUtil.findById(this, R.id.description_text);
     TextView chatHints  = ViewUtil.findById(this, R.id.chat_hints);
 
     // add padding to avoid content hidden behind system bars
@@ -174,10 +176,12 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
     if (broadcast) {
       groupName.setHint(R.string.channel_name);
+      descriptionText.setHint(R.string.channel_description);
       chatHints.setVisibility(View.VISIBLE);
     } else if (unencrypted) {
       avatar.setVisibility(View.GONE);
       groupName.setHint(R.string.subject);
+      descriptionText.setVisibility(View.GONE);
       chatHints.setVisibility(View.GONE);
     } else {
       chatHints.setVisibility(View.GONE);
@@ -186,6 +190,16 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
     if(isEdit()) {
       groupName.setText(dcContext.getChat(groupChatId).getName());
       lv.setVisibility(View.GONE);
+      
+      // Load existing description
+      try {
+        String description = DcHelper.getRpc(this).getChatDescription(dcContext.getAccountId(), groupChatId);
+        if (description != null && !description.isEmpty()) {
+          descriptionText.setText(description);
+        }
+      } catch (RpcException e) {
+        e.printStackTrace();
+      }
     }
   }
 
@@ -286,6 +300,16 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
       AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
     }
 
+    // Set description if provided
+    String description = getDescription();
+    if (description != null && !description.isEmpty()) {
+      try {
+        DcHelper.getRpc(this).setChatDescription(dcContext.getAccountId(), groupChatId, description);
+      } catch (RpcException e) {
+        e.printStackTrace();
+      }
+    }
+
     attachmentManager.cleanup();
     Intent intent = new Intent(this, ConversationActivity.class);
     intent.putExtra(ConversationActivity.CHAT_ID_EXTRA, groupChatId);
@@ -309,6 +333,14 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
     if (avatarChanged) AvatarHelper.setGroupAvatar(this, groupChatId, avatarBmp);
 
+    // Update description
+    String description = getDescription();
+    try {
+      DcHelper.getRpc(this).setChatDescription(dcContext.getAccountId(), groupChatId, description != null ? description : "");
+    } catch (RpcException e) {
+      e.printStackTrace();
+    }
+
     attachmentManager.cleanup();
     Intent intent = new Intent();
     intent.putExtra(GroupCreateActivity.EDIT_GROUP_CHAT_ID, groupChatId);
@@ -322,6 +354,17 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
 
   private @Nullable String getGroupName() {
     String ret = groupName.getText() != null ? groupName.getText().toString() : null;
+    if(ret!=null) {
+      ret = ret.trim();
+      if(ret.isEmpty()) {
+        ret = null;
+      }
+    }
+    return ret;
+  }
+
+  private @Nullable String getDescription() {
+    String ret = descriptionText.getText() != null ? descriptionText.getText().toString() : null;
     if(ret!=null) {
       ret = ret.trim();
       if(ret.isEmpty()) {

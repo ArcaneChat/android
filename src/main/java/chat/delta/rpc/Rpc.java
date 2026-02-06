@@ -709,6 +709,25 @@ public class Rpc {
     transport.call("set_chat_profile_image", mapper.valueToTree(accountId), mapper.valueToTree(chatId), mapper.valueToTree(imagePath));
   }
 
+  /**
+   * Set group or broadcast channel description.
+   * Sends out #DC_EVENT_CHAT_MODIFIED and #DC_EVENT_MSGS_CHANGED if a status message was sent.
+   * <p>
+   * See also getChatDescription().
+   */
+  public void setChatDescription(Integer accountId, Integer chatId, String descriptionStr) throws RpcException {
+    transport.call("set_chat_description", mapper.valueToTree(accountId), mapper.valueToTree(chatId), mapper.valueToTree(descriptionStr));
+  }
+
+  /**
+   * Get group or broadcast channel description.
+   * <p>
+   * See also setChatDescription().
+   */
+  public String getChatDescription(Integer accountId, Integer chatId) throws RpcException {
+    return transport.callForResult(new TypeReference<String>(){}, "get_chat_description", mapper.valueToTree(accountId), mapper.valueToTree(chatId));
+  }
+
   public void setChatVisibility(Integer accountId, Integer chatId, ChatVisibility visibility) throws RpcException {
     transport.call("set_chat_visibility", mapper.valueToTree(accountId), mapper.valueToTree(chatId), mapper.valueToTree(visibility));
   }
