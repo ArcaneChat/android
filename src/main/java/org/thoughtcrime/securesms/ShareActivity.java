@@ -121,8 +121,8 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity implement
         streamExtras.add(uri);
     } else if (getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM) != null) {
       streamExtras = getIntent().getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-    } else if (uri != null) {
-      streamExtras.add(uri);
+    } else if (getIntent().getData() != null) {
+      streamExtras.add(getIntent().getData());
     }
 
     if (needsFilePermission(streamExtras)) {
