@@ -30,6 +30,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import chat.delta.rpc.RpcException;
+
 public class ProfileAdapter extends RecyclerView.Adapter
 {
   public static final int ITEM_AVATAR = 10;
@@ -278,8 +280,26 @@ public class ProfileAdapter extends RecyclerView.Adapter
 
     itemData.add(new ItemData(ITEM_AVATAR, null, 0));
 
-    if (isSelfTalk || dcContact != null && !dcContact.getStatus().isEmpty()) {
-      itemDataStatusText = isSelfTalk ? context.getString(R.string.saved_messages_explain) : dcContact.getStatus();
+    // Show status/description for contacts, self-talk, groups, and broadcast channels
+    String statusOrDescription = "";
+    if (isSelfTalk) {
+      statusOrDescription = context.getString(R.string.saved_messages_explain);
+    } else if (dcContact != null && !dcContact.getStatus().isEmpty()) {
+      statusOrDescription = dcContact.getStatus();
+    } else if (dcChat != null && (dcChat.isGroup() || isOutBroadcast)) {
+      // Load group or broadcast channel description
+      try {
+        String description = DcHelper.getRpc(context).getChatDescription(dcContext.getAccountId(), dcChat.getId());
+        if (description != null && !description.isEmpty()) {
+          statusOrDescription = description;
+        }
+      } catch (RpcException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (!statusOrDescription.isEmpty()) {
+      itemDataStatusText = statusOrDescription;
       itemData.add(new ItemData(ITEM_SIGNATURE, itemDataStatusText, 0));
     } else {
       itemData.add(new ItemData(ITEM_DIVIDER, null, 0));
