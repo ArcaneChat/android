@@ -27,6 +27,7 @@ public class RelayListAdapter extends RecyclerView.Adapter<RelayListAdapter.Rela
     void onRelayClick(EnteredLoginParam relay);
     void onRelayEdit(EnteredLoginParam relay);
     void onRelayDelete(EnteredLoginParam relay);
+    void onRelayLongClick(View view, EnteredLoginParam relay, boolean isMain);
   }
 
   public RelayListAdapter(OnRelayClickListener listener) {
@@ -67,16 +68,12 @@ public class RelayListAdapter extends RecyclerView.Adapter<RelayListAdapter.Rela
     private final TextView titleText;
     private final TextView subtitleText;
     private final ImageView mainIndicator;
-    private final ImageView editButton;
-    private final ImageView deleteButton;
 
     public RelayViewHolder(@NonNull View itemView) {
       super(itemView);
       titleText = itemView.findViewById(R.id.title);
       subtitleText = itemView.findViewById(R.id.subtitle);
       mainIndicator = itemView.findViewById(R.id.main_indicator);
-      editButton = itemView.findViewById(R.id.edit_button);
-      deleteButton = itemView.findViewById(R.id.delete_button);
     }
 
     public void bind(EnteredLoginParam relay, boolean isMain, OnRelayClickListener listener) {
@@ -84,7 +81,6 @@ public class RelayListAdapter extends RecyclerView.Adapter<RelayListAdapter.Rela
       titleText.setText(parts.length == 2? parts[1] : parts[0]);
       subtitleText.setText(parts.length == 2? parts[0] : "");
       mainIndicator.setVisibility(isMain ? View.VISIBLE : View.INVISIBLE);
-      deleteButton.setVisibility(isMain ? View.GONE : View.VISIBLE);
 
       itemView.setOnClickListener(v -> {
         if (listener != null) {
@@ -92,16 +88,11 @@ public class RelayListAdapter extends RecyclerView.Adapter<RelayListAdapter.Rela
         }
       });
 
-      editButton.setOnClickListener(v -> {
+      itemView.setOnLongClickListener(v -> {
         if (listener != null) {
-          listener.onRelayEdit(relay);
+          listener.onRelayLongClick(v, relay, isMain);
         }
-      });
-
-      deleteButton.setOnClickListener(v -> {
-        if (listener != null) {
-          listener.onRelayDelete(relay);
-        }
+        return true;
       });
     }
   }

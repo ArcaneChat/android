@@ -3,7 +3,9 @@ package org.thoughtcrime.securesms.relay;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -43,6 +45,10 @@ public class RelayListActivity extends BaseActionBarActivity
   private RelayListAdapter adapter;
   private Rpc rpc;
   private int accId;
+  
+  /** Relay selected for context menu */
+  private EnteredLoginParam contextMenuRelay = null;
+  private boolean contextMenuRelayIsMain = false;
 
   /** QR provided via Intent extras needs to be saved to pass it to QrCodeHandler when authorization finishes */
   private String qrData = null;
@@ -164,6 +170,43 @@ public class RelayListActivity extends BaseActionBarActivity
       })
       .setNegativeButton(R.string.cancel, null)
       .show();
+  }
+
+  @Override
+  public void onRelayLongClick(View view, EnteredLoginParam relay, boolean isMain) {
+    contextMenuRelay = relay;
+    contextMenuRelayIsMain = isMain;
+    registerForContextMenu(view);
+    openContextMenu(view);
+    unregisterForContextMenu(view);
+  }
+
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    getMenuInflater().inflate(R.menu.relay_item_context, menu);
+    
+    // Hide delete option if this is the main relay
+    if (contextMenuRelayIsMain) {
+      menu.findItem(R.id.menu_delete).setVisible(false);
+    }
+  }
+
+  @Override
+  public boolean onContextItemSelected(@NonNull MenuItem item) {
+    int itemId = item.getItemId();
+    if (itemId == R.id.menu_edit) {
+      if (contextMenuRelay != null) {
+        onRelayEdit(contextMenuRelay);
+      }
+      return true;
+    } else if (itemId == R.id.menu_delete) {
+      if (contextMenuRelay != null) {
+        onRelayDelete(contextMenuRelay);
+      }
+      return true;
+    }
+    return super.onContextItemSelected(item);
   }
 
   @Override
