@@ -1,6 +1,6 @@
 # Delta Chat Android Changelog
 
-## v2.40.0
+## v2.42.0
 2026-02
 
 * Improve switch speed when changing profiles
@@ -15,6 +15,8 @@
 * Add indication for blocked contacts in user profile
 * Allow to start calls with video disabled
 * Show hint for empty contact search results
+* Add background playing for voice messages and other audio files
+* Allow scanning Invitation Code when creating a new profile
 * Fix: Show dialog if pasted QR codes are invalid
 * Fix: Refresh chat list when returning from conversation if selected profile changed
 * Fix: Update menu when using "select all" in contact selection
@@ -25,7 +27,7 @@
 * Fix layout problems inside in-chat apps
 * Avoid crash when the app is minimized with profile switcher or reactions dialogs open
 * Remove "trash icon" option from contact selection list when adding members to group
-* Update to core 2.40.0
+* Update to core 2.42.0
 
 ## v2.35.0
 2026-01
