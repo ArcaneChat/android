@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.util;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Spanned;
 import android.view.View;
@@ -7,6 +8,8 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.TextView;
 
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+
+import org.thoughtcrime.securesms.R;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +25,12 @@ public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
   
   // Map to store span references for each action ID
   private final Map<Integer, LongClickCopySpan> actionSpanMap = new HashMap<>();
+  
+  private final Context context;
+  
+  public LinkAccessibilityDelegate(Context context) {
+    this.context = context;
+  }
 
   @Override
   public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
@@ -52,7 +61,7 @@ public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
       
       if (start >= 0 && end > start && end <= spanned.length()) {
         String linkText = spanned.subSequence(start, end).toString();
-        String label = "Open link: " + linkText;
+        String label = context.getString(R.string.accessibility_link_action, linkText);
         
         // Create a unique action ID for each link
         final int actionId = LINK_ACTION_BASE_ID + i;

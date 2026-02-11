@@ -432,7 +432,7 @@ public class ConversationItem extends BaseConversationItem
       
       // Set accessibility delegate for TalkBack to expose links as custom actions
       if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
-        bodyText.setAccessibilityDelegate(new LinkAccessibilityDelegate());
+        bodyText.setAccessibilityDelegate(new LinkAccessibilityDelegate(context));
       } else {
         bodyText.setAccessibilityDelegate(null);
       }
