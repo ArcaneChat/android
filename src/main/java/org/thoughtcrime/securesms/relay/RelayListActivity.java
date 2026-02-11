@@ -195,9 +195,7 @@ public class RelayListActivity extends BaseActionBarActivity
   @Override
   public void onContextMenuClosed(android.view.Menu menu) {
     super.onContextMenuClosed(menu);
-    // Clean up context menu state
-    contextMenuRelay = null;
-    contextMenuRelayIsMain = false;
+    clearContextMenuState();
   }
 
   @Override
@@ -206,19 +204,22 @@ public class RelayListActivity extends BaseActionBarActivity
     if (itemId == R.id.menu_edit) {
       if (contextMenuRelay != null) {
         onRelayEdit(contextMenuRelay);
-        contextMenuRelay = null;
-        contextMenuRelayIsMain = false;
+        clearContextMenuState();
       }
       return true;
     } else if (itemId == R.id.menu_delete) {
       if (contextMenuRelay != null) {
         onRelayDelete(contextMenuRelay);
-        contextMenuRelay = null;
-        contextMenuRelayIsMain = false;
+        clearContextMenuState();
       }
       return true;
     }
     return super.onContextItemSelected(item);
+  }
+
+  private void clearContextMenuState() {
+    contextMenuRelay = null;
+    contextMenuRelayIsMain = false;
   }
 
   @Override
