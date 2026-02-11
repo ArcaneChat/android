@@ -53,7 +53,10 @@ public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
     Spanned spanned = (Spanned) text;
     LongClickCopySpan[] spans = spanned.getSpans(0, spanned.length(), LongClickCopySpan.class);
     
-    // Clear previous mappings
+    // Clear and rebuild mappings each time. This is necessary because:
+    // 1. TextView content may have changed since the last call
+    // 2. The same delegate instance may be reused for different text content
+    // 3. This method is called infrequently enough that performance is not a concern
     actionSpanMap.clear();
     
     // Add a custom action for each link

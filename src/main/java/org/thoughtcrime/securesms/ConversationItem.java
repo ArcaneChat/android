@@ -431,7 +431,10 @@ public class ConversationItem extends BaseConversationItem
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);
       
-      // Set accessibility delegate for TalkBack to expose links as custom actions
+      // Set accessibility delegate for TalkBack to expose links as custom actions.
+      // Note: During batch selection mode (batchSelected.isEmpty() == false), links are not
+      // linkified (see line 427-428), so there's no need to set the accessibility delegate.
+      // This also ensures that accessibility focus doesn't interfere with batch selection UI.
       if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
         if (linkAccessibilityDelegate == null) {
           linkAccessibilityDelegate = new LinkAccessibilityDelegate(context);
