@@ -126,6 +126,7 @@ public class ConversationItem extends BaseConversationItem
   private           Stub<VcardView>                 vcardViewStub;
   private           Stub<CallItemView>              callViewStub;
   private @Nullable EventListener                   eventListener;
+  private @Nullable LinkAccessibilityDelegate       linkAccessibilityDelegate;
 
   private int measureCalls;
 
@@ -432,7 +433,10 @@ public class ConversationItem extends BaseConversationItem
       
       // Set accessibility delegate for TalkBack to expose links as custom actions
       if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
-        bodyText.setAccessibilityDelegate(new LinkAccessibilityDelegate(context));
+        if (linkAccessibilityDelegate == null) {
+          linkAccessibilityDelegate = new LinkAccessibilityDelegate(context);
+        }
+        bodyText.setAccessibilityDelegate(linkAccessibilityDelegate);
       } else {
         bodyText.setAccessibilityDelegate(null);
       }

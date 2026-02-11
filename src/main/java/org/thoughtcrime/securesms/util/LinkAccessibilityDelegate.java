@@ -20,7 +20,10 @@ import java.util.Map;
  */
 public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
   
-  // Base ID for custom link actions (using a high number to avoid conflicts)
+  // Base ID for custom link actions. Using a high number (0x00FF0000, which is 16,711,680 in decimal)
+  // to avoid conflicts with Android's standard accessibility action IDs, which are typically small integers
+  // (e.g., ACTION_CLICK = 16, ACTION_LONG_CLICK = 32, etc.) or specific bit flags.
+  // This range is safe for custom actions as per Android accessibility guidelines.
   private static final int LINK_ACTION_BASE_ID = 0x00FF0000;
   
   // Map to store span references for each action ID
