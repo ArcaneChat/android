@@ -132,7 +132,7 @@ public class DcHelper {
     dcContext.setStockTranslation(68, context.getString(R.string.device_talk));
     dcContext.setStockTranslation(69, context.getString(R.string.saved_messages));
     dcContext.setStockTranslation(70, context.getString(R.string.device_talk_explain));
-    dcContext.setStockTranslation(71, context.getString(R.string.device_welcome_message, "https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&x=MVPi07rQBEmHO4FRb3brpwDe&j=n8mkKqu42WAKKUCx1bQOVh23&s=RxuXoa0vhvTs0QLsWM45Ues0&a=adb%40arcanechat.me&n=adb&b=ArcaneChat+Channel"));
+    dcContext.setStockTranslation(71, context.getString(R.string.device_welcome_message, "https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&x=3KvvQZfzU4t-9u5s0PF3USGp&i=X-QDZ681F6Plz_uBu47CKdg4&s=IwE4LraLDcdPBW597wB7DBnI&a=arcanechat%40arcanechat.me&n=ArcaneChat&g=ArcaneChat+Community"));
     dcContext.setStockTranslation(73, context.getString(R.string.systemmsg_subject_for_new_contact));
     dcContext.setStockTranslation(74, context.getString(R.string.systemmsg_failed_sending_to));
     dcContext.setStockTranslation(84, context.getString(R.string.configuration_failed_with_error));
