@@ -65,6 +65,7 @@ import org.thoughtcrime.securesms.mms.StickerSlide;
 import org.thoughtcrime.securesms.mms.VcardSlide;
 import org.thoughtcrime.securesms.reactions.ReactionsConversationView;
 import org.thoughtcrime.securesms.recipients.Recipient;
+import org.thoughtcrime.securesms.util.LinkAccessibilityDelegate;
 import org.thoughtcrime.securesms.util.Linkifier;
 import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.MarkdownUtil;
@@ -428,6 +429,13 @@ public class ConversationItem extends BaseConversationItem
       }
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);
+      
+      // Set accessibility delegate for TalkBack to expose links as custom actions
+      if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
+        bodyText.setAccessibilityDelegate(new LinkAccessibilityDelegate());
+      } else {
+        bodyText.setAccessibilityDelegate(null);
+      }
     }
 
     int downloadState = messageRecord.getDownloadState();
