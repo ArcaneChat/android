@@ -563,7 +563,7 @@ public class ConversationFragment extends MessageSelectorFragment
 
         File stickerFile = message.getFileAsFile();
         if (stickerFile == null || !stickerFile.exists()) {
-            Toast.makeText(getContext(), R.string.cannot_save_file, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -577,21 +577,17 @@ public class ConversationFragment extends MessageSelectorFragment
         String fileName = System.currentTimeMillis() + "_" + stickerFile.getName();
         File destFile = new File(stickersDir, fileName);
 
-        try {
-            java.io.FileInputStream in = new java.io.FileInputStream(stickerFile);
-            java.io.FileOutputStream out = new java.io.FileOutputStream(destFile);
+        try (java.io.FileInputStream in = new java.io.FileInputStream(stickerFile);
+             java.io.FileOutputStream out = new java.io.FileOutputStream(destFile)) {
             byte[] buffer = new byte[1024];
             int read;
             while ((read = in.read(buffer)) != -1) {
                 out.write(buffer, 0, read);
             }
-            in.close();
-            out.close();
-
             Toast.makeText(getContext(), R.string.add_to_sticker_collection, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, "Error saving sticker", e);
-            Toast.makeText(getContext(), R.string.cannot_save_file, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();
         }
     }
 
