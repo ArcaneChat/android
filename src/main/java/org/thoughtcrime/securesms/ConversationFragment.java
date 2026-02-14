@@ -70,6 +70,7 @@ import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.ConversationAdaptiveActionsToolbar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -401,6 +402,7 @@ public class ConversationFragment extends MessageSelectorFragment
             boolean showReplyPrivately = chat.isMultiUser() && !messageRecord.isOutgoing() && canReply;
             menu.findItem(R.id.menu_context_reply_privately).setVisible(showReplyPrivately);
             menu.findItem(R.id.menu_add_to_home_screen).setVisible(messageRecord.getType() == DcMsg.DC_MSG_WEBXDC);
+            menu.findItem(R.id.menu_context_save_sticker).setVisible(messageRecord.getType() == DcMsg.DC_MSG_STICKER);
 
             /*
             boolean saved = messageRecord.getSavedMsgId() != 0;
@@ -551,6 +553,45 @@ public class ConversationFragment extends MessageSelectorFragment
           getActivity().overridePendingTransition(R.anim.slide_from_right, R.anim.fade_scale_out);
         } catch (RpcException e) {
           Log.e(TAG, "RPC error", e);
+        }
+    }
+
+    private void handleSaveSticker(final DcMsg message) {
+        if (message.getType() != DcMsg.DC_MSG_STICKER) {
+            return;
+        }
+
+        File stickerFile = message.getFileAsFile();
+        if (stickerFile == null || !stickerFile.exists()) {
+            Toast.makeText(getContext(), R.string.cannot_save_file, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Create stickers directory in internal storage
+        File stickersDir = new File(getContext().getFilesDir(), "stickers");
+        if (!stickersDir.exists()) {
+            stickersDir.mkdirs();
+        }
+
+        // Copy sticker to stickers directory
+        String fileName = System.currentTimeMillis() + "_" + stickerFile.getName();
+        File destFile = new File(stickersDir, fileName);
+
+        try {
+            java.io.FileInputStream in = new java.io.FileInputStream(stickerFile);
+            java.io.FileOutputStream out = new java.io.FileOutputStream(destFile);
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = in.read(buffer)) != -1) {
+                out.write(buffer, 0, read);
+            }
+            in.close();
+            out.close();
+
+            Toast.makeText(getContext(), R.string.add_to_sticker_collection, Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving sticker", e);
+            Toast.makeText(getContext(), R.string.cannot_save_file, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -1037,6 +1078,10 @@ public class ConversationFragment extends MessageSelectorFragment
             return true;
           } else if (itemId == R.id.menu_toggle_save) {
             handleToggleSave(getListAdapter().getSelectedItems());
+            actionMode.finish();
+            return true;
+          } else if (itemId == R.id.menu_context_save_sticker) {
+            handleSaveSticker(getSelectedMessageRecord(getListAdapter().getSelectedItems()));
             actionMode.finish();
             return true;
           }

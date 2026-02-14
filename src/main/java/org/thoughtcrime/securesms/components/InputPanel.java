@@ -353,6 +353,13 @@ public class InputPanel extends ConstraintLayout
     composeText.setSelection(start + emoji.length());
   }
 
+  @Override
+  public void onStickerPicked(Uri stickerUri) {
+    if (listener != null) {
+      listener.onStickerPicked(stickerUri);
+    }
+  }
+
   public interface Listener {
     void onRecorderStarted();
     void onRecorderLocked();
@@ -361,6 +368,7 @@ public class InputPanel extends ConstraintLayout
     void onRecorderPermissionRequired();
     void onEmojiToggle();
     void onQuoteDismissed();
+    void onStickerPicked(Uri stickerUri);
   }
 
   private static class SlideToCancel {
