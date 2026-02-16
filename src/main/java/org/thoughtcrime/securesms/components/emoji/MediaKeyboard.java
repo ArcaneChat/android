@@ -141,6 +141,12 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
     }
   }
 
+  @Override
+  public void onStickerDeleted(@NonNull File stickerFile) {
+    // Just log for now, no additional action needed
+    Log.i(TAG, "Sticker deleted: " + stickerFile.getName());
+  }
+
   public interface MediaKeyboardListener {
     void onShown();
     void onHidden();

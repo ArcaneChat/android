@@ -89,10 +89,12 @@ public class StickerPickerView extends RecyclerView {
 
   public interface StickerPickerListener {
     void onStickerSelected(@NonNull File stickerFile);
+    void onStickerDeleted(@NonNull File stickerFile);
   }
 
   static class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerViewHolder> {
 
+    private final Context context;
     private final GlideRequests glideRequests;
     private final List<File> stickerFiles;
     private final LayoutInflater layoutInflater;
@@ -102,6 +104,7 @@ public class StickerPickerView extends RecyclerView {
                     @NonNull GlideRequests glideRequests, 
                     @NonNull List<File> stickerFiles,
                     @Nullable StickerPickerListener listener) {
+      this.context = context;
       this.glideRequests = glideRequests;
       this.stickerFiles = stickerFiles;
       this.layoutInflater = LayoutInflater.from(context);
@@ -135,6 +138,28 @@ public class StickerPickerView extends RecyclerView {
       glideRequests.clear(holder.image);
     }
 
+    private void deleteSticker(File stickerFile) {
+      if (stickerFile != null && stickerFile.exists()) {
+        new androidx.appcompat.app.AlertDialog.Builder(context)
+          .setTitle(R.string.delete)
+          .setMessage(R.string.ask_delete_sticker)
+          .setPositiveButton(R.string.delete, (dialog, which) -> {
+            if (stickerFile.delete()) {
+              int position = stickerFiles.indexOf(stickerFile);
+              if (position >= 0) {
+                stickerFiles.remove(position);
+                notifyItemRemoved(position);
+              }
+              if (listener != null) {
+                listener.onStickerDeleted(stickerFile);
+              }
+            }
+          })
+          .setNegativeButton(R.string.cancel, null)
+          .show();
+      }
+    }
+
     class StickerViewHolder extends RecyclerView.ViewHolder {
 
       private File stickerFile;
@@ -147,6 +172,13 @@ public class StickerPickerView extends RecyclerView {
           if (listener != null && stickerFile != null) {
             listener.onStickerSelected(stickerFile);
           }
+        });
+        itemView.setOnLongClickListener(view -> {
+          if (stickerFile != null) {
+            deleteSticker(stickerFile);
+            return true;
+          }
+          return false;
         });
       }
     }
