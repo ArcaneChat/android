@@ -30,6 +30,8 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
   @Nullable private MediaKeyboardListener keyboardListener;
   private EmojiPickerView emojiPicker;
   private StickerPickerView stickerPicker;
+  private View stickerPickerContainer;
+  private View stickerPickerEmpty;
   private TabLayout tabLayout;
 
   public MediaKeyboard(@NonNull Context context) {
@@ -70,6 +72,8 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
   private void setupViews() {
     emojiPicker = findViewById(R.id.emoji_picker);
     stickerPicker = findViewById(R.id.sticker_picker);
+    stickerPickerContainer = findViewById(R.id.sticker_picker_container);
+    stickerPickerEmpty = findViewById(R.id.sticker_picker_empty);
     tabLayout = findViewById(R.id.media_keyboard_tabs);
 
     if (emojiPicker != null) {
@@ -111,8 +115,8 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
     if (emojiPicker != null) {
       emojiPicker.setVisibility(View.VISIBLE);
     }
-    if (stickerPicker != null) {
-      stickerPicker.setVisibility(View.GONE);
+    if (stickerPickerContainer != null) {
+      stickerPickerContainer.setVisibility(View.GONE);
     }
   }
 
@@ -120,9 +124,19 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
     if (emojiPicker != null) {
       emojiPicker.setVisibility(View.GONE);
     }
+    if (stickerPickerContainer != null) {
+      stickerPickerContainer.setVisibility(View.VISIBLE);
+    }
     if (stickerPicker != null) {
-      stickerPicker.setVisibility(View.VISIBLE);
       stickerPicker.loadStickers();
+      updateStickerEmptyState();
+    }
+  }
+
+  private void updateStickerEmptyState() {
+    if (stickerPicker != null && stickerPickerEmpty != null) {
+      boolean hasStickers = stickerPicker.getAdapter() != null && stickerPicker.getAdapter().getItemCount() > 0;
+      stickerPickerEmpty.setVisibility(hasStickers ? View.GONE : View.VISIBLE);
     }
   }
 
@@ -147,8 +161,9 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
 
   @Override
   public void onStickerDeleted(@NonNull File stickerFile) {
-    // Just log for now, no additional action needed
+    // Update empty state after deletion
     Log.i(TAG, "Sticker deleted: " + stickerFile.getName());
+    updateStickerEmptyState();
   }
 
   public interface MediaKeyboardListener {

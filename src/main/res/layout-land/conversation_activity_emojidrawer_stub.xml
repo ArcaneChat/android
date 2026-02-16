@@ -22,15 +22,32 @@
         android:background="?emoji_drawer_background"
         app:emojiGridColumns="12"/>
 
-    <org.thoughtcrime.securesms.components.emoji.StickerPickerView
-        android:id="@+id/sticker_picker"
+    <FrameLayout
+        android:id="@+id/sticker_picker_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?emoji_drawer_background"
-        android:visibility="gone"
-        android:paddingTop="4dp"
-        android:clipToPadding="false"
-        android:clipChildren="false"/>
+        android:visibility="gone">
+
+      <org.thoughtcrime.securesms.components.emoji.StickerPickerView
+          android:id="@+id/sticker_picker"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:background="?emoji_drawer_background"
+          android:paddingTop="4dp"
+          android:clipToPadding="false"
+          android:clipChildren="false"/>
+
+      <TextView
+          android:id="@+id/sticker_picker_empty"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="@string/sticker_picker_empty_hint"
+          android:textColor="?android:attr/textColorSecondary"
+          android:textSize="16sp"
+          android:visibility="gone"/>
+
+    </FrameLayout>
 
   </FrameLayout>
 
