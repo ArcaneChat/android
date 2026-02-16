@@ -1,6 +1,7 @@
 package org.thoughtcrime.securesms.components.emoji;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.components.InputAwareLayout.InputView;
+import org.thoughtcrime.securesms.util.ResUtil;
 
 import java.io.File;
 
@@ -79,8 +81,11 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
     }
 
     if (tabLayout != null) {
-      tabLayout.addTab(tabLayout.newTab().setText(R.string.emoji));
-      tabLayout.addTab(tabLayout.newTab().setText(R.string.sticker));
+      Drawable emojiIcon = ResUtil.getDrawable(getContext(), R.attr.conversation_emoji_toggle);
+      Drawable stickerIcon = ResUtil.getDrawable(getContext(), R.drawable.ic_sticker_24);
+      
+      tabLayout.addTab(tabLayout.newTab().setIcon(emojiIcon));
+      tabLayout.addTab(tabLayout.newTab().setIcon(stickerIcon));
 
       tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
         @Override

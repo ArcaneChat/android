@@ -14,7 +14,10 @@
       android:layout_height="wrap_content"
       android:background="?emoji_drawer_background"
       app:tabMode="fixed"
-      app:tabGravity="fill"/>
+      app:tabGravity="center"
+      app:tabIconTint="?attr/colorControlNormal"
+      app:tabPaddingStart="0dp"
+      app:tabPaddingEnd="0dp"/>
 
   <FrameLayout
       android:id="@+id/media_keyboard_container"
