@@ -82,10 +82,9 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
 
     if (tabLayout != null) {
       Drawable emojiIcon = ResUtil.getDrawable(getContext(), R.attr.conversation_emoji_toggle);
-      Drawable stickerIcon = ResUtil.getDrawable(getContext(), R.drawable.ic_sticker_24);
-      
+
       tabLayout.addTab(tabLayout.newTab().setIcon(emojiIcon));
-      tabLayout.addTab(tabLayout.newTab().setIcon(stickerIcon));
+      tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.ic_sticker_24));
 
       tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
         @Override

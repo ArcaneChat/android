@@ -9,17 +9,6 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-  <com.google.android.material.tabs.TabLayout
-      android:id="@+id/media_keyboard_tabs"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="?emoji_drawer_background"
-      app:tabMode="fixed"
-      app:tabGravity="center"
-      app:tabIconTint="?attr/colorControlNormal"
-      app:tabPaddingStart="0dp"
-      app:tabPaddingEnd="0dp"/>
-
   <FrameLayout
       android:id="@+id/media_keyboard_container"
       android:layout_width="match_parent"
@@ -45,5 +34,20 @@
         android:clipChildren="false"/>
 
   </FrameLayout>
+
+  <com.google.android.material.tabs.TabLayout
+      android:id="@+id/media_keyboard_tabs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?emoji_drawer_background"
+      app:tabMode="fixed"
+      app:tabGravity="center"
+      app:tabIndicatorGravity="top"
+      app:tabIconTint="?attr/colorControlNormal"
+      app:tabPaddingStart="16dp"
+      app:tabPaddingEnd="16dp"
+      app:tabPaddingTop="10dp"
+      app:tabPaddingBottom="10dp"
+      />
 
 </org.thoughtcrime.securesms.components.emoji.MediaKeyboard>
