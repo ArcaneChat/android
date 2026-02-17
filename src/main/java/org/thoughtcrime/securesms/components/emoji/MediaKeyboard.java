@@ -140,6 +140,13 @@ public class MediaKeyboard extends LinearLayout implements InputView, Consumer<E
     }
   }
 
+  public void refreshStickerPicker() {
+    if (stickerPicker != null) {
+      stickerPicker.loadStickers();
+      updateStickerEmptyState();
+    }
+  }
+
   @Override
   public void hide(boolean immediate) {
     setVisibility(GONE);

@@ -585,6 +585,11 @@ public class ConversationFragment extends MessageSelectorFragment
                 out.write(buffer, 0, read);
             }
             Toast.makeText(getContext(), R.string.add_to_sticker_collection, Toast.LENGTH_SHORT).show();
+            
+            // Refresh sticker picker to show the newly added sticker
+            if (getActivity() instanceof ConversationActivity) {
+                ((ConversationActivity) getActivity()).refreshStickerPicker();
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error saving sticker", e);
             Toast.makeText(getContext(), R.string.error, Toast.LENGTH_SHORT).show();

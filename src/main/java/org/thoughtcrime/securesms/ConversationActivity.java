@@ -1462,6 +1462,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     sendSticker(stickerUri, "image/png");
   }
 
+  public void refreshStickerPicker() {
+    if (emojiPicker != null) {
+      emojiPicker.refreshStickerPicker();
+    }
+  }
+
   // media selected by the system keyboard
   @Override
   public void onMediaSelected(@NonNull Uri uri, String contentType) {
