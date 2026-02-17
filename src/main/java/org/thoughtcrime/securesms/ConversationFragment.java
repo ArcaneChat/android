@@ -402,7 +402,7 @@ public class ConversationFragment extends MessageSelectorFragment
             boolean showReplyPrivately = chat.isMultiUser() && !messageRecord.isOutgoing() && canReply;
             menu.findItem(R.id.menu_context_reply_privately).setVisible(showReplyPrivately);
             menu.findItem(R.id.menu_add_to_home_screen).setVisible(messageRecord.getType() == DcMsg.DC_MSG_WEBXDC);
-            menu.findItem(R.id.menu_context_save_sticker).setVisible(messageRecord.getType() == DcMsg.DC_MSG_STICKER);
+            menu.findItem(R.id.menu_context_save_sticker).setVisible(false);
 
             /*
             boolean saved = messageRecord.getSavedMsgId() != 0;
@@ -984,6 +984,11 @@ public class ConversationFragment extends MessageSelectorFragment
         ReactionsDetailsFragment dialog = ReactionsDetailsFragment.newInstance(messageRecord.getId());
         dialog.show(getActivity().getSupportFragmentManager(), null);
       }
+
+      @Override
+      public void onStickerClicked(DcMsg messageRecord) {
+        handleSaveSticker(messageRecord);
+      }
     }
 
     @Override
@@ -1074,10 +1079,6 @@ public class ConversationFragment extends MessageSelectorFragment
             return true;
           } else if (itemId == R.id.menu_toggle_save) {
             handleToggleSave(getListAdapter().getSelectedItems());
-            actionMode.finish();
-            return true;
-          } else if (itemId == R.id.menu_context_save_sticker) {
-            handleSaveSticker(getSelectedMessageRecord(getListAdapter().getSelectedItems()));
             actionMode.finish();
             return true;
           }
