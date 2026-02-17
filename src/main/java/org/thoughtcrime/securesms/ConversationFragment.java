@@ -987,7 +987,14 @@ public class ConversationFragment extends MessageSelectorFragment
 
       @Override
       public void onStickerClicked(DcMsg messageRecord) {
-        handleSaveSticker(messageRecord);
+        new androidx.appcompat.app.AlertDialog.Builder(getContext())
+          .setTitle(R.string.add_to_sticker_collection)
+          .setMessage(R.string.ask_add_sticker_to_collection)
+          .setPositiveButton(R.string.ok, (dialog, which) -> {
+            handleSaveSticker(messageRecord);
+          })
+          .setNegativeButton(R.string.cancel, null)
+          .show();
       }
     }
 
