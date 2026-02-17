@@ -69,22 +69,13 @@ public class StickerPickerView extends RecyclerView {
     File[] files = stickerDir.listFiles();
     if (files != null) {
       for (File file : files) {
-        if (file.isFile() && isImageFile(file.getName())) {
+        if (file.isFile()) {
           stickerFiles.add(file);
         }
       }
     }
 
     return stickerFiles;
-  }
-
-  private boolean isImageFile(String fileName) {
-    String lowerName = fileName.toLowerCase();
-    return lowerName.endsWith(".png") || 
-           lowerName.endsWith(".jpg") || 
-           lowerName.endsWith(".jpeg") ||
-           lowerName.endsWith(".webp") ||
-           lowerName.endsWith(".gif");
   }
 
   public interface StickerPickerListener {
