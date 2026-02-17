@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+  <string name="description">Deskribapena</string>
+  <string name="could_not_open_file">Ezin izan da fitxategia ireki</string>
+  <string name="menu_export_image">Esportatu irudia</string>
+  <!-- the word "or" to separate blocks in the user interface that are mutually exclusive -->
+  <string name="or_separator">edo</string>
+  <string name="online">online</string>
+  <string name="pink">Arrosa</string>
+  <string name="gray">Grisa</string>
+  <string name="share_location_for_12_hours">12 orduz</string>
+
+  <!-- device messages for updates -->
+  <!-- when translating the sentence about the ArcaneChat channel, clarify that the channel is in English -->
+  <string name="device_welcome_message">🔮 Ongi etorri ArcaneChat-era ✨\n\nLagunekin harremanetan jartzeko:\n\n🤳🏻 Sakatu \"QR kodea\" bi gailuen pantaila nagusian. Aukeratu \"Eskaneatu QR kodea\" gailu batean, eta zuzendu beste gailurantz\n\n🔗 Gela berean ez bazaudete, gonbidapen-esteka parteka dezakezu menuko \"Gonbidatu lagunak\" atalean\n\n📢 Bat egin [ArcaneChat Kanal Ofiziala]rekin (%1$s) (ingelesez) garapen-egoerari buruzko berri guztiak izateko.</string>
+
+  <string name="update_2_33">🔮 Zer berri?\n\n★ Android 16 helburu\n\n★ Hobetu pantaila osoko euskarria\n\n★ Aldatu mezuetako esteken kolorea\n\n★ Metadatuen babesa: babestu mezuen hartzaileak\n\n★ Konponduta: saihestu atzeko planoan izoztuta geratzea\n\n★ Bideo-grabaketaren kudeaketa hobetu da\n\n★ Beste hainbat konponketa eta hobekuntza txiki\n\n\n💜 Mesedez, egin dohaintza bat independente izaten eta hobekuntzak ekartzen jarraitzeko: %1$s</string>
+</resources>
