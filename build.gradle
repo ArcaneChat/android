@@ -34,7 +34,7 @@ android {
 
     defaultConfig {
         versionCode 30000737
-        versionName "2.42.0"
+        versionName "2.43.0"
 
         applicationId "chat.delta.lite"
         multiDexEnabled true
