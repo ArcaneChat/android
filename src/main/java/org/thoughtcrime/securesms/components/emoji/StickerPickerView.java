@@ -22,6 +22,8 @@ import org.thoughtcrime.securesms.mms.GlideRequests;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class StickerPickerView extends RecyclerView {
@@ -74,6 +76,14 @@ public class StickerPickerView extends RecyclerView {
         }
       }
     }
+
+    // Sort stickers by filename
+    Collections.sort(stickerFiles, new Comparator<File>() {
+      @Override
+      public int compare(File f1, File f2) {
+        return f1.getName().compareToIgnoreCase(f2.getName());
+      }
+    });
 
     return stickerFiles;
   }
