@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -54,16 +54,18 @@
 
                     <TextView
                         android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         style="@style/AttachmentTypeLabel"
                         android:text="@string/video"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -82,14 +84,17 @@
                     <TextView
                         android:layout_marginTop="10dp"
                         style="@style/AttachmentTypeLabel"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/gallery"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -108,14 +113,17 @@
                     <TextView
                         android:layout_marginTop="10dp"
                         style="@style/AttachmentTypeLabel"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         android:text="@string/file"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -133,15 +141,18 @@
 
                     <TextView
                         android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         style="@style/AttachmentTypeLabel"
                         android:text="@string/webxdc_app"/>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -159,8 +170,11 @@
 
                     <TextView
                         android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         style="@style/AttachmentTypeLabel"
                         android:text="@string/contact"/>
 
@@ -168,7 +182,7 @@
 
                 <LinearLayout
                     android:id="@+id/location_linear_layout"
-                    android:layout_width="wrap_content"
+                    android:layout_width="80dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -188,9 +202,12 @@
                     <TextView
                         android:layout_marginTop="10dp"
                         android:id="@+id/location_button_label"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:visibility="visible"
+                        android:gravity="center"
+                        android:ellipsize="end"
+                        android:maxLines="1"
                         style="@style/AttachmentTypeLabel"
                         android:text="@string/location"/>
 
