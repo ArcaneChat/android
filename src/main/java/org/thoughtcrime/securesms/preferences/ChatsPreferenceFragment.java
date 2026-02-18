@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -30,10 +32,21 @@ import org.thoughtcrime.securesms.util.Util;
 public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
   private ListPreference mediaQuality;
   private ListPreference autoDownload;
+  private ActivityResultLauncher<Intent> screenLockLauncher;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
+
+    // Register activity result launcher for screen lock
+    screenLockLauncher = registerForActivityResult(
+      new ActivityResultContracts.StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == RESULT_OK) {
+          performBackup();
+        }
+      }
+    );
 
     mediaQuality = (ListPreference) this.findPreference("pref_compression");
     if (mediaQuality != null) {
@@ -113,14 +126,6 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     }
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CONFIRM_CREDENTIALS_BACKUP) {
-      performBackup();
-    }
-  }
-
   public static CharSequence getSummary(Context context) {
     final String quality;
     if (Prefs.isHardCompressionEnabled(context)) {
@@ -131,6 +136,19 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
     return context.getString(R.string.pref_outgoing_media_quality) + " " + quality;
   }
 
+  private boolean applyScreenLockWithLauncher() {
+    android.app.KeyguardManager keyguardManager = (android.app.KeyguardManager) requireActivity().getSystemService(Context.KEYGUARD_SERVICE);
+    Intent intent;
+    if (keyguardManager != null) {
+      intent = keyguardManager.createConfirmDeviceCredentialIntent(getString(R.string.pref_backup), getString(R.string.enter_system_secret_to_continue));
+      if (intent != null) {
+        screenLockLauncher.launch(intent);
+        return true;
+      }
+    }
+    return false;
+  }
+
   /***********************************************************************************************
    * Backup
    **********************************************************************************************/
@@ -138,8 +156,7 @@ public class ChatsPreferenceFragment extends ListSummaryPreferenceFragment {
   private class BackupListener implements Preference.OnPreferenceClickListener {
     @Override
     public boolean onPreferenceClick(@NonNull Preference preference) {
-      boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.pref_backup), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_BACKUP);
-      if (!result) {
+      if (!applyScreenLockWithLauncher()) {
         performBackup();
       }
       return true;

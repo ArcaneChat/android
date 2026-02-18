@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -55,10 +57,21 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   CheckBoxPreference multiDeviceCheckbox;
   CheckBoxPreference mvboxMoveCheckbox;
   CheckBoxPreference onlyFetchMvboxCheckbox;
+  private ActivityResultLauncher<Intent> screenLockLauncher;
 
   @Override
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
+
+    // Register activity result launcher for screen lock
+    screenLockLauncher = registerForActivityResult(
+      new ActivityResultContracts.StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == RESULT_OK) {
+          openRelayListActivity();
+        }
+      }
+    );
 
     showEmails = (ListPreference) this.findPreference("pref_show_emails");
     if (showEmails != null) {
@@ -158,8 +171,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     Preference relayListBtn = this.findPreference("pref_relay_list_button");
     if (relayListBtn != null) {
       relayListBtn.setOnPreferenceClickListener(((preference) -> {
-        boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.transports), getString(R.string.enter_system_secret_to_continue), REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT);
-        if (!result) {
+        if (!applyScreenLockWithLauncher()) {
           openRelayListActivity();
         }
         return true;
@@ -191,12 +203,17 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     onlyFetchMvboxCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
   }
 
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if (resultCode == RESULT_OK && requestCode == REQUEST_CODE_CONFIRM_CREDENTIALS_ACCOUNT) {
-      openRelayListActivity();
+  private boolean applyScreenLockWithLauncher() {
+    android.app.KeyguardManager keyguardManager = (android.app.KeyguardManager) requireActivity().getSystemService(Context.KEYGUARD_SERVICE);
+    Intent intent;
+    if (keyguardManager != null) {
+      intent = keyguardManager.createConfirmDeviceCredentialIntent(getString(R.string.transports), getString(R.string.enter_system_secret_to_continue));
+      if (intent != null) {
+        screenLockLauncher.launch(intent);
+        return true;
+      }
     }
+    return false;
   }
 
   protected File copyToCacheDir(Uri uri) throws IOException {

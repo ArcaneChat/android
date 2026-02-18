@@ -32,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -91,6 +93,7 @@ public class ContactSelectionListFragment extends    Fragment
   private TextView                  emptyView;
   private ActionMode                actionMode;
   private ActionMode.Callback       actionModeCallback;
+  private ActivityResultLauncher<Intent> newContactLauncher;
 
   @Override
   public void onActivityCreated(Bundle icicle) {
@@ -98,6 +101,22 @@ public class ContactSelectionListFragment extends    Fragment
 
     dcContext = DcHelper.getContext(getActivity());
     DcHelper.getEventCenter(getActivity()).addObserver(DcContext.DC_EVENT_CONTACTS_CHANGED, this);
+
+    // Register activity result launcher
+    newContactLauncher = registerForActivityResult(
+      new ActivityResultContracts.StartActivityForResult(),
+      result -> {
+        if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+          int contactId = result.getData().getIntExtra(NewContactActivity.CONTACT_ID_EXTRA, 0);
+          if (contactId != 0) {
+            selectedContacts.add(contactId);
+            deselectedContacts.remove(contactId);
+          }
+          getLoaderManager().restartLoader(0, null, ContactSelectionListFragment.this);
+        }
+      }
+    );
+
     initializeCursor();
   }
 
@@ -314,7 +333,7 @@ public class ContactSelectionListFragment extends    Fragment
             intent.putExtra(NewContactActivity.ADDR_EXTRA, cursorFilter);
           }
           if (isMulti()) {
-            startActivityForResult(intent, CONTACT_ADDR_RESULT_CODE);
+            newContactLauncher.launch(intent);
           } else {
             requireContext().startActivity(intent);
           }
@@ -359,19 +378,6 @@ public class ContactSelectionListFragment extends    Fragment
   @Override
   public void handleEvent(@NonNull DcEvent event) {
     if (event.getId()==DcContext.DC_EVENT_CONTACTS_CHANGED) {
-      getLoaderManager().restartLoader(0, null, ContactSelectionListFragment.this);
-    }
-  }
-
-  @Override
-  public void onActivityResult(int reqCode, int resultCode, final Intent data) {
-    super.onActivityResult(reqCode, resultCode, data);
-    if (resultCode == Activity.RESULT_OK && reqCode == CONTACT_ADDR_RESULT_CODE) {
-      int contactId = data.getIntExtra(NewContactActivity.CONTACT_ID_EXTRA, 0);
-      if (contactId != 0) {
-        selectedContacts.add(contactId);
-        deselectedContacts.remove(contactId);
-      }
       getLoaderManager().restartLoader(0, null, ContactSelectionListFragment.this);
     }
   }

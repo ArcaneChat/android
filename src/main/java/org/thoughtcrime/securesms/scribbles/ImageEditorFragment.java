@@ -44,8 +44,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
 
   private static final String KEY_IMAGE_URI = "image_uri";
 
-  public static final int SELECT_STICKER_REQUEST_CODE = 123;
-
   private EditorModel restoredModel;
 
   @Nullable
@@ -193,12 +191,6 @@ public final class ImageEditorFragment extends Fragment implements ImageEditorHu
     currentSelection = element;
 
     startTextEntityEditing(element, true);
-  }
-
-  @Override
-  public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    imageEditorHud.enterMode(ImageEditorHud.Mode.NONE);
   }
 
   @Override
