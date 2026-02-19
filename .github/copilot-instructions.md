@@ -8,7 +8,7 @@ ArcaneChat is a Delta Chat Android client built on top of the official Delta Cha
 - **Language:** Java (Java 8 compatibility)
 - **Build System:** Gradle with Android Gradle Plugin 8.11.1
 - **Min SDK:** 21 (Android 5.0)
-- **Target SDK:** 36 (Android 15)
+- **Target SDK:** 36 (Android 16)
 - **NDK Version:** 27.0.12077973
 - **Native Components:** Rust (deltachat-core-rust submodule)
 - **UI Framework:** Android SDK, Material Design Components
@@ -262,7 +262,7 @@ ArcaneChat has extended WebXDC support:
 - **Gradle:** Use wrapper (`./gradlew`) to ensure correct Gradle version
 - **NDK:** Must use version 27.0.12077973 (specified in build.gradle)
 - **Min SDK:** 21 (Android 5.0) - code must be compatible
-- **Target SDK:** 36 (Android 15) - test on this API level when possible
+- **Target SDK:** 36 (Android 16) - test on this API level when possible
 - **ProGuard:** Always enabled - ensure ProGuard rules are correct for new dependencies
 - **Multi-dex:** Enabled - app exceeds 65k method limit
 
