@@ -45,9 +45,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/emoji_suggestions"
         android:layout_width="0dp"
-        android:layout_height="44dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:background="?attr/input_panel_bg_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
