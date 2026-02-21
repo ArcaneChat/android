@@ -1619,7 +1619,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (query.equals(lastEmojiQuery)) return;
     lastEmojiQuery = query;
     Util.runOnBackground(() -> {
-      List<String> results = EmojiSearch.getInstance(this).search(query);
+      List<String> results = EmojiSearch.search(query);
       Util.runOnMain(() -> {
         if (!query.equals(lastEmojiQuery)) return; // stale result
         if (results.isEmpty()) {

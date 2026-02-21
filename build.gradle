@@ -210,6 +210,9 @@ dependencies {
     implementation "io.noties.markwon:ext-strikethrough:$markwon_version"
     implementation "io.noties.markwon:inline-parser:$markwon_version"
     implementation 'com.airbnb.android:lottie:4.2.2' // Lottie animations support.
+    implementation ('com.vdurmont:emoji-java:5.1.1') { // emoji dataset for auto-completion
+        exclude group: 'org.json', module: 'json'
+    }
 
     def media3_version = "1.8.0"   // 1.9.0 need minSdkVersion 23
 
