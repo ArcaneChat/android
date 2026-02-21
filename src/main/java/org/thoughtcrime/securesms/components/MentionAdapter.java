@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms.components;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.b44t.messenger.DcContact;
 
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.mms.GlideRequests;
+import org.thoughtcrime.securesms.recipients.Recipient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +25,12 @@ public class MentionAdapter extends RecyclerView.Adapter<MentionAdapter.ViewHold
     }
 
     private final List<DcContact> contacts = new ArrayList<>();
+    private final GlideRequests glideRequests;
     private OnMentionClickListener listener;
+
+    public MentionAdapter(@NonNull GlideRequests glideRequests) {
+        this.glideRequests = glideRequests;
+    }
 
     public void setContacts(List<DcContact> newContacts) {
         contacts.clear();
@@ -45,6 +53,8 @@ public class MentionAdapter extends RecyclerView.Adapter<MentionAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         DcContact contact = contacts.get(position);
+        Context context = holder.itemView.getContext();
+
         holder.displayName.setText(contact.getDisplayName());
         String addr = contact.getAddr();
         String name = contact.getName();
@@ -54,6 +64,9 @@ public class MentionAdapter extends RecyclerView.Adapter<MentionAdapter.ViewHold
         } else {
             holder.address.setVisibility(View.GONE);
         }
+
+        holder.avatar.setAvatar(glideRequests, new Recipient(context, contact), false);
+
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onMentionClicked(contact);
@@ -67,11 +80,13 @@ public class MentionAdapter extends RecyclerView.Adapter<MentionAdapter.ViewHold
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+        final AvatarImageView avatar;
         final TextView displayName;
         final TextView address;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            avatar = itemView.findViewById(R.id.mention_avatar);
             displayName = itemView.findViewById(R.id.mention_display_name);
             address = itemView.findViewById(R.id.mention_address);
         }

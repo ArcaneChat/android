@@ -964,13 +964,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     messageRequestBottomView = ViewUtil.findById(this, R.id.conversation_activity_message_request_bottom_bar);
     mentionSuggestions    = ViewUtil.findById(this, R.id.mention_suggestions);
 
-    mentionAdapter = new MentionAdapter();
-    mentionSuggestions.setLayoutManager(new LinearLayoutManager(this));
-    mentionSuggestions.setAdapter(mentionAdapter);
-    mentionAdapter.setOnMentionClickListener(contact -> {
-      insertMention(contact);
-    });
-
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
     if (!ViewUtil.isEdgeToEdgeSupported()) {
@@ -1070,6 +1063,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     dcChat           = DcHelper.getContext(context).getChat(chatId);
     recipient        = new Recipient(this, dcChat);
     glideRequests    = GlideApp.with(this);
+
+    mentionAdapter = new MentionAdapter(glideRequests);
+    mentionSuggestions.setLayoutManager(new LinearLayoutManager(this));
+    mentionSuggestions.setAdapter(mentionAdapter);
+    mentionAdapter.setOnMentionClickListener(contact -> insertMention(contact));
 
     setComposePanelVisibility(true);
     initializeContactRequest();
