@@ -94,6 +94,7 @@ import org.thoughtcrime.securesms.components.ScaleStableImageView;
 import org.thoughtcrime.securesms.components.SendButton;
 import org.thoughtcrime.securesms.components.audioplay.AudioPlaybackViewModel;
 import org.thoughtcrime.securesms.components.audioplay.AudioView;
+import org.thoughtcrime.securesms.components.emoji.EmojiSearch;
 import org.thoughtcrime.securesms.components.emoji.MediaKeyboard;
 import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
@@ -976,6 +977,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     container.addOnKeyboardShownListener(backgroundView);
     inputPanel.setListener(this);
     inputPanel.setMediaListener(this);
+    inputPanel.setEmojiSuggestionListener(emoji -> insertEmojiSuggestion(emoji));
 
     attachmentTypeSelector = null;
     attachmentManager      = new AttachmentManager(this, this);
@@ -1593,13 +1595,84 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       if (composeText.getTextTrimmed().length() == 0 || beforeLength == 0) {
         composeText.postDelayed(ConversationActivity.this::updateToggleButtonState, 50);
       }
+      updateEmojiSuggestions(s);
     }
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before,int count) {}
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {}
+    public void onFocusChange(View v, boolean hasFocus) {
+      if (!hasFocus) inputPanel.hideEmojiSuggestions();
+    }
+  }
+
+  private String lastEmojiQuery = null;
+
+  private void updateEmojiSuggestions(CharSequence text) {
+    String query = getEmojiQuery(text, composeText.getSelectionEnd());
+    if (query == null) {
+      lastEmojiQuery = null;
+      inputPanel.hideEmojiSuggestions();
+      return;
+    }
+    if (query.equals(lastEmojiQuery)) return;
+    lastEmojiQuery = query;
+    Util.runOnBackground(() -> {
+      List<String> results = EmojiSearch.getInstance(this).search(query);
+      Util.runOnMain(() -> {
+        if (!query.equals(lastEmojiQuery)) return; // stale result
+        if (results.isEmpty()) {
+          inputPanel.hideEmojiSuggestions();
+        } else {
+          inputPanel.showEmojiSuggestions(results);
+        }
+      });
+    });
+  }
+
+  /**
+   * Returns the emoji search query if the cursor is positioned after a `:word` pattern,
+   * or null if there is no active emoji query.
+   */
+  private String getEmojiQuery(CharSequence text, int cursorPos) {
+    if (text == null || cursorPos <= 0) return null;
+    int colonPos = -1;
+    for (int i = cursorPos - 1; i >= 0; i--) {
+      char c = text.charAt(i);
+      if (c == ':') {
+        colonPos = i;
+        break;
+      }
+      if (!Character.isLetterOrDigit(c) && c != '_') break;
+    }
+    if (colonPos < 0) return null;
+    String query = text.subSequence(colonPos + 1, cursorPos).toString();
+    if (query.length() < 2) return null;
+    return query;
+  }
+
+  private void insertEmojiSuggestion(String emoji) {
+    android.text.Editable editable = composeText.getText();
+    if (editable == null) return;
+    int cursorPos = composeText.getSelectionEnd();
+    if (cursorPos < 0) return;
+    // Find colon before the query at the cursor position
+    int colonPos = -1;
+    for (int i = cursorPos - 1; i >= 0; i--) {
+      char c = editable.charAt(i);
+      if (c == ':') {
+        colonPos = i;
+        break;
+      }
+      if (!Character.isLetterOrDigit(c) && c != '_') break;
+    }
+    if (colonPos < 0) return;
+    String query = editable.subSequence(colonPos + 1, cursorPos).toString();
+    if (query.length() < 2) return;
+    editable.replace(colonPos, cursorPos, emoji + " ");
+    lastEmojiQuery = null;
+    inputPanel.hideEmojiSuggestions();
   }
 
   @Override
