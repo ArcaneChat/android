@@ -854,6 +854,11 @@ public class ConversationFragment extends MessageSelectorFragment
                     WebxdcActivity.openWebxdcActivity(getContext(), messageRecord.getParent(), messageRecord.getWebxdcHref());
                 }
             }
+            else if (messageRecord.getInfoType() == DcMsg.DC_INFO_CHAT_DESCRIPTION_CHANGED) {
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(ProfileActivity.CHAT_ID_EXTRA, (int) chatId);
+                startActivity(intent);
+            }
             else if (!TextUtils.isEmpty(messageRecord.getPOILocation()) && messageRecord.getType() == DcMsg.DC_MSG_TEXT && !messageRecord.hasHtml()) {
                 WebxdcActivity.openMaps(getContext(), getListAdapter().getChat().getId(), "index.html#"+messageRecord.getPOILocation());
             }
