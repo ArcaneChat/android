@@ -11,4 +11,5 @@
     android:paddingBottom="10dp"
     android:minWidth="44dp"
     android:textSize="26sp"
+    android:textColor="?attr/emoji_text_color"
     android:background="@drawable/touch_highlight_background" />
