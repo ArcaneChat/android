@@ -858,6 +858,7 @@ public class ConversationFragment extends MessageSelectorFragment
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
                 intent.putExtra(ProfileActivity.CHAT_ID_EXTRA, (int) chatId);
                 startActivity(intent);
+            }
             else if (!TextUtils.isEmpty(messageRecord.getPOILocation()) && messageRecord.getType() == DcMsg.DC_MSG_TEXT && !messageRecord.hasHtml()) {
                 WebxdcActivity.openMaps(getContext(), getListAdapter().getChat().getId(), "index.html#"+messageRecord.getPOILocation());
             }
