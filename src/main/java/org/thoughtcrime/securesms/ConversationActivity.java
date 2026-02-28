@@ -72,6 +72,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.media3.session.MediaController;
 import androidx.media3.session.SessionCommand;
 import androidx.media3.session.SessionToken;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
@@ -90,6 +92,7 @@ import org.thoughtcrime.securesms.components.HidingLinearLayout;
 import org.thoughtcrime.securesms.components.InputAwareLayout;
 import org.thoughtcrime.securesms.components.InputPanel;
 import org.thoughtcrime.securesms.components.KeyboardAwareLinearLayout.OnKeyboardShownListener;
+import org.thoughtcrime.securesms.components.MentionAdapter;
 import org.thoughtcrime.securesms.components.ScaleStableImageView;
 import org.thoughtcrime.securesms.components.SendButton;
 import org.thoughtcrime.securesms.components.audioplay.AudioPlaybackViewModel;
@@ -207,6 +210,9 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private boolean successfulForwardingAttempt = false;
   private boolean isEditing = false;
   private boolean switchedProfile = false;
+
+  private RecyclerView   mentionSuggestions;
+  private MentionAdapter mentionAdapter;
 
   @Override
   protected void onCreate(Bundle state, boolean ready) {
@@ -956,6 +962,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     inputPanel            = ViewUtil.findById(this, R.id.bottom_panel);
     backgroundView        = ViewUtil.findById(this, R.id.conversation_background);
     messageRequestBottomView = ViewUtil.findById(this, R.id.conversation_activity_message_request_bottom_bar);
+    mentionSuggestions    = ViewUtil.findById(this, R.id.mention_suggestions);
 
     ImageButton quickCameraToggle = ViewUtil.findById(this, R.id.quick_camera_toggle);
 
@@ -1056,6 +1063,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     dcChat           = DcHelper.getContext(context).getChat(chatId);
     recipient        = new Recipient(this, dcChat);
     glideRequests    = GlideApp.with(this);
+
+    mentionAdapter = new MentionAdapter(glideRequests);
+    mentionSuggestions.setLayoutManager(new LinearLayoutManager(this));
+    mentionSuggestions.setAdapter(mentionAdapter);
+    mentionAdapter.setOnMentionClickListener(contact -> insertMention(contact));
 
     setComposePanelVisibility(true);
     initializeContactRequest();
@@ -1560,6 +1572,77 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
+  private void updateMentionSuggestions() {
+    if (!dcChat.isMultiUser()) {
+      mentionSuggestions.setVisibility(View.GONE);
+      return;
+    }
+
+    Editable text = composeText.getText();
+    if (text == null) {
+      mentionSuggestions.setVisibility(View.GONE);
+      return;
+    }
+
+    int cursorPos = composeText.getSelectionStart();
+    if (cursorPos <= 0) {
+      mentionSuggestions.setVisibility(View.GONE);
+      return;
+    }
+
+    String textBeforeCursor = text.toString().substring(0, cursorPos);
+    int atIndex = textBeforeCursor.lastIndexOf('@');
+    if (atIndex < 0) {
+      mentionSuggestions.setVisibility(View.GONE);
+      return;
+    }
+
+    // Check that there's no space between "@" and the cursor
+    String query = textBeforeCursor.substring(atIndex + 1);
+    if (query.contains(" ") || query.contains("\n")) {
+      mentionSuggestions.setVisibility(View.GONE);
+      return;
+    }
+
+    DcContext dcContext = DcHelper.getContext(context);
+    int[] contactIds = dcContext.getChatContacts(chatId);
+    List<DcContact> matched = new ArrayList<>();
+    String lowerQuery = query.toLowerCase();
+    for (int id : contactIds) {
+      if (id <= DcContact.DC_CONTACT_ID_LAST_SPECIAL) continue;
+      DcContact contact = dcContext.getContact(id);
+      String displayName = contact.getDisplayName().toLowerCase();
+      String addr = contact.getAddr().toLowerCase();
+      if (displayName.contains(lowerQuery) || addr.contains(lowerQuery)) {
+        matched.add(contact);
+      }
+    }
+
+    if (matched.isEmpty()) {
+      mentionSuggestions.setVisibility(View.GONE);
+    } else {
+      mentionAdapter.setContacts(matched);
+      mentionSuggestions.setVisibility(View.VISIBLE);
+    }
+  }
+
+  private void insertMention(DcContact contact) {
+    Editable text = composeText.getText();
+    if (text == null) return;
+
+    int cursorPos = composeText.getSelectionStart();
+    if (cursorPos <= 0) return;
+
+    String textBeforeCursor = text.toString().substring(0, cursorPos);
+    int atIndex = textBeforeCursor.lastIndexOf('@');
+    if (atIndex < 0) return;
+
+    String mention = "@" + contact.getDisplayName() + " ";
+    text.replace(atIndex, cursorPos, mention);
+    composeText.setSelection(atIndex + mention.length());
+    mentionSuggestions.setVisibility(View.GONE);
+  }
+
   private class ComposeKeyPressedListener implements OnKeyListener, OnClickListener, TextWatcher, OnFocusChangeListener {
 
     int beforeLength;
@@ -1593,6 +1676,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       if (composeText.getTextTrimmed().length() == 0 || beforeLength == 0) {
         composeText.postDelayed(ConversationActivity.this::updateToggleButtonState, 50);
       }
+      updateMentionSuggestions();
     }
 
     @Override
