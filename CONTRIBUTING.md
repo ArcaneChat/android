@@ -100,6 +100,11 @@ Try to not follow these patterns and keep things really on point and simple.
 If this gets in conflict with embracing existing style, however,
 consistency with existing code is more important.
 
+**Code formatting:** The project uses [google-java-format](https://github.com/google/google-java-format)
+(AOSP style, 4-space indent) enforced via the [Spotless](https://github.com/diffplug/spotless) Gradle plugin.
+Auto-format all files by running `scripts/format.sh` or `./gradlew spotlessApply` before opening a PR.
+CI will fail if files are not formatted correctly — make sure to run the formatter before pushing.
+
 The "Delta Chat Core" is a high-level interface to what the UI actually needs,
 data should be served in a form that the UI do not need much additional work.
 If this is not the case, consider a feature proposal to "Delta Chat Core".
