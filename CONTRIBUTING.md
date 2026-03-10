@@ -101,7 +101,7 @@ If this gets in conflict with embracing existing style, however,
 consistency with existing code is more important.
 
 **Code formatting:** The project uses [google-java-format](https://github.com/google/google-java-format)
-(AOSP style, 4-space indent) enforced via the [Spotless](https://github.com/diffplug/spotless) Gradle plugin.
+(Google style, 2-space indent — matches Android Studio's default formatter) enforced via the [Spotless](https://github.com/diffplug/spotless) Gradle plugin.
 Auto-format all files by running `scripts/format.sh` or `./gradlew spotlessApply` before opening a PR.
 CI will fail if files are not formatted correctly — make sure to run the formatter before pushing.
 

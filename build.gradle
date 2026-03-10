@@ -206,7 +206,7 @@ android {
 spotless {
     java {
         target 'src/**/*.java'
-        googleJavaFormat('1.19.2').aosp()  // AOSP style = 4-space indent, fits Android codebases
+        googleJavaFormat('1.19.2')  // Google style = 2-space indent, matches Android Studio default
         removeUnusedImports()
         trimTrailingWhitespace()
         endWithNewline()
