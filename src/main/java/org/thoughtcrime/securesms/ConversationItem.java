@@ -807,8 +807,6 @@ public class ConversationItem extends BaseConversationItem
       return stickerStub.get().getFooter();
     } else if (hasOnlyThumbnail(messageRecord) && TextUtils.isEmpty(messageRecord.getText())) {
       return mediaThumbnailStub.get().getFooter();
-    } else if (messageRecord.getType() == DcMsg.DC_MSG_CALL) {
-      return callViewStub.get().getFooter();
     } else {
       return footer;
     }
@@ -969,6 +967,8 @@ public class ConversationItem extends BaseConversationItem
     public void onClick(final View v, final Slide slide) {
       if (shouldInterceptClicks(messageRecord) || !batchSelected.isEmpty()) {
         performClick();
+      } else if (eventListener != null) {
+        eventListener.onStickerClicked(messageRecord);
       }
     }
   }

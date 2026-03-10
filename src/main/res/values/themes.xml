@@ -13,7 +13,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
 
@@ -29,7 +28,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -299,7 +297,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- PURPLE DARK -->
@@ -329,7 +326,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -365,7 +361,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- GREEN DARK -->
@@ -395,7 +390,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -432,7 +426,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- BLUE DARK -->
@@ -462,7 +455,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -498,7 +490,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- RED DARK -->
@@ -528,7 +519,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -564,7 +554,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- PINK DARK -->
@@ -594,7 +583,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
@@ -630,7 +618,6 @@
 
         <item name="profile_toolbar_background">@color/white</item>
         <item name="profile_toolbar_foreground">@color/gray70</item>
-        <item name="profile_header_foreground">@color/gray50</item>
         <item name="profile_document_foreground">@color/gray70</item>
     </style>
     <!-- GRAY DARK -->
@@ -660,7 +647,6 @@
 
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
-        <item name="profile_header_foreground">@color/gray10</item>
         <item name="profile_document_foreground">@color/white</item>
     </style>
 
