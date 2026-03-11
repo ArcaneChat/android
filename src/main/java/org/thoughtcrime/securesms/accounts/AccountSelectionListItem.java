@@ -13,14 +13,11 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SwitchCompat;
-
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
-
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.components.AvatarView;
 import org.thoughtcrime.securesms.mms.GlideRequests;
@@ -30,15 +27,15 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 
 public class AccountSelectionListItem extends LinearLayout {
 
-  private AvatarView      contactPhotoImage;
-  private View            addrContainer;
-  private TextView        addrOrTagView;
-  private TextView        nameView;
-  private ImageView       unreadIndicator;
+  private AvatarView contactPhotoImage;
+  private View addrContainer;
+  private TextView addrOrTagView;
+  private TextView nameView;
+  private ImageView unreadIndicator;
   private SwitchCompat enableSwitch;
 
-  private int           accountId;
-  private DcContext     dcContext;
+  private int accountId;
+  private DcContext dcContext;
 
   public AccountSelectionListItem(Context context) {
     super(context);
@@ -52,19 +49,25 @@ public class AccountSelectionListItem extends LinearLayout {
   protected void onFinishInflate() {
     super.onFinishInflate();
     this.contactPhotoImage = findViewById(R.id.contact_photo_image);
-    this.addrContainer     = findViewById(R.id.addr_container);
-    this.addrOrTagView     = findViewById(R.id.addr_or_tag);
-    this.nameView          = findViewById(R.id.name);
-    this.unreadIndicator   = findViewById(R.id.unread_indicator);
-    this.enableSwitch      = findViewById(R.id.enable_switch);
+    this.addrContainer = findViewById(R.id.addr_container);
+    this.addrOrTagView = findViewById(R.id.addr_or_tag);
+    this.nameView = findViewById(R.id.name);
+    this.unreadIndicator = findViewById(R.id.unread_indicator);
+    this.enableSwitch = findViewById(R.id.enable_switch);
 
-    enableSwitch.setOnCheckedChangeListener((view, isChecked) -> {
-      if (isChecked != this.dcContext.isEnabled()) this.dcContext.setEnabled(isChecked);
-    });
+    enableSwitch.setOnCheckedChangeListener(
+        (view, isChecked) -> {
+          if (isChecked != this.dcContext.isEnabled()) this.dcContext.setEnabled(isChecked);
+        });
     ViewUtil.setTextViewGravityStart(this.nameView, getContext());
   }
 
-  public void bind(@NonNull GlideRequests glideRequests, int accountId, DcContext dcContext, boolean selected, AccountSelectionListFragment fragment) {
+  public void bind(
+      @NonNull GlideRequests glideRequests,
+      int accountId,
+      DcContext dcContext,
+      boolean selected,
+      AccountSelectionListFragment fragment) {
     this.accountId = accountId;
     this.dcContext = dcContext;
     DcContact self = null;
@@ -96,7 +99,8 @@ public class AccountSelectionListItem extends LinearLayout {
     }
     this.contactPhotoImage.setAvatar(glideRequests, recipient, false);
 
-    nameView.setCompoundDrawablesWithIntrinsicBounds(isMuted? R.drawable.ic_volume_off_grey600_18dp : 0, 0, 0, 0);
+    nameView.setCompoundDrawablesWithIntrinsicBounds(
+        isMuted ? R.drawable.ic_volume_off_grey600_18dp : 0, 0, 0, 0);
 
     setSelected(selected);
     if (selected) {
@@ -122,19 +126,28 @@ public class AccountSelectionListItem extends LinearLayout {
   }
 
   private void updateUnreadIndicator(int unreadCount, boolean isMuted) {
-    if(unreadCount == 0) {
+    if (unreadCount == 0) {
       unreadIndicator.setVisibility(View.GONE);
     } else {
       final int color;
       if (isMuted) {
-        color = getResources().getColor(ThemeUtil.isDarkTheme(getContext()) ? R.color.unread_count_muted_dark : R.color.unread_count_muted);
+        color =
+            getResources()
+                .getColor(
+                    ThemeUtil.isDarkTheme(getContext())
+                        ? R.color.unread_count_muted_dark
+                        : R.color.unread_count_muted);
       } else {
-        final TypedArray attrs = getContext().obtainStyledAttributes(new int[] {
-            R.attr.conversation_list_item_unreadcount_color,
-          });
+        final TypedArray attrs =
+            getContext()
+                .obtainStyledAttributes(
+                    new int[] {
+                      R.attr.conversation_list_item_unreadcount_color,
+                    });
         color = attrs.getColor(0, Color.BLACK);
       }
-      unreadIndicator.setImageDrawable(TextDrawable.builder()
+      unreadIndicator.setImageDrawable(
+          TextDrawable.builder()
               .beginConfig()
               .width(ViewUtil.dpToPx(getContext(), 24))
               .height(ViewUtil.dpToPx(getContext(), 24))
@@ -147,9 +160,9 @@ public class AccountSelectionListItem extends LinearLayout {
   }
 
   private void setText(String name, String addrOrTag) {
-    this.nameView.setText(name==null? "#" : name);
+    this.nameView.setText(name == null ? "#" : name);
 
-    if(!TextUtils.isEmpty(addrOrTag)) {
+    if (!TextUtils.isEmpty(addrOrTag)) {
       this.addrOrTagView.setText(addrOrTag);
       this.addrContainer.setVisibility(View.VISIBLE);
     } else {

@@ -1,74 +1,74 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-  <!-- DEFAULT -->
-  <color name="def_primary">@color/purple_primary</color>
-  <color name="def_primary_lite">@color/purple_primary_lite</color>
-  <color name="def_primary_alpha33">@color/purple_primary_alpha33</color>
-  <color name="def_accent">@color/purple_accent</color>
-  <color name="def_outgoing_bubble">@color/purple_outgoing_bubble</color>
-  <color name="def_outgoing_label">@color/purple_outgoing_label</color>
-  <color name="def_unreadcount">@color/purple_unreadcount</color>
-  <!-- ========== -->
+    <!-- DEFAULT -->
+    <color name="def_primary">@color/purple_primary</color>
+    <color name="def_primary_lite">@color/purple_primary_lite</color>
+    <color name="def_primary_alpha33">@color/purple_primary_alpha33</color>
+    <color name="def_accent">@color/purple_accent</color>
+    <color name="def_outgoing_bubble">@color/purple_outgoing_bubble</color>
+    <color name="def_outgoing_label">@color/purple_outgoing_label</color>
+    <color name="def_unreadcount">@color/purple_unreadcount</color>
+    <!-- ========== -->
 
-  <!-- PURPLE -->
-  <color name="purple_primary">#ff7b00c8</color>
-  <color name="purple_primary_lite">#ff7b00c8</color>
-  <color name="purple_primary_alpha33">#557b00c8</color>
-  <color name="purple_accent">#9646c8</color>
-  <color name="purple_outgoing_bubble">#fffff9d9</color>
-  <color name="purple_outgoing_label">#ff7b00c8</color>
-  <color name="purple_unreadcount">#7b00c8</color>
-  <!-- ========== -->
+    <!-- PURPLE -->
+    <color name="purple_primary">#ff7b00c8</color>
+    <color name="purple_primary_lite">#ff7b00c8</color>
+    <color name="purple_primary_alpha33">#557b00c8</color>
+    <color name="purple_accent">#9646c8</color>
+    <color name="purple_outgoing_bubble">#fffff9d9</color>
+    <color name="purple_outgoing_label">#ff7b00c8</color>
+    <color name="purple_unreadcount">#7b00c8</color>
+    <!-- ========== -->
 
-  <!-- GREEN -->
-  <color name="green_primary">#ff009788</color>
-  <color name="green_primary_lite">#ff009788</color>
-  <color name="green_primary_alpha33">#55009788</color>
-  <color name="green_accent">#00b7a5</color>
-  <color name="green_outgoing_bubble">#fffff9d9</color>
-  <color name="green_outgoing_label">#ff009788</color>
-  <color name="green_unreadcount">#00b7a5</color>
-  <!-- ========== -->
+    <!-- GREEN -->
+    <color name="green_primary">#ff009788</color>
+    <color name="green_primary_lite">#ff009788</color>
+    <color name="green_primary_alpha33">#55009788</color>
+    <color name="green_accent">#00b7a5</color>
+    <color name="green_outgoing_bubble">#fffff9d9</color>
+    <color name="green_outgoing_label">#ff009788</color>
+    <color name="green_unreadcount">#00b7a5</color>
+    <!-- ========== -->
 
-  <!-- BLUE -->
-  <color name="blue_primary">#ff517da2</color>
-  <color name="blue_primary_lite">#ff517da2</color>
-  <color name="blue_primary_alpha33">#55517da2</color>
-  <color name="blue_accent">#486d8f</color>
-  <color name="blue_outgoing_bubble">#fffff9d9</color>
-  <color name="blue_outgoing_label">#ff2f97d6</color>
-  <color name="blue_unreadcount">#1ab7c8</color>
-  <!-- ========== -->
+    <!-- BLUE -->
+    <color name="blue_primary">#ff517da2</color>
+    <color name="blue_primary_lite">#ff517da2</color>
+    <color name="blue_primary_alpha33">#55517da2</color>
+    <color name="blue_accent">#486d8f</color>
+    <color name="blue_outgoing_bubble">#fffff9d9</color>
+    <color name="blue_outgoing_label">#ff2f97d6</color>
+    <color name="blue_unreadcount">#1ab7c8</color>
+    <!-- ========== -->
 
-  <!-- RED -->
-  <color name="red_primary">#ffb61c1c</color>
-  <color name="red_primary_lite">#ffb61c1c</color>
-  <color name="red_primary_alpha33">#55b61c1c</color>
-  <color name="red_accent">#a41a1a</color>
-  <color name="red_outgoing_bubble">#fffff9d9</color>
-  <color name="red_outgoing_label">#ffce303e</color>
-  <color name="red_unreadcount">#d51431</color>
-  <!-- ========== -->
+    <!-- RED -->
+    <color name="red_primary">#ffb61c1c</color>
+    <color name="red_primary_lite">#ffb61c1c</color>
+    <color name="red_primary_alpha33">#55b61c1c</color>
+    <color name="red_accent">#a41a1a</color>
+    <color name="red_outgoing_bubble">#fffff9d9</color>
+    <color name="red_outgoing_label">#ffce303e</color>
+    <color name="red_unreadcount">#d51431</color>
+    <!-- ========== -->
 
-  <!-- PINK -->
-  <color name="pink_primary">#ffc84595</color>
-  <color name="pink_primary_lite">#ffc84595</color>
-  <color name="pink_primary_alpha33">#55c84595</color>
-  <color name="pink_accent">#a03779</color>
-  <color name="pink_outgoing_bubble">#fffff9d9</color>
-  <color name="pink_outgoing_label">#ffa03779</color>
-  <color name="pink_unreadcount">#ff25b7</color>
-  <!-- ========== -->
+    <!-- PINK -->
+    <color name="pink_primary">#ffc84595</color>
+    <color name="pink_primary_lite">#ffc84595</color>
+    <color name="pink_primary_alpha33">#55c84595</color>
+    <color name="pink_accent">#a03779</color>
+    <color name="pink_outgoing_bubble">#fffff9d9</color>
+    <color name="pink_outgoing_label">#ffa03779</color>
+    <color name="pink_unreadcount">#ff25b7</color>
+    <!-- ========== -->
 
-  <!-- GRAY -->
-  <color name="gray_primary">#ff415e6b</color>
-  <color name="gray_primary_lite">#4c6e7d</color>
-  <color name="gray_primary_alpha33">#55415e6b</color>
-  <color name="gray_accent">#3b5561</color>
-  <color name="gray_outgoing_bubble">#fffff9d9</color>
-  <color name="gray_outgoing_label">#ff415e6b</color>
-  <color name="gray_unreadcount">#415e6b</color>
-  <!-- ========== -->
+    <!-- GRAY -->
+    <color name="gray_primary">#ff415e6b</color>
+    <color name="gray_primary_lite">#4c6e7d</color>
+    <color name="gray_primary_alpha33">#55415e6b</color>
+    <color name="gray_accent">#3b5561</color>
+    <color name="gray_outgoing_bubble">#fffff9d9</color>
+    <color name="gray_outgoing_label">#ff415e6b</color>
+    <color name="gray_unreadcount">#415e6b</color>
+    <!-- ========== -->
 
 
     <color name="primary_alpha_focus">#882090ea</color>
@@ -125,7 +125,7 @@
     <color name="pinned_bg_dark">#222222</color>
 
     <!-- unknown_sender fits in dark mode and lite mode (also other chat/contact colors fit in both modes);
-         unknown_sender is used for the sender-name/quote-bar if the sender is unknown -->
+        unknown_sender is used for the sender-name/quote-bar if the sender is unknown -->
     <color name="unknown_sender">#ff999999</color>
 
     <color name="reaction_pill_background">@color/white</color>

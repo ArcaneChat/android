@@ -5,29 +5,23 @@ import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-
+import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
-
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.types.HttpResponse;
 import com.b44t.messenger.DcContext;
-
+import java.io.ByteArrayInputStream;
+import java.lang.ref.WeakReference;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.JsonUtils;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 
-import java.io.ByteArrayInputStream;
-import java.lang.ref.WeakReference;
-
-import chat.delta.rpc.Rpc;
-import chat.delta.rpc.types.HttpResponse;
-
-public class FullMsgActivity extends WebViewActivity
-{
+public class FullMsgActivity extends WebViewActivity {
   public static final String MSG_ID_EXTRA = "msg_id";
   public static final String BLOCK_LOADING_REMOTE = "block_loading_remote";
   private String imageUrl;
@@ -91,7 +85,8 @@ public class FullMsgActivity extends WebViewActivity
       WebView.HitTestResult result = ((WebView) v).getHitTestResult();
       if (result != null) {
         int type = result.getType();
-        if (type == WebView.HitTestResult.IMAGE_TYPE || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+        if (type == WebView.HitTestResult.IMAGE_TYPE
+            || type == WebView.HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
           imageUrl = result.getExtra();
           if (!imageUrl.startsWith("data:")) {
             super.onCreateContextMenu(menu, v, menuInfo);
@@ -120,24 +115,30 @@ public class FullMsgActivity extends WebViewActivity
   }
 
   private static void loadHtmlAsync(final WeakReference<FullMsgActivity> activityReference) {
-    Util.runOnBackground(() -> {
-      try {
-        FullMsgActivity activity = activityReference.get();
-        String html = activity.dcContext.getMsgHtml(activity.msgId);
-
-        activity.runOnUiThread(() -> {
+    Util.runOnBackground(
+        () -> {
           try {
-            // a base URL is needed, otherwise clicking links that reference document sections will not jump to sections
-            activityReference.get().webView.loadDataWithBaseURL("file://index.html", html, "text/html", null, null);
+            FullMsgActivity activity = activityReference.get();
+            String html = activity.dcContext.getMsgHtml(activity.msgId);
+
+            activity.runOnUiThread(
+                () -> {
+                  try {
+                    // a base URL is needed, otherwise clicking links that reference document
+                    // sections will not jump to sections
+                    activityReference
+                        .get()
+                        .webView
+                        .loadDataWithBaseURL("file://index.html", html, "text/html", null, null);
+                  } catch (Exception e) {
+                    e.printStackTrace();
+                  }
+                });
+
           } catch (Exception e) {
             e.printStackTrace();
           }
         });
-
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    });
   }
 
   @Override
@@ -159,17 +160,21 @@ public class FullMsgActivity extends WebViewActivity
   public boolean onOptionsItemSelected(MenuItem item) {
     super.onOptionsItemSelected(item);
     if (item.getItemId() == R.id.load_remote_content) {
-      AlertDialog.Builder builder = new AlertDialog.Builder(this)
-        .setTitle(R.string.load_remote_content)
-        .setMessage(R.string.load_remote_content_ask);
+      AlertDialog.Builder builder =
+          new AlertDialog.Builder(this)
+              .setTitle(R.string.load_remote_content)
+              .setMessage(R.string.load_remote_content_ask);
 
       // we are using the buttons "[Always]  [Never][Once]" in that order.
       // 1. Checkmarks before [Always] and [Never] show the current state.
       // 2. [Once] is also shown in always-mode and disables always-mode if selected
-      //    (there was the idea to hide [Once] in always mode, but that looks more like a bug in the end)
-      // (maybe a usual Always-Checkbox and "[Cancel][OK]" buttons are an alternative, however, a [Once]
+      //    (there was the idea to hide [Once] in always mode, but that looks more like a bug in the
+      // end)
+      // (maybe a usual Always-Checkbox and "[Cancel][OK]" buttons are an alternative, however, a
+      // [Once]
       // would be required as well - probably as the leftmost button which is not that usable in
-      // not-always-mode where the dialog is used more often. Or [Ok] would mean "Once" as well as "Change checkbox setting",
+      // not-always-mode where the dialog is used more often. Or [Ok] would mean "Once" as well as
+      // "Change checkbox setting",
       // which is also a bit weird. Anyway, let's give the three buttons a try :)
       final String checkmark = DynamicTheme.getCheckmarkEmoji(this) + " ";
       String alwaysCheckmark = "";
@@ -184,10 +189,16 @@ public class FullMsgActivity extends WebViewActivity
       }
 
       if (!blockLoadingRemote) {
-        builder.setNeutralButton(alwaysCheckmark + getString(R.string.always), (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.ALWAYS));
+        builder.setNeutralButton(
+            alwaysCheckmark + getString(R.string.always),
+            (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.ALWAYS));
       }
-      builder.setNegativeButton(neverCheckmark + getString(blockLoadingRemote ? R.string.no : R.string.never), (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.NEVER));
-      builder.setPositiveButton(onceCheckmark + getString(R.string.once), (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.ONCE));
+      builder.setNegativeButton(
+          neverCheckmark + getString(blockLoadingRemote ? R.string.no : R.string.never),
+          (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.NEVER));
+      builder.setPositiveButton(
+          onceCheckmark + getString(R.string.once),
+          (dialog, which) -> onChangeLoadRemoteContent(LoadRemoteContent.ONCE));
 
       builder.show();
       return true;
@@ -234,10 +245,15 @@ public class FullMsgActivity extends WebViewActivity
         mimeType = "application/octet-stream";
       }
       byte[] blob = JsonUtils.decodeBase64(httpResponse.blob);
-      res = new WebResourceResponse(mimeType, httpResponse.encoding, new ByteArrayInputStream(blob));
+      res =
+          new WebResourceResponse(mimeType, httpResponse.encoding, new ByteArrayInputStream(blob));
     } catch (Exception e) {
       e.printStackTrace();
-      res = new WebResourceResponse("text/plain", "UTF-8", new ByteArrayInputStream(("Error: " + e.getMessage()).getBytes()));
+      res =
+          new WebResourceResponse(
+              "text/plain",
+              "UTF-8",
+              new ByteArrayInputStream(("Error: " + e.getMessage()).getBytes()));
     }
     return res;
   }

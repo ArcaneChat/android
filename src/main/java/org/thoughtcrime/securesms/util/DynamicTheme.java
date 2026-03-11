@@ -5,16 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatDelegate;
-
 import org.thoughtcrime.securesms.R;
 
 public class DynamicTheme {
 
-  public static final String DARK  = "dark";
+  public static final String DARK = "dark";
   public static final String LIGHT = "light";
   public static final String SYSTEM = "system";
   public static final String PURPLE = "purple";
@@ -27,18 +25,18 @@ public class DynamicTheme {
   private int currentTheme;
 
   public void onCreate(Activity activity) {
-    //boolean wasDarkTheme = isDarkTheme;
+    // boolean wasDarkTheme = isDarkTheme;
 
     currentTheme = getSelectedTheme(activity);
-    //isDarkTheme  = isDarkTheme(activity);
+    // isDarkTheme  = isDarkTheme(activity);
 
     activity.setTheme(currentTheme);
 
     // In case you introduce a CachedInflater and there are problems with the dark mode, uncomment
     // this line and the line in onResume():
-    //if (isDarkTheme != wasDarkTheme) {
-      //CachedInflater.from(activity).clear();
-    //}
+    // if (isDarkTheme != wasDarkTheme) {
+    // CachedInflater.from(activity).clear();
+    // }
   }
 
   public void onResume(Activity activity) {
@@ -48,7 +46,7 @@ public class DynamicTheme {
       OverridePendingTransition.invoke(activity);
       activity.startActivity(intent);
       OverridePendingTransition.invoke(activity);
-      //CachedInflater.from(activity).clear();
+      // CachedInflater.from(activity).clear();
     }
   }
 
@@ -63,9 +61,8 @@ public class DynamicTheme {
       AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
     }
 
-    //CachedInflater.from(context).clear();
+    // CachedInflater.from(context).clear();
   }
-
 
   private @StyleRes int getSelectedTheme(Activity activity) {
     String theme = Prefs.getTheme(activity);
@@ -100,9 +97,7 @@ public class DynamicTheme {
     return Build.VERSION.SDK_INT >= 29;
   }
 
-  /**
-   * Takes the system theme into account.
-   */
+  /** Takes the system theme into account. */
   public static boolean isDarkTheme(@NonNull Context context) {
     String theme = Prefs.getTheme(context);
 
@@ -119,7 +114,8 @@ public class DynamicTheme {
   }
 
   private static boolean isSystemInDarkTheme(@NonNull Context context) {
-    return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+        == Configuration.UI_MODE_NIGHT_YES;
   }
 
   private static final class OverridePendingTransition {

@@ -6,7 +6,7 @@
         android:defaultValue="false"
         android:key="pref_enter_sends"
         android:summary="@string/pref_enter_sends_explain"
-        android:title="@string/pref_enter_sends"/>
+        android:title="@string/pref_enter_sends" />
 
     <ListPreference
         android:key="pref_compression"
@@ -20,11 +20,12 @@
         android:key="auto_download"
         android:title="@string/auto_download_messages"
         android:entries="@array/pref_download_limit_entries"
-        android:entryValues="@array/pref_download_limit_values"/>
+        android:entryValues="@array/pref_download_limit_values" />
 
     <PreferenceCategory android:title="@string/pref_backup">
-        <Preference android:key="pref_backup"
-            android:title="@string/export_backup_desktop"/>
+        <Preference
+            android:key="pref_backup"
+            android:title="@string/export_backup_desktop" />
     </PreferenceCategory>
 
 </PreferenceScreen>

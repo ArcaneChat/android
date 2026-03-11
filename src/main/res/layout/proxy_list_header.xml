@@ -9,5 +9,4 @@
     android:textColor="?attr/colorAccent"
     android:textSize="16sp"
     android:textStyle="bold"
-    android:typeface="sans"
-    />
+    android:typeface="sans" />
