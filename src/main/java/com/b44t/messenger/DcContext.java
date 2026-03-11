@@ -359,7 +359,7 @@ public class DcContext {
   public String getName() {
     String displayname = getConfig("displayname");
     if (displayname.isEmpty()) {
-      displayname = getContact(DcContact.DC_CONTACT_ID_SELF).getAddr();
+      displayname = getConfig("addr");
     }
     return displayname;
   }

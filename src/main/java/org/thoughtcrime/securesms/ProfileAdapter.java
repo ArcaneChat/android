@@ -26,6 +26,7 @@ import java.util.Set;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.contacts.ContactSelectionListItem;
 import org.thoughtcrime.securesms.mms.GlideRequests;
+import org.thoughtcrime.securesms.util.DateUtils;
 import org.thoughtcrime.securesms.util.Util;
 
 public class ProfileAdapter extends RecyclerView.Adapter {
@@ -360,9 +361,11 @@ public class ProfileAdapter extends RecyclerView.Adapter {
       String lastSeenTxt;
       if (lastSeenTimestamp == 0) {
         lastSeenTxt = context.getString(R.string.last_seen_unknown);
-      }
-      else {
-        lastSeenTxt = context.getString(R.string.last_seen_at, DateUtils.getExtendedTimeSpanString(context, lastSeenTimestamp));
+      } else {
+        lastSeenTxt =
+            context.getString(
+                R.string.last_seen_at,
+                DateUtils.getExtendedTimeSpanString(context, lastSeenTimestamp));
       }
       itemData.add(new ItemData(ITEM_LAST_SEEN, lastSeenTxt, 0));
     }

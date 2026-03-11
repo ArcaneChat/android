@@ -27,6 +27,7 @@ import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.Fragment;
 import com.b44t.messenger.DcChat;
+import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
 import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
@@ -297,12 +298,20 @@ public abstract class BaseConversationListFragment extends Fragment implements A
               .getQuantityString(R.plurals.ask_delete_chat, chatsCount, chatsCount);
     }
 
+    String alertButton = getString(R.string.delete_for_me);
+    for (long chatId : selectedChats) {
+      if (dcContext.getChat((int) chatId).shallLeaveBeforeDelete(dcContext)) {
+        alertButton = getString(R.string.menu_leave_and_delete);
+        break;
+      }
+    }
+
     AlertDialog.Builder alert = new AlertDialog.Builder(activity);
     alert.setMessage(alertText);
     alert.setCancelable(true);
 
     alert.setPositiveButton(
-        R.string.delete,
+        alertButton,
         (dialog, which) -> {
           if (!selectedChats.isEmpty()) {
             new AsyncTask<Void, Void, Void>() {
@@ -325,6 +334,9 @@ public abstract class BaseConversationListFragment extends Fragment implements A
                 for (long chatId : selectedChats) {
                   DcHelper.getNotificationCenter(requireContext())
                       .removeNotifications(accountId, (int) chatId);
+                  if (dcContext.getChat((int) chatId).shallLeaveBeforeDelete(dcContext)) {
+                    dcContext.removeContactFromChat((int) chatId, DcContact.DC_CONTACT_ID_SELF);
+                  }
                   dcContext.deleteChat((int) chatId);
                   DirectShareUtil.clearShortcut(requireContext(), (int) chatId);
                 }
