@@ -1,30 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppCompatAlertDialogStyleLight" parent="Theme.AppCompat.Light.Dialog.Alert">
-      <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
-      <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
-      <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
+    <style
+        name="AppCompatAlertDialogStyleLight"
+        parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
     </style>
 
-    <style name="AppCompatAlertDialogStyleDark" parent="Theme.AppCompat.Dialog.Alert">
-      <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
-      <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
-      <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
+    <style
+        name="AppCompatAlertDialogStyleDark"
+        parent="Theme.AppCompat.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
+        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
     </style>
 
-    <style name="AlertDialogButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
-      <item name="android:textColor">@color/def_accent</item>
+    <style
+        name="AlertDialogButton"
+        parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/def_accent</item>
     </style>
 
-    <style name="AppCompatDialogStyleLight" parent="Theme.AppCompat.Light.Dialog">
+    <style
+        name="AppCompatDialogStyleLight"
+        parent="Theme.AppCompat.Light.Dialog">
     </style>
 
-    <style name="AppCompatDialogStyleDark" parent="Theme.AppCompat.Dialog">
+    <style
+        name="AppCompatDialogStyleDark"
+        parent="Theme.AppCompat.Dialog">
     </style>
 
     <!-- ActionBar styles -->
-    <style name="TextSecure.DarkActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.DarkActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/gray95</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
@@ -33,8 +44,9 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.LightActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.LightActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/def_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -44,14 +56,16 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.DarkActionBar.TabBar"
+    <style
+        name="TextSecure.DarkActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="background">@color/gray95</item>
         <item name="android:background">@color/gray95</item>
         <item name="elevation">4dp</item>
     </style>
 
-    <style name="TextSecure.LightActionBar.TabBar"
+    <style
+        name="TextSecure.LightActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/def_primary</item>
         <item name="background">@color/def_primary</item>
@@ -60,20 +74,26 @@
         <item name="elevation">4dp</item>
     </style>
 
-    <style name="TextSecure.TitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
+    <style
+        name="TextSecure.TitleTextStyle"
+        parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
         <item name="android:textColor">@color/white</item>
         <item name="android:textColorHint">#BFffffff</item>
         <item name="android:textSize">20dp</item>
     </style>
 
-    <style name="TextSecure.SubtitleTextStyle" parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+    <style
+        name="TextSecure.SubtitleTextStyle"
+        parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
         <item name="android:textColor">#BFffffff</item>
     </style>
 
 
     <!-- For Holo Light Dialog Activity Styling Emulation -->
 
-    <style name="ComposeEditText" parent="@style/Signal.Text.Body">
+    <style
+        name="ComposeEditText"
+        parent="@style/Signal.Text.Body">
         <item name="android:padding">2dp</item>
         <item name="android:background">@null</item>
         <item name="android:maxLines">8</item>
@@ -109,7 +129,9 @@
         <item name="android:background">@drawable/button_secondary_background</item>
     </style>
 
-    <style name="PreferenceThemeOverlay.Fix" parent="PreferenceThemeOverlay.v14.Material">
+    <style
+        name="PreferenceThemeOverlay.Fix"
+        parent="PreferenceThemeOverlay.v14.Material">
     </style>
 
     <style name="NoMessagesTextView">
@@ -121,11 +143,15 @@
         <item name="android:padding">12dp</item>
     </style>
 
-    <style name="SwitchTheme" parent="Theme.AppCompat.Light">
+    <style
+        name="SwitchTheme"
+        parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">#ff2090ea</item>
     </style>
 
-    <style name="ShapeAppearanceOverlay.App.CornerSize10Percent" parent="">
+    <style
+        name="ShapeAppearanceOverlay.App.CornerSize10Percent"
+        parent="">
         <item name="cornerSize">7%</item>
     </style>
 
@@ -136,8 +162,9 @@
 
 
     <!-- PURPLE -->
-    <style name="TextSecure.PurpleActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.PurpleActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/purple_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -147,7 +174,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.PurpleActionBar.TabBar"
+    <style
+        name="TextSecure.PurpleActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/purple_primary</item>
         <item name="background">@color/purple_primary</item>
@@ -158,8 +186,9 @@
 
 
     <!-- RED -->
-    <style name="TextSecure.RedActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.RedActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/red_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -169,7 +198,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.RedActionBar.TabBar"
+    <style
+        name="TextSecure.RedActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/red_primary</item>
         <item name="background">@color/red_primary</item>
@@ -180,8 +210,9 @@
 
 
     <!-- GREEN -->
-    <style name="TextSecure.GreenActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.GreenActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/green_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -191,7 +222,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.GreenActionBar.TabBar"
+    <style
+        name="TextSecure.GreenActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/green_primary</item>
         <item name="background">@color/green_primary</item>
@@ -201,8 +233,9 @@
     </style>
 
     <!-- BLUE -->
-    <style name="TextSecure.BlueActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.BlueActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/blue_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -212,7 +245,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.BlueActionBar.TabBar"
+    <style
+        name="TextSecure.BlueActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/blue_primary</item>
         <item name="background">@color/blue_primary</item>
@@ -222,8 +256,9 @@
     </style>
 
     <!-- PINK -->
-    <style name="TextSecure.PinkActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.PinkActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/pink_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -233,7 +268,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.PinkActionBar.TabBar"
+    <style
+        name="TextSecure.PinkActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/pink_primary</item>
         <item name="background">@color/pink_primary</item>
@@ -244,8 +280,9 @@
 
 
     <!-- GRAY -->
-    <style name="TextSecure.GrayActionBar"
-           parent="@style/Widget.AppCompat.ActionBar">
+    <style
+        name="TextSecure.GrayActionBar"
+        parent="@style/Widget.AppCompat.ActionBar">
         <item name="background">@color/gray_primary</item>
         <item name="elevation">4dp</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
@@ -255,7 +292,8 @@
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <style name="TextSecure.GrayActionBar.TabBar"
+    <style
+        name="TextSecure.GrayActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
         <item name="android:background">@color/gray_primary</item>
         <item name="background">@color/gray_primary</item>

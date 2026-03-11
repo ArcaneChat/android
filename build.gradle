@@ -213,7 +213,7 @@ spotless {
     }
     format 'xml', {
         target 'src/**/*.xml'
-        eclipseWtp('xml')
+        eclipseWtp('xml').configFile('spotless/eclipse-wtp-xml.prefs')
         trimTrailingWhitespace()
         endWithNewline()
     }

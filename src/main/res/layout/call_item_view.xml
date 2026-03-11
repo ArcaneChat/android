@@ -9,41 +9,40 @@
     android:gravity="center_vertical"
     android:focusable="true">
 
-  <LinearLayout android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="16dp"
-                android:orientation="vertical">
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:fontFamily="sans-serif"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="?conversation_item_outgoing_text_primary_color"
-        tools:text="Incoming call" />
+        android:layout_weight="1"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical">
 
-    <org.thoughtcrime.securesms.components.ConversationItemFooter
-        android:id="@+id/footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:gravity="start"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:singleLine="true"
+            android:fontFamily="sans-serif"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?conversation_item_outgoing_text_primary_color"
+            tools:text="Incoming call" />
 
-  </LinearLayout>
+        <org.thoughtcrime.securesms.components.ConversationItemFooter
+            android:id="@+id/footer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:gravity="start"
+            android:clipChildren="false"
+            android:clipToPadding="false" />
 
-  <ImageView
-      android:id="@+id/call_icon"
-      android:layout_width="30dp"
-      android:layout_height="30dp"
-      android:contentDescription="@null"
-      />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/call_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@null" />
 
 </LinearLayout>
