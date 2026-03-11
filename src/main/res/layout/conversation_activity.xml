@@ -53,6 +53,14 @@
                 android:paddingEnd="16dp"
                 android:focusable="true" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mention_suggestions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:background="?attr/input_panel_bg_color"
+                android:elevation="4dp" />
+
             <include layout="@layout/conversation_input_panel"/>
 
             <FrameLayout
