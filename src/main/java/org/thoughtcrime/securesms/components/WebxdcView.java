@@ -1,35 +1,29 @@
 package org.thoughtcrime.securesms.components;
 
-
 import android.content.Context;
 import android.content.res.TypedArray;
-
-import androidx.annotation.AttrRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatImageView;
-
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+import androidx.annotation.AttrRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
 import com.b44t.messenger.DcMsg;
-
+import java.io.ByteArrayInputStream;
 import org.json.JSONObject;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.mms.DocumentSlide;
 import org.thoughtcrime.securesms.mms.SlideClickListener;
 import org.thoughtcrime.securesms.util.JsonUtils;
 
-import java.io.ByteArrayInputStream;
-
 public class WebxdcView extends FrameLayout {
 
   private final @NonNull AppCompatImageView icon;
-  private final @NonNull TextView           appName;
-  private final @NonNull TextView           appSubtitle;
+  private final @NonNull TextView appName;
+  private final @NonNull TextView appSubtitle;
 
   private @Nullable SlideClickListener viewListener;
 
@@ -41,11 +35,13 @@ public class WebxdcView extends FrameLayout {
     this(context, attrs, 0);
   }
 
-  public WebxdcView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
+  public WebxdcView(
+      @NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
     super(context, attrs, defStyleAttr);
 
     boolean compact;
-    try (TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.WebxdcView, 0, 0)) {
+    try (TypedArray a =
+        context.getTheme().obtainStyledAttributes(attrs, R.styleable.WebxdcView, 0, 0)) {
       compact = a.getBoolean(R.styleable.WebxdcView_compact, false);
     }
     if (compact) {
@@ -54,8 +50,8 @@ public class WebxdcView extends FrameLayout {
       inflate(context, R.layout.webxdc_view, this);
     }
 
-    this.icon        = findViewById(R.id.webxdc_icon);
-    this.appName     = findViewById(R.id.webxdc_app_name);
+    this.icon = findViewById(R.id.webxdc_icon);
+    this.appName = findViewById(R.id.webxdc_app_name);
     this.appSubtitle = findViewById(R.id.webxdc_subtitle);
   }
 
@@ -63,8 +59,7 @@ public class WebxdcView extends FrameLayout {
     this.viewListener = listener;
   }
 
-  public void setWebxdc(final @NonNull DcMsg dcMsg, String defaultSummary)
-  {
+  public void setWebxdc(final @NonNull DcMsg dcMsg, String defaultSummary) {
     JSONObject info = dcMsg.getWebxdcInfo();
     setOnClickListener(new OpenClickedListener(getContext(), dcMsg));
 
@@ -95,10 +90,12 @@ public class WebxdcView extends FrameLayout {
   }
 
   public String getDescription() {
-    String type = getContext().getString( R.string.webxdc_app);
+    String type = getContext().getString(R.string.webxdc_app);
     String desc = type;
     desc += "\n" + appName.getText();
-    if (appSubtitle.getText() != null && !appSubtitle.getText().toString().isEmpty() && !appSubtitle.getText().toString().equals(type)) {
+    if (appSubtitle.getText() != null
+        && !appSubtitle.getText().toString().isEmpty()
+        && !appSubtitle.getText().toString().equals(type)) {
       desc += "\n" + appSubtitle.getText();
     }
     return desc;
@@ -118,5 +115,4 @@ public class WebxdcView extends FrameLayout {
       }
     }
   }
-
 }

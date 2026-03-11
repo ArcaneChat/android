@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools">
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <Preference
         android:key="preference_category_blocked"
@@ -30,7 +31,7 @@
             android:key="autodel_device"
             android:title="@string/autodel_device_title"
             android:entries="@array/autodel_device_durations"
-            android:entryValues="@array/autodel_device_values"/>
+            android:entryValues="@array/autodel_device_values" />
 
         <ListPreference
             android:key="autodel_server"

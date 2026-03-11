@@ -5,8 +5,8 @@ import static android.text.InputType.TYPE_TEXT_VARIATION_URI;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_BCC_SELF;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_MVBOX_MOVE;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_ONLY_FETCH_MVBOX;
-import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_STATS_SENDING;
 import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_SHOW_EMAILS;
+import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_STATS_SENDING;
 
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +16,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -26,30 +24,26 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.preference.CheckBoxPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
-
-import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
-import org.thoughtcrime.securesms.LogViewActivity;
-import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.relay.RelayListActivity;
-import org.thoughtcrime.securesms.StatsSending;
-import org.thoughtcrime.securesms.connect.DcEventCenter;
-import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
-import org.thoughtcrime.securesms.util.Prefs;
-import org.thoughtcrime.securesms.util.ScreenLockUtil;
-import org.thoughtcrime.securesms.util.StreamUtil;
-import org.thoughtcrime.securesms.util.Util;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Objects;
-
+import org.thoughtcrime.securesms.ApplicationPreferencesActivity;
+import org.thoughtcrime.securesms.LogViewActivity;
+import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.StatsSending;
+import org.thoughtcrime.securesms.connect.DcEventCenter;
+import org.thoughtcrime.securesms.proxy.ProxySettingsActivity;
+import org.thoughtcrime.securesms.relay.RelayListActivity;
+import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.ScreenLockUtil;
+import org.thoughtcrime.securesms.util.StreamUtil;
+import org.thoughtcrime.securesms.util.Util;
 
 public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
-                                        implements DcEventCenter.DcEventDelegate
-{
+    implements DcEventCenter.DcEventDelegate {
   private static final String TAG = AdvancedPreferenceFragment.class.getSimpleName();
 
   private ListPreference showEmails;
@@ -63,73 +57,81 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   public void onCreate(Bundle paramBundle) {
     super.onCreate(paramBundle);
 
-    screenLockLauncher = registerForActivityResult(
-      new ActivityResultContracts.StartActivityForResult(),
-      result -> {
-        if (result.getResultCode() == RESULT_OK) {
-          openRelayListActivity();
-        }
-      }
-    );
+    screenLockLauncher =
+        registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+              if (result.getResultCode() == RESULT_OK) {
+                openRelayListActivity();
+              }
+            });
 
     showEmails = (ListPreference) this.findPreference("pref_show_emails");
     if (showEmails != null) {
-      showEmails.setOnPreferenceChangeListener((preference, newValue) -> {
-        updateListSummary(preference, newValue);
-        dcContext.setConfigInt(CONFIG_SHOW_EMAILS, Util.objectToInt(newValue));
-        return true;
-      });
+      showEmails.setOnPreferenceChangeListener(
+          (preference, newValue) -> {
+            updateListSummary(preference, newValue);
+            dcContext.setConfigInt(CONFIG_SHOW_EMAILS, Util.objectToInt(newValue));
+            return true;
+          });
     }
 
     multiDeviceCheckbox = (CheckBoxPreference) this.findPreference("pref_bcc_self");
     if (multiDeviceCheckbox != null) {
-      multiDeviceCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
-        boolean enabled = (Boolean) newValue;
-        if (enabled) {
-            dcContext.setConfigInt(CONFIG_BCC_SELF, 1);
-            return true;
-        } else {
-          new AlertDialog.Builder(requireContext())
+      multiDeviceCheckbox.setOnPreferenceChangeListener(
+          (preference, newValue) -> {
+            boolean enabled = (Boolean) newValue;
+            if (enabled) {
+              dcContext.setConfigInt(CONFIG_BCC_SELF, 1);
+              return true;
+            } else {
+              new AlertDialog.Builder(requireContext())
                   .setMessage(R.string.pref_multidevice_change_warn)
-                  .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-                    dcContext.setConfigInt(CONFIG_BCC_SELF, 0);
-                    ((CheckBoxPreference)preference).setChecked(false);
-                  })
+                  .setPositiveButton(
+                      R.string.ok,
+                      (dialogInterface, i) -> {
+                        dcContext.setConfigInt(CONFIG_BCC_SELF, 0);
+                        ((CheckBoxPreference) preference).setChecked(false);
+                      })
                   .setNegativeButton(R.string.cancel, null)
                   .show();
-          return false;
-        }
-      });
+              return false;
+            }
+          });
     }
 
     mvboxMoveCheckbox = (CheckBoxPreference) this.findPreference("pref_mvbox_move");
     if (mvboxMoveCheckbox != null) {
-      mvboxMoveCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
-        boolean enabled = (Boolean) newValue;
-        dcContext.setConfigInt(CONFIG_MVBOX_MOVE, enabled? 1 : 0);
-        return true;
-      });
+      mvboxMoveCheckbox.setOnPreferenceChangeListener(
+          (preference, newValue) -> {
+            boolean enabled = (Boolean) newValue;
+            dcContext.setConfigInt(CONFIG_MVBOX_MOVE, enabled ? 1 : 0);
+            return true;
+          });
     }
 
     onlyFetchMvboxCheckbox = this.findPreference("pref_only_fetch_mvbox");
     if (onlyFetchMvboxCheckbox != null) {
-      onlyFetchMvboxCheckbox.setOnPreferenceChangeListener(((preference, newValue) -> {
-        final boolean enabled = (Boolean) newValue;
-        if (enabled) {
-          new AlertDialog.Builder(requireContext())
+      onlyFetchMvboxCheckbox.setOnPreferenceChangeListener(
+          ((preference, newValue) -> {
+            final boolean enabled = (Boolean) newValue;
+            if (enabled) {
+              new AlertDialog.Builder(requireContext())
                   .setMessage(R.string.pref_imap_folder_warn_disable_defaults)
-                  .setPositiveButton(R.string.ok, (dialogInterface, i) -> {
-                    dcContext.setConfigInt(CONFIG_ONLY_FETCH_MVBOX, 1);
-                    ((CheckBoxPreference)preference).setChecked(true);
-                  })
+                  .setPositiveButton(
+                      R.string.ok,
+                      (dialogInterface, i) -> {
+                        dcContext.setConfigInt(CONFIG_ONLY_FETCH_MVBOX, 1);
+                        ((CheckBoxPreference) preference).setChecked(true);
+                      })
                   .setNegativeButton(R.string.cancel, null)
                   .show();
-          return false;
-        } else {
-          dcContext.setConfigInt(CONFIG_ONLY_FETCH_MVBOX, 0);
-          return true;
-        }
-      }));
+              return false;
+            } else {
+              dcContext.setConfigInt(CONFIG_ONLY_FETCH_MVBOX, 0);
+              return true;
+            }
+          }));
     }
 
     Preference submitDebugLog = this.findPreference("pref_view_log");
@@ -145,37 +147,47 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
 
     selfReportingCheckbox = this.findPreference("pref_stats_sending");
     if (selfReportingCheckbox != null) {
-      selfReportingCheckbox.setOnPreferenceChangeListener((preference, newValue) -> {
-        boolean enabled = (Boolean) newValue;
-        if (enabled) {
-          StatsSending.showStatsConfirmationDialog(requireActivity(), () -> {
-            ((CheckBoxPreference)preference).setChecked(true);
+      selfReportingCheckbox.setOnPreferenceChangeListener(
+          (preference, newValue) -> {
+            boolean enabled = (Boolean) newValue;
+            if (enabled) {
+              StatsSending.showStatsConfirmationDialog(
+                  requireActivity(),
+                  () -> {
+                    ((CheckBoxPreference) preference).setChecked(true);
+                  });
+              return false;
+            } else {
+              dcContext.setConfigInt(CONFIG_STATS_SENDING, 0);
+              return true;
+            }
           });
-          return false;
-        } else {
-          dcContext.setConfigInt(CONFIG_STATS_SENDING, 0);
-          return true;
-        }
-      });
     }
 
     Preference proxySettings = this.findPreference("proxy_settings_button");
     if (proxySettings != null) {
-      proxySettings.setOnPreferenceClickListener((preference) -> {
-        startActivity(new Intent(requireActivity(), ProxySettingsActivity.class));
-        return true;
-      });
+      proxySettings.setOnPreferenceClickListener(
+          (preference) -> {
+            startActivity(new Intent(requireActivity(), ProxySettingsActivity.class));
+            return true;
+          });
     }
 
     Preference relayListBtn = this.findPreference("pref_relay_list_button");
     if (relayListBtn != null) {
-      relayListBtn.setOnPreferenceClickListener(((preference) -> {
-        boolean result = ScreenLockUtil.applyScreenLock(requireActivity(), getString(R.string.transports), getString(R.string.enter_system_secret_to_continue), screenLockLauncher);
-        if (!result) {
-          openRelayListActivity();
-        }
-        return true;
-      }));
+      relayListBtn.setOnPreferenceClickListener(
+          ((preference) -> {
+            boolean result =
+                ScreenLockUtil.applyScreenLock(
+                    requireActivity(),
+                    getString(R.string.transports),
+                    getString(R.string.enter_system_secret_to_continue),
+                    screenLockLauncher);
+            if (!result) {
+              openRelayListActivity();
+            }
+            return true;
+          }));
     }
 
     if (dcContext.isChatmail()) {
@@ -191,16 +203,18 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   @Override
   public void onResume() {
     super.onResume();
-    Objects.requireNonNull(((ApplicationPreferencesActivity) requireActivity()).getSupportActionBar()).setTitle(R.string.menu_advanced);
+    Objects.requireNonNull(
+            ((ApplicationPreferencesActivity) requireActivity()).getSupportActionBar())
+        .setTitle(R.string.menu_advanced);
 
     String value = Integer.toString(dcContext.getConfigInt("show_emails"));
     showEmails.setValue(value);
     updateListSummary(showEmails, value);
 
-    selfReportingCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_STATS_SENDING));
-    multiDeviceCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_BCC_SELF));
-    mvboxMoveCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_MVBOX_MOVE));
-    onlyFetchMvboxCheckbox.setChecked(0!=dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
+    selfReportingCheckbox.setChecked(0 != dcContext.getConfigInt(CONFIG_STATS_SENDING));
+    multiDeviceCheckbox.setChecked(0 != dcContext.getConfigInt(CONFIG_BCC_SELF));
+    mvboxMoveCheckbox.setChecked(0 != dcContext.getConfigInt(CONFIG_MVBOX_MOVE));
+    onlyFetchMvboxCheckbox.setChecked(0 != dcContext.getConfigInt(CONFIG_ONLY_FETCH_MVBOX));
   }
 
   protected File copyToCacheDir(Uri uri) throws IOException {
@@ -217,8 +231,9 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     try {
       if (context == null) return "";
 
-      String app     = context.getString(R.string.app_name);
-      String version = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
+      String app = context.getString(R.string.app_name);
+      String version =
+          context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName;
 
       return String.format("%s %s", app, version);
     } catch (PackageManager.NameNotFoundException e) {
@@ -246,15 +261,17 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
       inputField.setSelection(inputField.getText().length());
       inputField.setInputType(TYPE_TEXT_VARIATION_URI);
       new AlertDialog.Builder(requireActivity())
-              .setTitle(R.string.webxdc_store_url)
-              .setMessage(R.string.webxdc_store_url_explain)
-              .setView(gl)
-              .setNegativeButton(android.R.string.cancel, null)
-              .setPositiveButton(android.R.string.ok, (dlg, btn) -> {
+          .setTitle(R.string.webxdc_store_url)
+          .setMessage(R.string.webxdc_store_url_explain)
+          .setView(gl)
+          .setNegativeButton(android.R.string.cancel, null)
+          .setPositiveButton(
+              android.R.string.ok,
+              (dlg, btn) -> {
                 Prefs.setWebxdcStoreUrl(requireActivity(), inputField.getText().toString());
                 updateWebxdcStoreSummary();
               })
-              .show();
+          .show();
       return true;
     }
   }
@@ -262,7 +279,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
   private void updateWebxdcStoreSummary() {
     Preference preference = this.findPreference(Prefs.WEBXDC_STORE_URL_PREF);
     if (preference != null) {
-        preference.setSummary(Prefs.getWebxdcStoreUrl(requireActivity()));
+      preference.setSummary(Prefs.getWebxdcStoreUrl(requireActivity()));
     }
   }
 
@@ -270,5 +287,4 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     Intent intent = new Intent(requireActivity(), RelayListActivity.class);
     startActivity(intent);
   }
-
 }
