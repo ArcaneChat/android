@@ -21,11 +21,14 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.b44t.messenger.DcMsg;
 
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.animation.AnimationCompleteListener;
+import org.thoughtcrime.securesms.components.emoji.EmojiSuggestionAdapter;
 import org.thoughtcrime.securesms.components.emoji.EmojiToggle;
 import org.thoughtcrime.securesms.components.emoji.MediaKeyboard;
 import org.thoughtcrime.securesms.mms.GlideRequests;
@@ -37,6 +40,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.concurrent.AssertedSuccessListener;
 import org.thoughtcrime.securesms.util.guava.Optional;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -62,6 +66,8 @@ public class InputPanel extends ConstraintLayout
   private View            buttonToggle;
   private View            recordingContainer;
   private View            recordLockCancel;
+  private RecyclerView         emojiSuggestions;
+  private EmojiSuggestionAdapter emojiSuggestionAdapter;
 
   private MicrophoneRecorderView microphoneRecorderView;
   private SlideToCancel          slideToCancel;
@@ -102,6 +108,11 @@ public class InputPanel extends ConstraintLayout
     this.slideToCancel          = new SlideToCancel(findViewById(R.id.slide_to_cancel));
     this.microphoneRecorderView = findViewById(R.id.recorder_view);
     this.microphoneRecorderView.setListener(this);
+
+    this.emojiSuggestions = findViewById(R.id.emoji_suggestions);
+    this.emojiSuggestionAdapter = new EmojiSuggestionAdapter();
+    this.emojiSuggestions.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+    this.emojiSuggestions.setAdapter(emojiSuggestionAdapter);
 
     this.recordLockCancel.setOnClickListener(v -> microphoneRecorderView.cancelAction());
 
@@ -227,6 +238,20 @@ public class InputPanel extends ConstraintLayout
 
   public void setMediaKeyboard(@NonNull MediaKeyboard mediaKeyboard) {
     mediaKeyboard.setKeyboardListener(this);
+  }
+
+  public void setEmojiSuggestionListener(@NonNull EmojiSuggestionAdapter.OnEmojiClickListener listener) {
+    emojiSuggestionAdapter.setOnEmojiClickListener(listener);
+  }
+
+  public void showEmojiSuggestions(@NonNull List<String> emojis) {
+    emojiSuggestionAdapter.setEmojis(emojis);
+    emojiSuggestions.setVisibility(View.VISIBLE);
+    emojiSuggestions.scrollToPosition(0);
+  }
+
+  public void hideEmojiSuggestions() {
+    emojiSuggestions.setVisibility(View.GONE);
   }
 
   @Override
