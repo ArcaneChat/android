@@ -69,7 +69,7 @@ public class ProgressDialog extends AlertDialog {
       progressBar
           .getIndeterminateDrawable()
           .setColorFilter(
-              ContextCompat.getColor(getContext(), R.color.delta_accent), PorterDuff.Mode.SRC_IN);
+              ContextCompat.getColor(getContext(), R.color.def_accent), PorterDuff.Mode.SRC_IN);
       progressBar.setIndeterminate(indeterminate);
     }
   }
@@ -127,57 +127,7 @@ public class ProgressDialog extends AlertDialog {
           context.getString(R.string.cancel),
           ((dialog1, which) -> cancelListener.onCancel(dialog)));
     }
-
-    private void setupProgressBar() {
-        if (progressBar != null) {
-            progressBar.getIndeterminateDrawable()
-                    .setColorFilter(ContextCompat.getColor(getContext(), R.color.def_accent), PorterDuff.Mode.SRC_IN);
-            progressBar.setIndeterminate(indeterminate);
-        }
-    }
-
-    private void setupTextView() {
-        if (textView != null && message != null && !message.isEmpty()) {
-            textView.setText(message);
-        }
-    }
-
-    private void setIndeterminate(boolean indeterminate) {
-        this.indeterminate = indeterminate;
-        if (progressBar != null) {
-            progressBar.setIndeterminate(indeterminate);
-        }
-    }
-
-    // Source: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/app/ProgressDialog.java
-    public static ProgressDialog show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate) {
-        return show(context, title, message, indeterminate, false, null);
-    }
-
-    // Source: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/app/ProgressDialog.java
-    public static ProgressDialog show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate, boolean cancelable) {
-        return show(context, title, message, indeterminate, cancelable, null);
-    }
-
-    // Source: https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/app/ProgressDialog.java
-    public static ProgressDialog show(Context context, CharSequence title,
-                                      CharSequence message, boolean indeterminate,
-                                      boolean cancelable, OnCancelListener cancelListener) {
-        ProgressDialog dialog = new ProgressDialog(context);
-        dialog.setTitle(title);
-        dialog.setMessage(message);
-        dialog.setIndeterminate(indeterminate);
-        dialog.setCancelable(cancelable);
-        dialog.setOnCancelListener(cancelListener);
-        if (cancelable) {
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.setButton(DialogInterface.BUTTON_NEGATIVE, context.getString(R.string.cancel),
-                    ((dialog1, which) -> cancelListener.onCancel(dialog)));
-        }
-        dialog.show();
-        return dialog;
-    }
-
+    dialog.show();
+    return dialog;
+  }
 }
