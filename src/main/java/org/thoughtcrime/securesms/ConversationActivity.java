@@ -1291,7 +1291,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
             }
           }
 
-          Util.runOnMain(() -> sendComplete(currentChatId));
+          Util.runOnMain(() -> sendComplete(dcChat.getId()));
         }
       } else {
         dcContext.setDraft(currentChatId, msg);
