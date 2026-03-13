@@ -132,10 +132,20 @@ public class InputPanel extends ConstraintLayout
       quoteAnimator.cancel();
     }
 
-    quoteAnimator =
-        createHeightAnimator(quoteView, originalHeight, this.quoteView.getMeasuredHeight(), null);
-
-    quoteAnimator.start();
+    int finalHeight = this.quoteView.getMeasuredHeight();
+    if (finalHeight > 0) {
+      quoteAnimator =
+          createHeightAnimator(quoteView, originalHeight, finalHeight, null);
+      quoteAnimator.start();
+    } else {
+      // Fallback when getMeasuredHeight() returns 0 (view not yet laid out).
+      // Setting WRAP_CONTENT ensures the quote is visible instead of animating to 0 height.
+      ViewGroup.LayoutParams params = quoteView.getLayoutParams();
+      if (params != null) {
+        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        quoteView.setLayoutParams(params);
+      }
+    }
   }
 
   public void clearQuoteWithoutAnimation() {
