@@ -65,6 +65,7 @@ import org.thoughtcrime.securesms.mms.StickerSlide;
 import org.thoughtcrime.securesms.mms.VcardSlide;
 import org.thoughtcrime.securesms.reactions.ReactionsConversationView;
 import org.thoughtcrime.securesms.recipients.Recipient;
+import org.thoughtcrime.securesms.util.LinkAccessibilityDelegate;
 import org.thoughtcrime.securesms.util.Linkifier;
 import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.MarkdownUtil;
@@ -125,6 +126,7 @@ public class ConversationItem extends BaseConversationItem
   private           Stub<VcardView>                 vcardViewStub;
   private           Stub<CallItemView>              callViewStub;
   private @Nullable EventListener                   eventListener;
+  private @Nullable LinkAccessibilityDelegate       linkAccessibilityDelegate;
 
   private int measureCalls;
 
@@ -428,6 +430,19 @@ public class ConversationItem extends BaseConversationItem
       }
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);
+      
+      // Set accessibility delegate for TalkBack to expose links as custom actions.
+      // Note: During batch selection mode (batchSelected.isEmpty() == false), links are not
+      // linkified (see line 427-428), so there's no need to set the accessibility delegate.
+      // This also ensures that accessibility focus doesn't interfere with batch selection UI.
+      if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
+        if (linkAccessibilityDelegate == null) {
+          linkAccessibilityDelegate = new LinkAccessibilityDelegate(context);
+        }
+        bodyText.setAccessibilityDelegate(linkAccessibilityDelegate);
+      } else {
+        bodyText.setAccessibilityDelegate(null);
+      }
     }
 
     int downloadState = messageRecord.getDownloadState();
