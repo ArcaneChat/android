@@ -1291,7 +1291,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
             }
           }
 
-          Util.runOnMain(() -> sendComplete(dcChat.getId()));
+          Util.runOnMain(() -> sendComplete());
         }
       } else {
         dcContext.setDraft(currentChatId, msg);
@@ -1303,26 +1303,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   }
 
 
-  protected void sendComplete(int chatId) {
-    boolean refreshFragment = (chatId != this.chatId);
-    this.chatId = chatId;
-
+  protected void sendComplete() {
     if (fragment == null || !fragment.isVisible() || isFinishing()) {
       return;
     }
 
     fragment.setLastSeen(-1);
-
-    if (refreshFragment) {
-      fragment.reload(recipient, chatId);
-      try {
-        int accId = rpc.getSelectedAccountId();
-        DcHelper.getNotificationCenter(this).updateVisibleChat(accId, chatId);
-      } catch (RpcException e) {
-        Log.e(TAG, "rpc.getSelectedAccountId() failed", e);
-      }
-    }
-
     fragment.scrollToBottom();
     attachmentManager.cleanup();
   }
