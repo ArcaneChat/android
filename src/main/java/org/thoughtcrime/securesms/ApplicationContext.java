@@ -9,7 +9,6 @@ import android.net.LinkProperties;
 import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.NotificationManagerCompat;
@@ -19,14 +18,18 @@ import androidx.work.ExistingPeriodicWorkPolicy;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
-
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
 import com.b44t.messenger.DcAccounts;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcEventChannel;
 import com.b44t.messenger.DcEventEmitter;
 import com.b44t.messenger.FFITransport;
-
+import java.io.File;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.concurrent.TimeUnit;
 import org.thoughtcrime.securesms.calls.CallCoordinator;
 import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
@@ -49,35 +52,27 @@ import org.thoughtcrime.securesms.util.SignalProtocolLoggerProvider;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.webxdc.WebxdcGarbageCollectionWorker;
 
-import java.io.File;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.util.concurrent.TimeUnit;
-
-import chat.delta.rpc.Rpc;
-import chat.delta.rpc.RpcException;
-
 public class ApplicationContext extends MultiDexApplication {
   private static final String TAG = ApplicationContext.class.getSimpleName();
   private static final Object initLock = new Object();
   private static volatile boolean isInitialized = false;
 
-  private static DcAccounts      dcAccounts;
-  private Rpc                    rpc;
-  private DcContext              dcContext;
+  private static DcAccounts dcAccounts;
+  private Rpc rpc;
+  private DcContext dcContext;
 
-  private DcLocationManager      dcLocationManager;
-  private DcEventCenter          eventCenter;
-  private NotificationCenter     notificationCenter;
-  private JobManager            jobManager;
+  private DcLocationManager dcLocationManager;
+  private DcEventCenter eventCenter;
+  private NotificationCenter notificationCenter;
+  private JobManager jobManager;
 
-  private int                   debugOnAvailableCount;
-  private int                   debugOnBlockedStatusChangedCount;
-  private int                   debugOnCapabilitiesChangedCount;
-  private int                   debugOnLinkPropertiesChangedCount;
+  private int debugOnAvailableCount;
+  private int debugOnBlockedStatusChangedCount;
+  private int debugOnCapabilitiesChangedCount;
+  private int debugOnLinkPropertiesChangedCount;
 
   public static ApplicationContext getInstance(@NonNull Context context) {
-    return (ApplicationContext)context.getApplicationContext();
+    return (ApplicationContext) context.getApplicationContext();
   }
 
   private static void ensureInitialized() {
@@ -94,8 +89,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get DcAccounts instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get DcAccounts instance, waiting for initialization if necessary. This method is thread-safe
+   * and will block until initialization is complete.
    */
   public static DcAccounts getDcAccounts() {
     ensureInitialized();
@@ -103,8 +98,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get Rpc instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get Rpc instance, waiting for initialization if necessary. This method is thread-safe and will
+   * block until initialization is complete.
    */
   public Rpc getRpc() {
     ensureInitialized();
@@ -112,8 +107,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get DcContext instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get DcContext instance, waiting for initialization if necessary. This method is thread-safe and
+   * will block until initialization is complete.
    */
   public DcContext getDcContext() {
     ensureInitialized();
@@ -122,8 +117,8 @@ public class ApplicationContext extends MultiDexApplication {
 
   /**
    * Set DcContext instance. This should only be called by AccountManager when switching accounts,
-   * which only happens after initial initialization is complete.
-   * This method is thread-safe but does NOT trigger initialization or notify waiting threads.
+   * which only happens after initial initialization is complete. This method is thread-safe but
+   * does NOT trigger initialization or notify waiting threads.
    */
   public void setDcContext(DcContext dcContext) {
     synchronized (initLock) {
@@ -132,8 +127,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get DcLocationManager instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get DcLocationManager instance, waiting for initialization if necessary. This method is
+   * thread-safe and will block until initialization is complete.
    */
   public DcLocationManager getLocationManager() {
     ensureInitialized();
@@ -141,8 +136,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get DcEventCenter instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get DcEventCenter instance, waiting for initialization if necessary. This method is thread-safe
+   * and will block until initialization is complete.
    */
   public DcEventCenter getEventCenter() {
     ensureInitialized();
@@ -150,8 +145,8 @@ public class ApplicationContext extends MultiDexApplication {
   }
 
   /**
-   * Get NotificationCenter instance, waiting for initialization if necessary.
-   * This method is thread-safe and will block until initialization is complete.
+   * Get NotificationCenter instance, waiting for initialization if necessary. This method is
+   * thread-safe and will block until initialization is complete.
    */
   public NotificationCenter getNotificationCenter() {
     ensureInitialized();
@@ -162,26 +157,30 @@ public class ApplicationContext extends MultiDexApplication {
   public void onCreate() {
     super.onCreate();
 
-    Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
-      StringWriter stringWriter = new StringWriter();
-      throwable.printStackTrace(new PrintWriter(stringWriter, true));
-      String errorMsg = "Android " + Build.VERSION.RELEASE +":\n" + stringWriter.getBuffer().toString();
-      errorMsg += "\n" + LogViewFragment.grabLogcat();
-      String subject = "ArcaneChat " + BuildConfig.VERSION_NAME + "-" + BuildConfig.FLAVOR + " Crash Report";
-      Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-      intent.setType("text/plain");
-      intent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
-      intent.putExtra(android.content.Intent.EXTRA_TEXT, subject + "\n\n" + errorMsg);
-      intent.putExtra(Intent.EXTRA_EMAIL, "adb@merlinux.eu");
-      Intent chooser = Intent.createChooser(intent, subject);
-      chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-      chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-      startActivity(chooser);
+    Thread.setDefaultUncaughtExceptionHandler(
+        (thread, throwable) -> {
+          StringWriter stringWriter = new StringWriter();
+          throwable.printStackTrace(new PrintWriter(stringWriter, true));
+          String errorMsg =
+              "Android " + Build.VERSION.RELEASE + ":\n" + stringWriter.getBuffer().toString();
+          errorMsg += "\n" + LogViewFragment.grabLogcat();
+          String subject =
+              "ArcaneChat " + BuildConfig.VERSION_NAME + "-" + BuildConfig.FLAVOR + " Crash Report";
+          Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+          intent.setType("text/plain");
+          intent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+          intent.putExtra(android.content.Intent.EXTRA_TEXT, subject + "\n\n" + errorMsg);
+          intent.putExtra(Intent.EXTRA_EMAIL, "adb@merlinux.eu");
+          Intent chooser = Intent.createChooser(intent, subject);
+          chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+          startActivity(chooser);
 
-      try {
-        ApplicationContext.this.finalize();
-      } catch (Throwable e) {}
-    });
+          try {
+            ApplicationContext.this.finalize();
+          } catch (Throwable e) {
+          }
+        });
 
     // if (LeakCanary.isInAnalyzerProcess(this)) {
     //   // This process is dedicated to LeakCanary for heap analysis.
@@ -195,90 +194,114 @@ public class ApplicationContext extends MultiDexApplication {
     System.loadLibrary("native-utils");
 
     // Initialize DcAccounts in background to avoid ANR during SQL migrations
-    Util.runOnBackground(() -> {
-      synchronized (initLock) {
-        try {
-          DcEventChannel eventChannel = new DcEventChannel();
-          DcEventEmitter emitter = eventChannel.getEventEmitter();
-          eventCenter = new DcEventCenter(this);
-
-          new Thread(() -> {
-              Log.i(TAG, "Starting event loop");
-              while (true) {
-                DcEvent event = emitter.getNextEvent();
-                if (event == null) {
-                  break;
-                }
-                if (isInitialized) {
-                  eventCenter.handleEvent(event);
-                } else {
-                  // not fully initialized, only handle logging events,
-                  // ex. account migrations during DcAccounts initialization
-                  eventCenter.handleLogging(event);
-                }
-              }
-              Log.i("DeltaChat", "shutting down event handler");
-          }, "eventThread").start();
-
-          dcAccounts = new DcAccounts(new File(getFilesDir(), "accounts").getAbsolutePath(), eventChannel);
-          Log.i(TAG, "DcAccounts created");
-          rpc = new Rpc(new FFITransport(dcAccounts.getJsonrpcInstance()));
-          Log.i(TAG, "Rpc created");
-          AccountManager.getInstance().migrateToDcAccounts(this);
-
-          int[] allAccounts = dcAccounts.getAll();
-          Log.i(TAG, "Number of profiles: " + allAccounts.length);
-          for (int accountId : allAccounts) {
-            DcContext ac = dcAccounts.getAccount(accountId);
-            if (!ac.isOpen()) {
-              try {
-                DatabaseSecret secret = DatabaseSecretProvider.getOrCreateDatabaseSecret(this, accountId);
-                boolean res = ac.open(secret.asString());
-                if (res) Log.i(TAG, "Successfully opened account " + accountId + ", path: " + ac.getBlobdir());
-                else Log.e(TAG, "Error opening account " + accountId + ", path: " + ac.getBlobdir());
-              } catch (Exception e) {
-                Log.e(TAG, "Failed to open account " + accountId + ", path: " + ac.getBlobdir() + ": " + e);
-                e.printStackTrace();
-              }
-            }
-
-            // 2025-12-16: The setting was removed.
-            // Revert it to the default if it was changed in the past.
-            ac.setConfigInt("webxdc_realtime_enabled", 1);
-
-            // 2025-11-12: this is needed until core starts ignoring "delete_server_after" for chatmail
-            if (ac.isChatmail()) {
-              ac.setConfig("delete_server_after", null); // reset
-            }
-          }
-          if (allAccounts.length == 0) {
+    Util.runOnBackground(
+        () -> {
+          synchronized (initLock) {
             try {
-              rpc.addAccount();
-            } catch (RpcException e) {
-              e.printStackTrace();
+              DcEventChannel eventChannel = new DcEventChannel();
+              DcEventEmitter emitter = eventChannel.getEventEmitter();
+              eventCenter = new DcEventCenter(this);
+
+              new Thread(
+                      () -> {
+                        Log.i(TAG, "Starting event loop");
+                        while (true) {
+                          DcEvent event = emitter.getNextEvent();
+                          if (event == null) {
+                            break;
+                          }
+                          if (isInitialized) {
+                            eventCenter.handleEvent(event);
+                          } else {
+                            // not fully initialized, only handle logging events,
+                            // ex. account migrations during DcAccounts initialization
+                            eventCenter.handleLogging(event);
+                          }
+                        }
+                        Log.i("DeltaChat", "shutting down event handler");
+                      },
+                      "eventThread")
+                  .start();
+
+              dcAccounts =
+                  new DcAccounts(
+                      new File(getFilesDir(), "accounts").getAbsolutePath(), eventChannel);
+              Log.i(TAG, "DcAccounts created");
+              rpc = new Rpc(new FFITransport(dcAccounts.getJsonrpcInstance()));
+              Log.i(TAG, "Rpc created");
+              AccountManager.getInstance().migrateToDcAccounts(this);
+
+              int[] allAccounts = dcAccounts.getAll();
+              Log.i(TAG, "Number of profiles: " + allAccounts.length);
+              for (int accountId : allAccounts) {
+                DcContext ac = dcAccounts.getAccount(accountId);
+                if (!ac.isOpen()) {
+                  try {
+                    DatabaseSecret secret =
+                        DatabaseSecretProvider.getOrCreateDatabaseSecret(this, accountId);
+                    boolean res = ac.open(secret.asString());
+                    if (res)
+                      Log.i(
+                          TAG,
+                          "Successfully opened account "
+                              + accountId
+                              + ", path: "
+                              + ac.getBlobdir());
+                    else
+                      Log.e(
+                          TAG, "Error opening account " + accountId + ", path: " + ac.getBlobdir());
+                  } catch (Exception e) {
+                    Log.e(
+                        TAG,
+                        "Failed to open account "
+                            + accountId
+                            + ", path: "
+                            + ac.getBlobdir()
+                            + ": "
+                            + e);
+                    e.printStackTrace();
+                  }
+                }
+
+                // 2025-12-16: The setting was removed.
+                // Revert it to the default if it was changed in the past.
+                ac.setConfigInt("webxdc_realtime_enabled", 1);
+
+                // 2025-11-12: this is needed until core starts ignoring "delete_server_after" for
+                // chatmail
+                if (ac.isChatmail()) {
+                  ac.setConfig("delete_server_after", null); // reset
+                }
+              }
+              if (allAccounts.length == 0) {
+                try {
+                  rpc.addAccount();
+                } catch (RpcException e) {
+                  e.printStackTrace();
+                }
+              }
+              dcContext = dcAccounts.getSelectedAccount();
+              notificationCenter = new NotificationCenter(this);
+              dcLocationManager = new DcLocationManager(this, dcContext);
+
+              isInitialized = true;
+              initLock.notifyAll();
+              Log.i(TAG, "DcAccounts initialization complete");
+
+              // set translations before starting I/O to avoid sending untranslated MDNs (issue
+              // #2288)
+              DcHelper.setStockTranslations(this);
+
+              dcAccounts.startIo();
+            } catch (Exception e) {
+              Log.e(TAG, "Fatal error during DcAccounts initialization", e);
+              // Mark as initialized even on error to avoid deadlock
+              isInitialized = true;
+              initLock.notifyAll();
+              throw new RuntimeException("Failed to initialize DcAccounts", e);
             }
           }
-          dcContext = dcAccounts.getSelectedAccount();
-          notificationCenter = new NotificationCenter(this);
-          dcLocationManager = new DcLocationManager(this, dcContext);
-
-          isInitialized = true;
-          initLock.notifyAll();
-          Log.i(TAG, "DcAccounts initialization complete");
-
-          // set translations before starting I/O to avoid sending untranslated MDNs (issue #2288)
-          DcHelper.setStockTranslations(this);
-
-          dcAccounts.startIo();
-        } catch (Exception e) {
-          Log.e(TAG, "Fatal error during DcAccounts initialization", e);
-          // Mark as initialized even on error to avoid deadlock
-          isInitialized = true;
-          initLock.notifyAll();
-          throw new RuntimeException("Failed to initialize DcAccounts", e);
-        }
-      }
-    });
+        });
 
     // October-2025 migration: delete deprecated "permanent channel" id
     NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
@@ -289,33 +312,50 @@ public class ApplicationContext extends MultiDexApplication {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       ConnectivityManager connectivityManager =
-        (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-      connectivityManager.registerDefaultNetworkCallback(new ConnectivityManager.NetworkCallback() {
-        @Override
-        public void onAvailable(@NonNull android.net.Network network) {
-          Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
-          getDcAccounts().maybeNetwork();
-        }
+          (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+      connectivityManager.registerDefaultNetworkCallback(
+          new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull android.net.Network network) {
+              Log.i(
+                  "DeltaChat",
+                  "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
+              getDcAccounts().maybeNetwork();
+            }
 
-        @Override
-        public void onBlockedStatusChanged(@NonNull android.net.Network network, boolean blocked) {
-          Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged() #" + debugOnBlockedStatusChangedCount++);
-        }
+            @Override
+            public void onBlockedStatusChanged(
+                @NonNull android.net.Network network, boolean blocked) {
+              Log.i(
+                  "DeltaChat",
+                  "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged() #"
+                      + debugOnBlockedStatusChangedCount++);
+            }
 
-        @Override
-        public void onCapabilitiesChanged(@NonNull android.net.Network network, NetworkCapabilities networkCapabilities) {
-          // usually called after onAvailable(), so a maybeNetwork seems contraproductive
-          Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onCapabilitiesChanged() #" + debugOnCapabilitiesChangedCount++);
-        }
+            @Override
+            public void onCapabilitiesChanged(
+                @NonNull android.net.Network network, NetworkCapabilities networkCapabilities) {
+              // usually called after onAvailable(), so a maybeNetwork seems contraproductive
+              Log.i(
+                  "DeltaChat",
+                  "++++++++++++++++++ NetworkCallback.onCapabilitiesChanged() #"
+                      + debugOnCapabilitiesChangedCount++);
+            }
 
-        @Override
-        public void onLinkPropertiesChanged(@NonNull android.net.Network network, LinkProperties linkProperties) {
-          Log.i("DeltaChat", "++++++++++++++++++ NetworkCallback.onLinkPropertiesChanged() #" + debugOnLinkPropertiesChangedCount++);
-        }
-      });
+            @Override
+            public void onLinkPropertiesChanged(
+                @NonNull android.net.Network network, LinkProperties linkProperties) {
+              Log.i(
+                  "DeltaChat",
+                  "++++++++++++++++++ NetworkCallback.onLinkPropertiesChanged() #"
+                      + debugOnLinkPropertiesChangedCount++);
+            }
+          });
     } // no else: use old method for debugging
     BroadcastReceiver networkStateReceiver = new NetworkStateReceiver();
-    registerReceiver(networkStateReceiver, new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
+    registerReceiver(
+        networkStateReceiver,
+        new IntentFilter(android.net.ConnectivityManager.CONNECTIVITY_ACTION));
 
     KeepAliveService.maybeStartSelf(this);
 
@@ -331,13 +371,15 @@ public class ApplicationContext extends MultiDexApplication {
     DynamicTheme.setDefaultDayNightMode(this);
 
     IntentFilter filter = new IntentFilter(Intent.ACTION_LOCALE_CHANGED);
-    registerReceiver(new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
+    registerReceiver(
+        new BroadcastReceiver() {
+          @Override
+          public void onReceive(Context context, Intent intent) {
             Util.localeChanged();
             DcHelper.setStockTranslations(context);
-        }
-    }, filter);
+          }
+        },
+        filter);
 
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
@@ -348,31 +390,34 @@ public class ApplicationContext extends MultiDexApplication {
       // MAYBE TODO: i think the ApplicationContext is also created
       // when the app is stated by FetchWorker timeouts.
       // in this case, the normal threads shall not be started.
-      Constraints constraints = new Constraints.Builder()
-              .setRequiredNetworkType(NetworkType.CONNECTED)
-              .build();
-      PeriodicWorkRequest fetchWorkRequest = new PeriodicWorkRequest.Builder(
-              FetchWorker.class,
-              PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, // usually 15 minutes
-              TimeUnit.MILLISECONDS,
-              PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS, // the start may be preferred by up to 5 minutes, so we run every 10-15 minutes
-              TimeUnit.MILLISECONDS)
+      Constraints constraints =
+          new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+      PeriodicWorkRequest fetchWorkRequest =
+          new PeriodicWorkRequest.Builder(
+                  FetchWorker.class,
+                  PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS, // usually 15 minutes
+                  TimeUnit.MILLISECONDS,
+                  PeriodicWorkRequest
+                      .MIN_PERIODIC_FLEX_MILLIS, // the start may be preferred by up to 5 minutes,
+                  // so we run every 10-15 minutes
+                  TimeUnit.MILLISECONDS)
               .setConstraints(constraints)
               .build();
-      WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-              "FetchWorker",
-              ExistingPeriodicWorkPolicy.KEEP,
-              fetchWorkRequest);
+      WorkManager.getInstance(this)
+          .enqueueUniquePeriodicWork(
+              "FetchWorker", ExistingPeriodicWorkPolicy.KEEP, fetchWorkRequest);
     }
 
-    PeriodicWorkRequest webxdcGarbageCollectionRequest = new PeriodicWorkRequest.Builder(
-            WebxdcGarbageCollectionWorker.class,
-            PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
-            TimeUnit.MILLISECONDS,
-            PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS,
-            TimeUnit.MILLISECONDS)
+    PeriodicWorkRequest webxdcGarbageCollectionRequest =
+        new PeriodicWorkRequest.Builder(
+                WebxdcGarbageCollectionWorker.class,
+                PeriodicWorkRequest.MIN_PERIODIC_INTERVAL_MILLIS,
+                TimeUnit.MILLISECONDS,
+                PeriodicWorkRequest.MIN_PERIODIC_FLEX_MILLIS,
+                TimeUnit.MILLISECONDS)
             .build();
-    WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+    WorkManager.getInstance(this)
+        .enqueueUniquePeriodicWork(
             "WebxdcGarbageCollectionWorker",
             ExistingPeriodicWorkPolicy.KEEP,
             webxdcGarbageCollectionRequest);
