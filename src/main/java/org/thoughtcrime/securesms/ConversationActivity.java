@@ -1834,7 +1834,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     searchMenu = null;
     composePanel.setVisibility(beforeSearchComposeVisibility);
 
-    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, false);
+    invalidateOptionsMenu();
   }
 
   private void handleMenuSearchNext(boolean searchNext) {
