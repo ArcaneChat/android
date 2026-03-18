@@ -324,6 +324,10 @@ public class QrCodeHandler {
         R.string.start_chat,
         (dialogInterface, i) -> {
           int chatId = dcContext.createChatByContactId(qrParsed.getId());
+          if (chatId == 0) {
+            Log.w(TAG, "createChatByContactId returned 0, ignoring");
+            return;
+          }
           Intent intent = new Intent(activity, ConversationActivity.class);
           intent.putExtra(ConversationActivity.CHAT_ID_EXTRA, chatId);
           if (qrParsed.getText1Meaning() == DcLot.DC_TEXT1_DRAFT) {

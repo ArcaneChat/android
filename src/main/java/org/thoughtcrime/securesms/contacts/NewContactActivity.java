@@ -88,9 +88,11 @@ public class NewContactActivity extends PassphraseRequiredActionBarActivity {
         setResult(RESULT_OK, intent);
       } else {
         int chatId = dcContext.createChatByContactId(contactId);
-        Intent intent = new Intent(this, ConversationActivity.class);
-        intent.putExtra(ConversationActivity.CHAT_ID_EXTRA, chatId);
-        startActivity(intent);
+        if (chatId != 0) {
+          Intent intent = new Intent(this, ConversationActivity.class);
+          intent.putExtra(ConversationActivity.CHAT_ID_EXTRA, chatId);
+          startActivity(intent);
+        }
       }
       finish();
       return true;

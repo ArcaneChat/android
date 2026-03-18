@@ -1122,7 +1122,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
     chatId = getIntent().getIntExtra(CHAT_ID_EXTRA, -1);
     if (chatId == DcChat.DC_CHAT_NO_CHAT) {
-      Log.e(TAG, "initializeResources: invalid chat ID, finishing activity");
+      Log.e(TAG, "initializeResources: invalid chat ID " + chatId + ", finishing activity");
       finish();
       return;
     }

@@ -646,6 +646,10 @@ public class ConversationFragment extends MessageSelectorFragment {
     if (getActivity() != null) {
       DcContext dcContext = DcHelper.getContext(getActivity());
       int privateChatId = dcContext.createChatByContactId(msg.getFromId());
+      if (privateChatId == 0) {
+        Log.w(TAG, "createChatByContactId returned 0, cannot reply privately");
+        return;
+      }
       DcMsg replyMsg = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
       replyMsg.setQuote(msg);
       dcContext.setDraft(privateChatId, replyMsg);
