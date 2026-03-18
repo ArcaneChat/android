@@ -348,6 +348,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (fragment != null) {
       fragment.onNewIntent();
     }
+
+    invalidateOptionsMenu();
   }
 
   private void handleRelaying() {
