@@ -325,6 +325,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       return;
     }
 
+    if (intent.getIntExtra(CHAT_ID_EXTRA, DcChat.DC_CHAT_NO_CHAT) == DcChat.DC_CHAT_NO_CHAT) {
+      Log.w(TAG, "onNewIntent: ignoring intent with invalid chat ID");
+      return;
+    }
+
     if (!Util.isEmpty(composeText) || attachmentManager.isAttachmentPresent()) {
       processComposeControls(ACTION_SAVE_DRAFT);
       attachmentManager.clear(glideRequests, false);
@@ -1116,8 +1121,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       initializeBackground();
     }
     chatId = getIntent().getIntExtra(CHAT_ID_EXTRA, -1);
-    if (chatId == DcChat.DC_CHAT_NO_CHAT)
-      throw new IllegalStateException("can't display a conversation for no chat.");
+    if (chatId == DcChat.DC_CHAT_NO_CHAT) {
+      Log.e(TAG, "initializeResources: invalid chat ID, finishing activity");
+      finish();
+      return;
+    }
     dcChat = DcHelper.getContext(context).getChat(chatId);
     recipient = new Recipient(this, dcChat);
     glideRequests = GlideApp.with(this);
