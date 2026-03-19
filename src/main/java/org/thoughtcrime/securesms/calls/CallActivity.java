@@ -45,6 +45,7 @@ import org.thoughtcrime.securesms.EglUtils;
 import org.thoughtcrime.securesms.R;
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.TextureViewRenderer;
 import org.webrtc.VideoTrack;
 
 /** Full-screen call activity for VoIP calls */
@@ -62,7 +63,7 @@ public class CallActivity extends AppCompatActivity {
 
   private CallViewModel viewModel;
 
-  private SurfaceViewRenderer localVideoView;
+  private TextureViewRenderer localVideoView;
   private SurfaceViewRenderer remoteVideoView;
 
   // Status and info
@@ -287,7 +288,6 @@ public class CallActivity extends AppCompatActivity {
     // Local video (the small one)
     localVideoView.init(EglUtils.getEglBase().getEglBaseContext(), null);
     localVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-    localVideoView.setZOrderMediaOverlay(true);
     localVideoView.setEnableHardwareScaler(true);
 
     // Remote video (full screen one)

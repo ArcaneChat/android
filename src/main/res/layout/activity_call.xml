@@ -89,7 +89,7 @@
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <org.webrtc.SurfaceViewRenderer
+        <org.webrtc.TextureViewRenderer
             android:id="@+id/local_video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
