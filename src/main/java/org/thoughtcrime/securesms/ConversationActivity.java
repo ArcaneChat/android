@@ -344,6 +344,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     setDcEventListener(); // reset event listener
     handleRelaying();
+    invalidateOptionsMenu(); // set correct menu visibility in case of chat changes
 
     if (fragment != null) {
       fragment.onNewIntent();
@@ -574,7 +575,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
             @Override
             public boolean onMenuItemActionCollapse(final MenuItem item) {
-              searchCollapse(menu, item);
+              searchCollapse();
               return true;
             }
           });
@@ -1825,14 +1826,15 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     beforeSearchComposeVisibility = composePanel.getVisibility();
     composePanel.setVisibility(View.GONE);
 
-    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, true);
+    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem);
   }
 
-  private void searchCollapse(final Menu menu, final MenuItem searchItem) {
+  private void searchCollapse() {
     searchMenu = null;
     composePanel.setVisibility(beforeSearchComposeVisibility);
 
-    ConversationActivity.this.makeSearchMenuVisible(menu, searchItem, false);
+    // trigger onPrepareOptionsMenu() to restore correct menu visibility
+    invalidateOptionsMenu();
   }
 
   private void handleMenuSearchNext(boolean searchNext) {
