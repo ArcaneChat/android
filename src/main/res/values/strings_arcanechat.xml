@@ -20,9 +20,5 @@
         \"Invite friends\" in the menu\n\n📢 Join the [Official ArcaneChat Channel](%1$s) to keep
         updated about the development status.</string>
 
-    <string name="update_2_33">🔮 What\'s new?\n\n★ Target Android 16\n\n★ Improve edge-to-edge
-        support\n\n★ Change color of links in text messages\n\n★ Metadata protection: protect
-        message recipients\n\n★ Fix: avoid freezing in background\n\n★ Improve handling of video
-        recoding\n\n★ Several other fixes and small improvements\n\n\n💜 Please donate to help us
-        remain independent and continue to bring improvements: %1$s</string>
+    <string name="update_2_46ac">🔮 What\'s new?\n\n✦ Greatly enhanced experimental video/audio calls with better system integration\n\n✦ Added a basic sticker picker\n\n✦ Improved attachment selector\n\n✦ Further minimize metadata in messages\n\n✦ Increase resilience of multi-relay usage: if on relay goes down, messages are still received in the others\n\n✦ Better synchronization of notifications state across multiple devices\n\n✦ Fixed invitation link to join the 📢 [Official ArcaneChat Channel](%2$s)\n\n✦ Several bug fixes and updated translations\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %1$s</string>
 </resources>

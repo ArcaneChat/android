@@ -676,7 +676,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     // should be deleted.
     try {
       DcContext dcContext = DcHelper.getContext(this);
-      final String deviceMsgLabel = "update_2_33_1_android";
+      final String deviceMsgLabel = "update_2_46_0a_android";
       if (!dcContext.wasDeviceMsgEverAdded(deviceMsgLabel)) {
         DcMsg msg = null;
         if (!getIntent().getBooleanExtra(FROM_WELCOME, false)) {
@@ -688,7 +688,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
           // Util.copy(inputStream, new FileOutputStream(outputFile));
           // msg.setFile(outputFile, "image/jpeg");
 
-          msg.setText(getString(R.string.update_2_33, "https://arcanechat.me/#contribute"));
+          msg.setText(getString(R.string.update_2_46ac, "https://arcanechat.me/#contribute", "https://i.delta.chat/#0A45953086F0C166D3BAF1D4BB2025496E4C2704&x=MVPi07rQBEmHO4FRb3brpwDe&j=n8mkKqu42WAKKUCx1bQOVh23&s=AM1YCd_2hKuiSiTEb-2177On&a=arcanechat%40arcanechat.me&n=ArcaneChat&b=ArcaneChat+Channel"));
         }
         dcContext.addDeviceMsg(deviceMsgLabel, msg);
 

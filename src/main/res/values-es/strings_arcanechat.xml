@@ -17,10 +17,5 @@
         Únete al [Canal Oficial de ArcaneChat](%1$s) (en inglés) para noticias sobre el desarrollo
         de la aplicación.</string>
 
-    <string name="update_2_33">🔮 ¿Qué hay de nuevo?\n\n★ Soporte para Android 16\n\n★ Mejorado el diseño
-        para hacer mejor uso del espacio en pantalla\n\n★ Añadido color a los enlaces en las
-        burbujas del chat\n\n★ Más protección de metadatos de los mensajes\n\n★ Arreglado problema
-        con fallos inesperados de la aplicación\n\n★ Varios otros arreglos y pequeñas
-        mejoras\n\n\n💜 Dona para ayudarnos a mantener nuestra independencia y seguir mejorando:
-        %1$s</string>
+    <string name="update_2_46ac">🔮 ¿Qué hay de nuevo?\n\n✦ Llamadas de audio/video experimentales mejoradas con una mejor integración con el sistema\n\n✦ Se agregó un selector de stickers básico\n\n✦ Se mejoró el selector de archivos adjuntos\n\n✦ Se minimizó aún más los metadatos en los mensajes\n\n✦ Mayor resiliencia con el uso de múltiples relays: si un relay falla, los mensajes se siguen recibiendo en los demás\n\n✦ Mejor sincronización del estado de las notificaciones en varios dispositivos\n\n✦ Enlace de invitación corregido para unirse al 📢 [Canal oficial de ArcaneChat](%2$s) (en inglés)\n\n✦ Varias correcciones de errores y traducciones actualizadas\n\n\n💜 Por favor, dona para ayudarnos a mantenernos independientes y continuar brindando mejoras: %1$s</string>
 </resources>
