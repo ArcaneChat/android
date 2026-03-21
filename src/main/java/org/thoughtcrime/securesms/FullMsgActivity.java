@@ -257,4 +257,9 @@ public class FullMsgActivity extends WebViewActivity {
     }
     return res;
   }
+
+  @Override
+  protected boolean shouldAskToOpenLink() {
+    return true;
+  }
 }
