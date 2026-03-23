@@ -326,9 +326,11 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
         String host = uri.getHost();
         if (host != null) {
           String asciiHost = IDN.toASCII(host);
-          displayUrl = url.replace("://" + host, "://" + asciiHost);
+          int port = uri.getPort();
+          String authority = port == -1 ? asciiHost : asciiHost + ":" + port;
+          displayUrl = new java.net.URI(uri.getScheme(), authority, uri.getPath(), uri.getQuery(), uri.getFragment()).toASCIIString();
         }
-      } catch (Exception e) {
+      } catch (java.net.URISyntaxException | IllegalArgumentException e) {
         // fall back to raw url if parsing fails
       }
       new AlertDialog.Builder(this)
