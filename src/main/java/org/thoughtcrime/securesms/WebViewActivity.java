@@ -31,6 +31,11 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 public class WebViewActivity extends PassphraseRequiredActionBarActivity
     implements SearchView.OnQueryTextListener, WebView.FindListener {
   private static final String TAG = WebViewActivity.class.getSimpleName();
+  // Regex to extract the host from a URL for IDN conversion.
+  // Groups: 1=scheme+optional-userinfo@, 2=host, 3=optional-port+path+query+fragment
+  private static final java.util.regex.Pattern HOST_PATTERN = java.util.regex.Pattern.compile(
+      "^([a-zA-Z][a-zA-Z0-9+\\-.]*://(?:[^@/?#]*@)?)([^/?#:]+)((?::\\d+)?(?:[/?#].*)?)$"
+  );
 
   protected WebView webView;
 
@@ -322,16 +327,14 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     if (shouldAskToOpenLink()) {
       String displayUrl = url;
       try {
-        java.net.URI uri = new java.net.URI(url);
-        String host = uri.getHost();
-        if (host != null) {
-          String asciiHost = IDN.toASCII(host);
-          int port = uri.getPort();
-          String authority = port == -1 ? asciiHost : asciiHost + ":" + port;
-          displayUrl = new java.net.URI(uri.getScheme(), authority, uri.getPath(), uri.getQuery(), uri.getFragment()).toASCIIString();
+        // Use a regex to extract the host so that non-ASCII hostnames (IDNs) are handled even
+        // when java.net.URI would refuse to parse them (it requires strict RFC 2396 ASCII).
+        java.util.regex.Matcher m = HOST_PATTERN.matcher(url);
+        if (m.find()) {
+          displayUrl = m.group(1) + IDN.toASCII(m.group(2)) + m.group(3);
         }
-      } catch (java.net.URISyntaxException | IllegalArgumentException e) {
-        // fall back to raw url if parsing fails
+      } catch (IllegalArgumentException e) {
+        // IDN.toASCII() failed (e.g. label too long), fall back to raw url
       }
       new AlertDialog.Builder(this)
           .setTitle(R.string.open_url_confirmation)
