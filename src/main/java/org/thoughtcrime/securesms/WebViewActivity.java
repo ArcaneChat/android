@@ -320,9 +320,20 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     }
 
     if (shouldAskToOpenLink()) {
+      String displayUrl = url;
+      try {
+        java.net.URI uri = new java.net.URI(url);
+        String host = uri.getHost();
+        if (host != null) {
+          String asciiHost = IDN.toASCII(host);
+          displayUrl = url.replace("://" + host, "://" + asciiHost);
+        }
+      } catch (Exception e) {
+        // fall back to raw url if parsing fails
+      }
       new AlertDialog.Builder(this)
           .setTitle(R.string.open_url_confirmation)
-          .setMessage(IDN.toASCII(url))
+          .setMessage(displayUrl)
           .setNeutralButton(R.string.cancel, null)
           .setPositiveButton(R.string.open, (d, w) -> IntentUtils.showInBrowser(this, url))
           .setNegativeButton(
