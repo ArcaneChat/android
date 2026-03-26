@@ -1,6 +1,8 @@
 ArcaneChat is a decentralized and secure instant messenger that is easy to use for friends and family.
 
-• Anonymous. Instant onboarding without a phone number, e-mail or other private data.
+• Private. Instant on-boarding without a phone number or other private data.
+
+• Friends & Family: Only chat with people you know. Unknown users cannot message or follow you without mutual consent.
 
 • Flexible. Supports multiple chat profiles and is easy to setup on multiple devices.
 

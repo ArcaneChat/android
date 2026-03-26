@@ -1,6 +1,6 @@
 # Delta Chat Android Changelog
 
-## v2.46.0
+## v2.47.0
 2026-03
 
 * Allow to set chat description
@@ -19,7 +19,7 @@
 * Fix: avoid "reply privately" not quoting the selected message sometimes
 * Fix: properly hide the calls button
 * Some more bug fixes and updated translations
-* Update to core 2.46.0
+* Update to core 2.47.0
 
 ## v2.43.0
 2026-02
