@@ -1,5 +1,17 @@
 # Delta Chat Android Changelog
 
+## Unreleased
+
+* Fix file sharing to certain apps (e.g. Material Files, etc.)
+
+## v2.48.0
+2026-03
+
+* Add a warning when editing relays
+* Fix message reordering problems in multi-relay setups
+* Some more bug fixes and updated translations
+* Update to core 2.48.0
+
 ## v2.47.0
 2026-03
 
