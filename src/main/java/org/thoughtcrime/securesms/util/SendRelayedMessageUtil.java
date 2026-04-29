@@ -9,6 +9,7 @@ import static org.thoughtcrime.securesms.util.ShareUtil.isSharing;
 import static org.thoughtcrime.securesms.util.ShareUtil.resetRelayingMessageContent;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -27,9 +28,11 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import org.thoughtcrime.securesms.ConversationListRelayingActivity;
+import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.PartAuthority;
 import org.thoughtcrime.securesms.providers.PersistentBlobProvider;
+import org.thoughtcrime.securesms.video.recode.VideoRecoder;
 
 public class SendRelayedMessageUtil {
   private static final String TAG = SendRelayedMessageUtil.class.getSimpleName();
@@ -118,16 +121,57 @@ public class SendRelayedMessageUtil {
     ArrayList<Uri> uris = sharedUris;
     String text = sharedText;
 
+    boolean hasVideos = containsVideoType(context, uris);
+    final ProgressDialog[] progressDialog = {null};
+    if (hasVideos && context instanceof Activity) {
+      Activity activity = (Activity) context;
+      Util.runOnMain(
+          () -> {
+            if (!activity.isFinishing()) {
+              progressDialog[0] =
+                  ProgressDialog.show(
+                      activity, "", context.getString(R.string.one_moment), true, false);
+            }
+          });
+    }
+
     if (uris.size() == 1) {
-      dcContext.sendMsg(
-          chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
+      DcMsg msg = createMessage(context, uris.get(0), msgType, sharedHtml, subject, text);
+      if (msg.getType() == DcMsg.DC_MSG_VIDEO) {
+        if (!VideoRecoder.prepareVideo(context, chatId, msg)) {
+          dismissProgressDialog(progressDialog);
+          return;
+        }
+      }
+      dcContext.sendMsg(chatId, msg);
     } else {
       if (text != null || sharedHtml != null) {
         dcContext.sendMsg(chatId, createMessage(context, null, null, sharedHtml, subject, text));
       }
       for (Uri uri : uris) {
-        dcContext.sendMsg(chatId, createMessage(context, uri, null, null, subject, null));
+        DcMsg msg = createMessage(context, uri, null, null, subject, null);
+        if (msg.getType() == DcMsg.DC_MSG_VIDEO) {
+          if (!VideoRecoder.prepareVideo(context, chatId, msg)) {
+            continue;
+          }
+        }
+        dcContext.sendMsg(chatId, msg);
       }
+    }
+
+    dismissProgressDialog(progressDialog);
+  }
+
+  private static void dismissProgressDialog(ProgressDialog[] progressDialog) {
+    if (progressDialog[0] != null) {
+      Util.runOnMain(
+          () -> {
+            try {
+              if (progressDialog[0] != null) progressDialog[0].dismiss();
+            } catch (final IllegalArgumentException e) {
+              // The activity is finishing/destroyed, do nothing.
+            }
+          });
     }
   }
 

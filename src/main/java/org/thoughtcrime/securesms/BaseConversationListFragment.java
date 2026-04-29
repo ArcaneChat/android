@@ -122,9 +122,6 @@ public abstract class BaseConversationListFragment extends Fragment implements A
 
               Context context = getContext();
               if (context != null) {
-                if (SendRelayedMessageUtil.containsVideoType(context, uris)) {
-                  message += "\n\n" + getString(R.string.videos_sent_without_recoding);
-                }
                 new AlertDialog.Builder(context)
                     .setMessage(message)
                     .setCancelable(false)
