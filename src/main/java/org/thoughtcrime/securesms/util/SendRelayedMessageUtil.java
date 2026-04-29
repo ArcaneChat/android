@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.thoughtcrime.securesms.ConversationListRelayingActivity;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.connect.DcHelper;
@@ -122,15 +123,15 @@ public class SendRelayedMessageUtil {
     String text = sharedText;
 
     boolean hasVideos = containsVideoType(context, uris);
-    final ProgressDialog[] progressDialog = {null};
+    AtomicReference<ProgressDialog> progressDialogRef = new AtomicReference<>(null);
     if (hasVideos && context instanceof Activity) {
       Activity activity = (Activity) context;
       Util.runOnMain(
           () -> {
             if (!activity.isFinishing()) {
-              progressDialog[0] =
+              progressDialogRef.set(
                   ProgressDialog.show(
-                      activity, "", context.getString(R.string.one_moment), true, false);
+                      activity, "", context.getString(R.string.one_moment), true, false));
             }
           });
     }
@@ -139,7 +140,7 @@ public class SendRelayedMessageUtil {
       DcMsg msg = createMessage(context, uris.get(0), msgType, sharedHtml, subject, text);
       if (msg.getType() == DcMsg.DC_MSG_VIDEO) {
         if (!VideoRecoder.prepareVideo(context, chatId, msg)) {
-          dismissProgressDialog(progressDialog);
+          dismissProgressDialog(progressDialogRef);
           return;
         }
       }
@@ -152,6 +153,7 @@ public class SendRelayedMessageUtil {
         DcMsg msg = createMessage(context, uri, null, null, subject, null);
         if (msg.getType() == DcMsg.DC_MSG_VIDEO) {
           if (!VideoRecoder.prepareVideo(context, chatId, msg)) {
+            Log.w(TAG, "prepareVideo failed for " + uri + ", skipping");
             continue;
           }
         }
@@ -159,15 +161,16 @@ public class SendRelayedMessageUtil {
       }
     }
 
-    dismissProgressDialog(progressDialog);
+    dismissProgressDialog(progressDialogRef);
   }
 
-  private static void dismissProgressDialog(ProgressDialog[] progressDialog) {
-    if (progressDialog[0] != null) {
+  private static void dismissProgressDialog(AtomicReference<ProgressDialog> progressDialogRef) {
+    ProgressDialog dialog = progressDialogRef.get();
+    if (dialog != null) {
       Util.runOnMain(
           () -> {
             try {
-              if (progressDialog[0] != null) progressDialog[0].dismiss();
+              dialog.dismiss();
             } catch (final IllegalArgumentException e) {
               // The activity is finishing/destroyed, do nothing.
             }
