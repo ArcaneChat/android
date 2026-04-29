@@ -6,7 +6,6 @@
     <string name="online">en línea</string>
     <string name="pink">Rosa</string>
     <string name="gray">Gris</string>
-    <string name="share_location_for_24_hours">Por 24 horas</string>
 
     <!-- device messages for updates -->
     <string name="device_welcome_message">🔮 Bienvenido a ArcaneChat✨\n\nPara ponerte en contacto con amigos:\n\n🤳🏻 Toca \"Código QR\" en la pantalla principal de ambos dispositivos. Elije \"Escanear código QR\" en un dispositivo y apunta la cámara hacia el otro\n\n🔗 Si no estás en la misma habitación, comparte tu enlace de invitación usando \"Invitar amigos\" en el menú\n\n📢 Únete al [Canal Oficial de ArcaneChat](%1$s) (en inglés) para noticias sobre el desarrollo de la aplicación.</string>

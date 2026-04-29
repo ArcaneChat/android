@@ -2,7 +2,6 @@
 <resources
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
-    <string name="share_location_for_24_hours">pour 24 heures</string>
 
     <!-- device messages for updates -->
     <string name="device_welcome_message">🔮 Bienvenue sur ArcaneChat ✨\n\nPour vous connecter avec vos amis:\n\n🤳🏻Appuyez sur «Code QR» sur l’écran d’accueil des deux appareils. Sélectionnez «Scanner le code QR» sur un appareil et pointez l’appareil photo vers l’autre.\n\n🔗 Si vous n’êtes pas dans la même pièce, partagez votre lien d’invitation via «Inviter des amis» dans le menu.\n\n📢Rejoignez le [Chaîne officielle ArcaneChat](%1$s) (en anglais) pour suivre l’actualité du développement de l’application.</string>
