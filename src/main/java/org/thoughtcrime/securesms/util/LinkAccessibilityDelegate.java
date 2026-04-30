@@ -15,8 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * AccessibilityDelegate that exposes clickable links within a TextView to TalkBack.
- * Each link becomes a custom action that TalkBack users can activate.
+ * AccessibilityDelegate attached to the ConversationItem (parent view) so that TalkBack
+ * can discover the links inside the child bodyText and expose them as custom actions.
+ *
+ * The bodyText TextView is marked importantForAccessibility="no" in the XML layout, which
+ * means TalkBack focuses the parent ConversationItem instead.  The delegate therefore lives
+ * on the parent but reads spans from the supplied bodyText reference.
  */
 public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
   
@@ -30,21 +34,27 @@ public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
   private final Map<Integer, LongClickCopySpan> actionSpanMap = new HashMap<>();
   
   private final Context context;
+  // The child TextView whose Spanned text contains the LongClickCopySpan links.
+  private TextView bodyText;
   
-  public LinkAccessibilityDelegate(Context context) {
+  public LinkAccessibilityDelegate(Context context, TextView bodyText) {
     this.context = context;
+    this.bodyText = bodyText;
+  }
+
+  public void setBodyText(TextView bodyText) {
+    this.bodyText = bodyText;
   }
 
   @Override
   public void onInitializeAccessibilityNodeInfo(View host, AccessibilityNodeInfo info) {
     super.onInitializeAccessibilityNodeInfo(host, info);
     
-    if (!(host instanceof TextView)) {
+    if (bodyText == null) {
       return;
     }
     
-    TextView textView = (TextView) host;
-    CharSequence text = textView.getText();
+    CharSequence text = bodyText.getText();
     
     if (!(text instanceof Spanned)) {
       return;
@@ -86,11 +96,13 @@ public class LinkAccessibilityDelegate extends View.AccessibilityDelegate {
   
   @Override
   public boolean performAccessibilityAction(View host, int action, Bundle args) {
-    // Check if this is one of our custom link actions
+    // Check if this is one of our custom link actions.
+    // Pass bodyText as the widget so LongClickCopySpan.onClick() receives the correct view
+    // (it calls widget.getContext() to reach the hosting Activity).
     if (actionSpanMap.containsKey(action)) {
       LongClickCopySpan span = actionSpanMap.get(action);
-      if (span != null) {
-        span.onClick(host);
+      if (span != null && bodyText != null) {
+        span.onClick(bodyText);
         return true;
       }
     }
