@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -66,8 +67,8 @@ import org.thoughtcrime.securesms.mms.StickerSlide;
 import org.thoughtcrime.securesms.mms.VcardSlide;
 import org.thoughtcrime.securesms.reactions.ReactionsConversationView;
 import org.thoughtcrime.securesms.recipients.Recipient;
-import org.thoughtcrime.securesms.util.LinkAccessibilityDelegate;
 import org.thoughtcrime.securesms.util.Linkifier;
+import org.thoughtcrime.securesms.util.LongClickCopySpan;
 import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.MarkdownUtil;
 import org.thoughtcrime.securesms.util.MediaUtil;
@@ -75,6 +76,7 @@ import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.Stub;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -127,7 +129,9 @@ public class ConversationItem extends BaseConversationItem
   private           Stub<VcardView>                 vcardViewStub;
   private           Stub<CallItemView>              callViewStub;
   private @Nullable EventListener                   eventListener;
-  private @Nullable LinkAccessibilityDelegate       linkAccessibilityDelegate;
+  // IDs of accessibility actions registered via ViewCompat.addAccessibilityAction, kept so they
+  // can be removed on rebind (RecyclerView reuses views for different messages).
+  private final List<Integer> linkActionIds = new ArrayList<>();
 
   private int measureCalls;
 
@@ -416,6 +420,13 @@ public class ConversationItem extends BaseConversationItem
     bodyText.setClickable(false);
     bodyText.setFocusable(false);
 
+    // Remove any link actions registered for the previous message binding.
+    // RecyclerView reuses views, so stale actions from a previous item must be cleared.
+    for (int id : linkActionIds) {
+      ViewCompat.removeAccessibilityAction(this, id);
+    }
+    linkActionIds.clear();
+
     String subject = messageRecord.getSubject();
     String text = messageRecord.getText();
 
@@ -423,7 +434,6 @@ public class ConversationItem extends BaseConversationItem
 
     if (messageRecord.getType() == DcMsg.DC_MSG_CALL || text.isEmpty()) {
       bodyText.setVisibility(View.GONE);
-      ViewCompat.setAccessibilityDelegate(this, null);
     }
     else {
       Spannable spannable = (Spannable) MarkdownUtil.toMarkdown(context, text);
@@ -433,25 +443,29 @@ public class ConversationItem extends BaseConversationItem
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);
 
-      // Set accessibility delegate on THIS view (ConversationItem) for TalkBack to expose links as
-      // custom actions.  The delegate must be on the parent because bodyText has
-      // importantForAccessibility="no" in the XML layout, so TalkBack focuses the parent.
-      // ViewCompat.setAccessibilityDelegate is used (not View.setAccessibilityDelegate) because it
-      // uses AccessibilityDelegateCompat, whose onInitializeAccessibilityNodeInfo callback receives
-      // a properly-backed AccessibilityNodeInfoCompat so that addAction() reliably surfaces custom
-      // actions in the TalkBack context menu on all Android versions.
-      // Note: During batch selection mode (batchSelected.isEmpty() == false), links are not
-      // linkified (see above), so there's no need to set the accessibility delegate.
-      // This also ensures that accessibility focus doesn't interfere with batch selection UI.
-      if (Util.isTouchExplorationEnabled(context) && batchSelected.isEmpty()) {
-        if (linkAccessibilityDelegate == null) {
-          linkAccessibilityDelegate = new LinkAccessibilityDelegate(context, bodyText);
-        } else {
-          linkAccessibilityDelegate.setBodyText(bodyText);
+      // Register a TalkBack "Actions" entry for each link in the message.
+      // ViewCompat.addAccessibilityAction is used instead of an AccessibilityDelegateCompat because
+      // it is the modern, reliable API (available since androidx.core 1.5.0) that TalkBack always
+      // surfaces under the "Actions" submenu of the local context menu (L-gesture).
+      // The actions are registered unconditionally — no isTouchExplorationEnabled() guard — because
+      // the registration is cheap and the guard was a source of timing bugs at bind time.
+      // Links are only present when not in batch-selection mode (Linkifier is not called in that
+      // branch above), so no actions are added in batch-selection mode.
+      if (spannable instanceof Spanned) {
+        Spanned spanned = (Spanned) spannable;
+        final TextView tv = bodyText;
+        for (LongClickCopySpan span : spanned.getSpans(0, spanned.length(), LongClickCopySpan.class)) {
+          int start = spanned.getSpanStart(span);
+          int end   = spanned.getSpanEnd(span);
+          if (start >= 0 && end > start && end <= spanned.length()) {
+            String linkText = spanned.subSequence(start, end).toString();
+            String label = context.getString(R.string.accessibility_link_action, linkText);
+            linkActionIds.add(ViewCompat.addAccessibilityAction(this, label, (v, args) -> {
+              span.onClick(tv);
+              return true;
+            }));
+          }
         }
-        ViewCompat.setAccessibilityDelegate(this, linkAccessibilityDelegate);
-      } else {
-        ViewCompat.setAccessibilityDelegate(this, null);
       }
     }
 
