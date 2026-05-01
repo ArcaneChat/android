@@ -36,6 +36,7 @@ import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.ViewCompat;
 
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
@@ -422,6 +423,7 @@ public class ConversationItem extends BaseConversationItem
 
     if (messageRecord.getType() == DcMsg.DC_MSG_CALL || text.isEmpty()) {
       bodyText.setVisibility(View.GONE);
+      ViewCompat.setAccessibilityDelegate(this, null);
     }
     else {
       Spannable spannable = (Spannable) MarkdownUtil.toMarkdown(context, text);
@@ -430,10 +432,14 @@ public class ConversationItem extends BaseConversationItem
       }
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);
-      
+
       // Set accessibility delegate on THIS view (ConversationItem) for TalkBack to expose links as
       // custom actions.  The delegate must be on the parent because bodyText has
       // importantForAccessibility="no" in the XML layout, so TalkBack focuses the parent.
+      // ViewCompat.setAccessibilityDelegate is used (not View.setAccessibilityDelegate) because it
+      // uses AccessibilityDelegateCompat, whose onInitializeAccessibilityNodeInfo callback receives
+      // a properly-backed AccessibilityNodeInfoCompat so that addAction() reliably surfaces custom
+      // actions in the TalkBack context menu on all Android versions.
       // Note: During batch selection mode (batchSelected.isEmpty() == false), links are not
       // linkified (see above), so there's no need to set the accessibility delegate.
       // This also ensures that accessibility focus doesn't interfere with batch selection UI.
@@ -443,9 +449,9 @@ public class ConversationItem extends BaseConversationItem
         } else {
           linkAccessibilityDelegate.setBodyText(bodyText);
         }
-        this.setAccessibilityDelegate(linkAccessibilityDelegate);
+        ViewCompat.setAccessibilityDelegate(this, linkAccessibilityDelegate);
       } else {
-        this.setAccessibilityDelegate(null);
+        ViewCompat.setAccessibilityDelegate(this, null);
       }
     }
 
