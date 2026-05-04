@@ -194,10 +194,6 @@ public class Prefs {
     return true;
   }
 
-  public static boolean isNewBroadcastAvailable(Context context) {
-    return true;
-  }
-
   // ringtone
 
   public static @NonNull Uri getNotificationRingtone(Context context) {
