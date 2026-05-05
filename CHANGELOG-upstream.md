@@ -10,9 +10,12 @@
 * Allow to share location for 24 hours
 * Allow mini-apps to play audio without user interaction
 * Mark chats as unread (long tap a chat and select the corresponding option from the three-dot-menu)
+* Add "Mark all as read" option to profile menu in the profile switcher
 * Fix process of upgrading from a very old version of the app
 * Show more recent added stickers at the top of the sticker picker
+* Allow to open links in messages via actions in TalkBack menu
 * Allow to open map if user clicks "Location streaming enabled" system message
+* Fix: do not accidentally set draft in chats that don't allow sending messages
 
 ## v2.49.0
 2026-04
