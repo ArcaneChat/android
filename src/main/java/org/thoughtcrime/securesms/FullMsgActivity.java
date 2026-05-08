@@ -15,8 +15,7 @@ import chat.delta.rpc.types.HttpResponse;
 import com.b44t.messenger.DcContext;
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Locale;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.JsonUtils;
@@ -26,8 +25,6 @@ import org.thoughtcrime.securesms.util.Util;
 public class FullMsgActivity extends WebViewActivity {
   public static final String MSG_ID_EXTRA = "msg_id";
   public static final String BLOCK_LOADING_REMOTE = "block_loading_remote";
-  private static final Pattern BODY_TAG_PATTERN = Pattern.compile("(?i)<body\\b[^>]*>");
-  private static final Pattern DIR_ATTR_PATTERN = Pattern.compile("(?i)\\bdir\\s*=");
   private String imageUrl;
   private int msgId;
   private DcContext dcContext;
@@ -150,14 +147,22 @@ public class FullMsgActivity extends WebViewActivity {
     if (html == null || html.isEmpty()) {
       return html;
     }
-    Matcher bodyMatcher = BODY_TAG_PATTERN.matcher(html);
-    if (bodyMatcher.find()) {
-      String bodyTag = bodyMatcher.group();
-      if (DIR_ATTR_PATTERN.matcher(bodyTag).find()) {
+    String lowercaseHtml = html.toLowerCase(Locale.US);
+    int bodyTagStart = lowercaseHtml.indexOf("<body");
+    if (bodyTagStart >= 0) {
+      int bodyTagEnd = lowercaseHtml.indexOf(">", bodyTagStart);
+      if (bodyTagEnd <= bodyTagStart) {
         return html;
       }
-      String updatedBodyTag = bodyTag.substring(0, bodyTag.length() - 1) + " dir=\"auto\">";
-      return bodyMatcher.replaceFirst(Matcher.quoteReplacement(updatedBodyTag));
+      String bodyTag = html.substring(bodyTagStart, bodyTagEnd + 1);
+      String lowercaseBodyTag = lowercaseHtml.substring(bodyTagStart, bodyTagEnd + 1);
+      if (lowercaseBodyTag.contains("dir=")) {
+        return html;
+      }
+      String tagCloser = lowercaseBodyTag.endsWith("/>") ? "/>" : ">";
+      String updatedBodyTag =
+          bodyTag.substring(0, bodyTag.length() - tagCloser.length()) + " dir=\"auto\"" + tagCloser;
+      return html.substring(0, bodyTagStart) + updatedBodyTag + html.substring(bodyTagEnd + 1);
     }
     return "<div dir=\"auto\">" + html + "</div>";
   }
