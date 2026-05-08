@@ -15,6 +15,8 @@ import chat.delta.rpc.types.HttpResponse;
 import com.b44t.messenger.DcContext;
 import java.io.ByteArrayInputStream;
 import java.lang.ref.WeakReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.JsonUtils;
@@ -24,6 +26,8 @@ import org.thoughtcrime.securesms.util.Util;
 public class FullMsgActivity extends WebViewActivity {
   public static final String MSG_ID_EXTRA = "msg_id";
   public static final String BLOCK_LOADING_REMOTE = "block_loading_remote";
+  private static final Pattern BODY_TAG_PATTERN = Pattern.compile("(?i)<body\\b[^>]*>");
+  private static final Pattern DIR_ATTR_PATTERN = Pattern.compile("(?i)\\bdir\\s*=");
   private String imageUrl;
   private int msgId;
   private DcContext dcContext;
@@ -120,6 +124,7 @@ public class FullMsgActivity extends WebViewActivity {
           try {
             FullMsgActivity activity = activityReference.get();
             String html = activity.dcContext.getMsgHtml(activity.msgId);
+            html = withAutoTextDirection(html);
 
             activity.runOnUiThread(
                 () -> {
@@ -139,6 +144,22 @@ public class FullMsgActivity extends WebViewActivity {
             e.printStackTrace();
           }
         });
+  }
+
+  private static String withAutoTextDirection(String html) {
+    if (html == null || html.isEmpty()) {
+      return html;
+    }
+    Matcher bodyMatcher = BODY_TAG_PATTERN.matcher(html);
+    if (bodyMatcher.find()) {
+      String bodyTag = bodyMatcher.group();
+      if (DIR_ATTR_PATTERN.matcher(bodyTag).find()) {
+        return html;
+      }
+      String updatedBodyTag = bodyTag.substring(0, bodyTag.length() - 1) + " dir=\"auto\">";
+      return bodyMatcher.replaceFirst(Matcher.quoteReplacement(updatedBodyTag));
+    }
+    return "<div dir=\"auto\">" + html + "</div>";
   }
 
   @Override
