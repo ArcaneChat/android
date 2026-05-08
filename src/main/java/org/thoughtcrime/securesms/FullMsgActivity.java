@@ -151,7 +151,7 @@ public class FullMsgActivity extends WebViewActivity {
     int bodyTagStart = lowercaseHtml.indexOf("<body");
     if (bodyTagStart >= 0) {
       int bodyTagEnd = lowercaseHtml.indexOf(">", bodyTagStart);
-      if (bodyTagEnd <= bodyTagStart) {
+      if (bodyTagEnd < 0) {
         return html;
       }
       String bodyTag = html.substring(bodyTagStart, bodyTagEnd + 1);
@@ -159,9 +159,10 @@ public class FullMsgActivity extends WebViewActivity {
       if (lowercaseBodyTag.contains("dir=")) {
         return html;
       }
-      String tagCloser = lowercaseBodyTag.endsWith("/>") ? "/>" : ">";
-      String updatedBodyTag =
-          bodyTag.substring(0, bodyTag.length() - tagCloser.length()) + " dir=\"auto\"" + tagCloser;
+      if (lowercaseBodyTag.endsWith("/>")) {
+        return html;
+      }
+      String updatedBodyTag = bodyTag.substring(0, bodyTag.length() - 1) + " dir=\"auto\">";
       return html.substring(0, bodyTagStart) + updatedBodyTag + html.substring(bodyTagEnd + 1);
     }
     return "<div dir=\"auto\">" + html + "</div>";
