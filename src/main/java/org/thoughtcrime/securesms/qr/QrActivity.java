@@ -51,6 +51,7 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
   private TabLayout tabLayout;
   private ViewPager2 viewPager;
   private QrShowFragment qrShowFragment;
+  private ProfilePagerAdapter adapter;
   private boolean scanRelay;
 
   @Override
@@ -69,7 +70,7 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
     qrShowFragment = new QrShowFragment(this);
     tabLayout = ViewUtil.findById(this, R.id.tab_layout);
     viewPager = ViewUtil.findById(this, R.id.pager);
-    ProfilePagerAdapter adapter = new ProfilePagerAdapter(this);
+    adapter = new ProfilePagerAdapter(this);
     viewPager.setAdapter(adapter);
 
     setSupportActionBar(ViewUtil.findById(this, R.id.toolbar));
@@ -104,11 +105,8 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
           .withPermanentDenialDialog(getString(R.string.perm_explain_access_to_camera_denied))
           .onAllGranted(
               () -> {
-                Fragment qrScanFrag =
-                    getSupportFragmentManager().findFragmentByTag("f" + TAB_SCAN);
-                if (qrScanFrag instanceof QrScanFragment) {
-                  ((QrScanFragment) qrScanFrag).handleQrScanWithPermissions(QrActivity.this);
-                }
+                QrScanFragment qrScanFrag = adapter.getQrScanFragment();
+                qrScanFrag.handleQrScanWithPermissions(QrActivity.this);
               })
           .onAnyDenied(
               () -> {
@@ -150,10 +148,7 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
     } else if (itemId == R.id.new_classic_contact) {
       this.startActivity(new Intent(this, NewContactActivity.class));
     } else if (itemId == R.id.withdraw) {
-      Fragment frag = getSupportFragmentManager().findFragmentByTag("f" + TAB_SHOW);
-      if (frag instanceof QrShowFragment) {
-        ((QrShowFragment) frag).withdrawQr();
-      }
+      qrShowFragment.withdrawQr();
     } else if (itemId == R.id.load_from_image) {
       AttachmentManager.selectImage(this, REQUEST_CODE_IMAGE);
     } else if (itemId == R.id.paste) {
@@ -239,6 +234,10 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
 
     ProfilePagerAdapter(FragmentActivity activity) {
       super(activity);
+    }
+
+    QrScanFragment getQrScanFragment() {
+      return qrScanFragment;
     }
 
     @NonNull
