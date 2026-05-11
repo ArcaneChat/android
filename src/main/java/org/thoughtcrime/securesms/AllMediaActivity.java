@@ -205,14 +205,14 @@ public class AllMediaActivity extends PassphraseRequiredActionBarActivity
     AllMediaPagerAdapter(FragmentActivity activity) {
       super(activity);
       fragments = new MessageSelectorFragment[tabs.size()];
-      for (int i = 0; i < tabs.size(); i++) {
-        fragments[i] = createMediaFragment(i);
-      }
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+      if (fragments[position] == null) {
+        fragments[position] = createMediaFragment(position);
+      }
       return fragments[position];
     }
 
