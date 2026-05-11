@@ -230,7 +230,7 @@ public class QrActivity extends BaseActionBarActivity implements View.OnClickLis
 
   @Override
   public void onClick(View v) {
-    viewPager.setCurrentItem(TAB_SCAN);
+    viewPager.setCurrentItem(TAB_SCAN, true);
   }
 
   private class ProfilePagerAdapter extends FragmentStateAdapter {

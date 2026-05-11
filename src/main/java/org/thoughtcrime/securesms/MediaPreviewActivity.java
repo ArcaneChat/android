@@ -674,7 +674,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
     public void onViewRecycled(@NonNull MediaViewHolder holder) {
       super.onViewRecycled(holder);
       int pos = holder.getBindingAdapterPosition();
-      if (pos != RecyclerView.NO_ID) {
+      if (pos != RecyclerView.NO_POSITION) {
         mediaViews.remove(pos);
       }
       holder.mediaView.cleanup();
