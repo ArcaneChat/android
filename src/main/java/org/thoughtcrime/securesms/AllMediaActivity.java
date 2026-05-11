@@ -200,16 +200,26 @@ public class AllMediaActivity extends PassphraseRequiredActionBarActivity
 
   private class AllMediaPagerAdapter extends FragmentStateAdapter {
     private int currentPosition = -1;
+    private final MessageSelectorFragment[] fragments;
 
     AllMediaPagerAdapter(FragmentActivity activity) {
       super(activity);
+      fragments = new MessageSelectorFragment[tabs.size()];
+      for (int i = 0; i < tabs.size(); i++) {
+        fragments[i] = createMediaFragment(i);
+      }
     }
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
+      return fragments[position];
+    }
+
+    @NonNull
+    private MessageSelectorFragment createMediaFragment(int position) {
       TabData data = tabs.get(position);
-      Fragment fragment;
+      MessageSelectorFragment fragment;
       Bundle args = new Bundle();
 
       if (data.type1 == DcMsg.DC_MSG_IMAGE) {
@@ -236,8 +246,7 @@ public class AllMediaActivity extends PassphraseRequiredActionBarActivity
 
     void onPageChanged(int newPosition) {
       if (currentPosition != -1 && currentPosition != newPosition) {
-        Fragment prevFragment =
-            getSupportFragmentManager().findFragmentByTag("f" + currentPosition);
+        Fragment prevFragment = fragments[currentPosition];
         if (prevFragment instanceof MessageSelectorFragment) {
           ActionMode action = ((MessageSelectorFragment) prevFragment).getActionMode();
           if (action != null) {
