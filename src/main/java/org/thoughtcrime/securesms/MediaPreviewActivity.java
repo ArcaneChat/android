@@ -33,14 +33,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcMediaGalleryElement;
@@ -88,7 +87,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
   @Nullable private DcMsg messageRecord;
   private DcContext dcContext;
   private MediaItem initialMedia;
-  private ViewPager mediaPager;
+  private ViewPager2 mediaPager;
   private Recipient conversationRecipient;
   private boolean leftIsRecent;
 
@@ -190,7 +189,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
   private void initializeViews() {
     mediaPager = findViewById(R.id.media_pager);
     mediaPager.setOffscreenPageLimit(1);
-    mediaPager.addOnPageChangeListener(new ViewPagerListener());
+    mediaPager.registerOnPageChangeCallback(new ViewPagerListener());
   }
 
   private void initializeResources() {
@@ -261,7 +260,6 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
   private int cleanupMedia() {
     int restartItem = mediaPager.getCurrentItem();
 
-    mediaPager.removeAllViews();
     mediaPager.setAdapter(null);
 
     return restartItem;
@@ -483,11 +481,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
       @SuppressWarnings("ConstantConditions")
       DcMediaPagerAdapter adapter =
           new DcMediaPagerAdapter(this, GlideApp.with(this), getWindow(), data, leftIsRecent);
-      mediaPager.setAdapter(adapter);
       adapter.setActive(true);
+      mediaPager.setAdapter(adapter);
 
-      if (restartItem < 0) mediaPager.setCurrentItem(data.getPosition());
-      else mediaPager.setCurrentItem(restartItem);
+      if (restartItem < 0) mediaPager.setCurrentItem(data.getPosition(), false);
+      else mediaPager.setCurrentItem(restartItem, false);
     }
   }
 
@@ -526,7 +524,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
-  private static class SingleItemPagerAdapter extends PagerAdapter implements MediaItemAdapter {
+  private static class SingleItemPagerAdapter extends RecyclerView.Adapter<SingleItemPagerAdapter.MediaViewHolder> implements MediaItemAdapter {
 
     private final GlideRequests glideRequests;
     private final Window window;
@@ -555,37 +553,29 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
       return 1;
     }
 
+    @NonNull
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-      return view == object;
+    public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+      return new MediaViewHolder(inflater.inflate(R.layout.media_view_page, parent, false));
     }
 
     @Override
-    public @NonNull Object instantiateItem(@NonNull ViewGroup container, int position) {
-      View itemView = inflater.inflate(R.layout.media_view_page, container, false);
-      MediaView mediaView = itemView.findViewById(R.id.media_view);
-
+    public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
       try {
-        mediaView.set(glideRequests, window, uri, name, mediaType, size, true);
+        holder.mediaView.set(glideRequests, window, uri, name, mediaType, size, true);
       } catch (IOException e) {
         Log.w(TAG, e);
       }
-
-      container.addView(itemView);
-
-      return itemView;
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-      MediaView mediaView = ((FrameLayout) object).findViewById(R.id.media_view);
-      mediaView.cleanup();
-
-      container.removeView((FrameLayout) object);
+    public void onViewRecycled(@NonNull MediaViewHolder holder) {
+      super.onViewRecycled(holder);
+      holder.mediaView.cleanup();
     }
 
     @Override
@@ -595,9 +585,18 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
 
     @Override
     public void pause(int position) {}
+
+    static class MediaViewHolder extends RecyclerView.ViewHolder {
+      final MediaView mediaView;
+
+      MediaViewHolder(@NonNull View itemView) {
+        super(itemView);
+        mediaView = itemView.findViewById(R.id.media_view);
+      }
+    }
   }
 
-  private static class DcMediaPagerAdapter extends PagerAdapter implements MediaItemAdapter {
+  private static class DcMediaPagerAdapter extends RecyclerView.Adapter<DcMediaPagerAdapter.MediaViewHolder> implements MediaItemAdapter {
 
     private final WeakHashMap<Integer, MediaView> mediaViews = new WeakHashMap<>();
 
@@ -630,21 +629,21 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
       if (!active) return 0;
       else return gallery.getCount();
     }
 
+    @NonNull
     @Override
-    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
-      return view == object;
+    public MediaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+      View itemView =
+          LayoutInflater.from(context).inflate(R.layout.media_view_page, parent, false);
+      return new MediaViewHolder(itemView);
     }
 
     @Override
-    public @NonNull Object instantiateItem(@NonNull ViewGroup container, int position) {
-      View itemView =
-          LayoutInflater.from(context).inflate(R.layout.media_view_page, container, false);
-      MediaView mediaView = itemView.findViewById(R.id.media_view);
+    public void onBindViewHolder(@NonNull MediaViewHolder holder, int position) {
       boolean autoplay = position == autoPlayPosition;
       int cursorPosition = getCursorPosition(position);
 
@@ -656,7 +655,7 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
 
       try {
         //noinspection ConstantConditions
-        mediaView.set(
+        holder.mediaView.set(
             glideRequests,
             window,
             Uri.fromFile(msg.getFileAsFile()),
@@ -668,19 +667,17 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
         Log.w(TAG, e);
       }
 
-      mediaViews.put(position, mediaView);
-      container.addView(itemView);
-
-      return itemView;
+      mediaViews.put(position, holder.mediaView);
     }
 
     @Override
-    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-      MediaView mediaView = ((FrameLayout) object).findViewById(R.id.media_view);
-      mediaView.cleanup();
-
-      mediaViews.remove(position);
-      container.removeView((FrameLayout) object);
+    public void onViewRecycled(@NonNull MediaViewHolder holder) {
+      super.onViewRecycled(holder);
+      int pos = holder.getBindingAdapterPosition();
+      if (pos != RecyclerView.NO_ID) {
+        mediaViews.remove(pos);
+      }
+      holder.mediaView.cleanup();
     }
 
     public MediaItem getMediaItemFor(int position) {
@@ -709,6 +706,15 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
     private int getCursorPosition(int position) {
       if (leftIsRecent) return position;
       else return gallery.getCount() - 1 - position;
+    }
+
+    static class MediaViewHolder extends RecyclerView.ViewHolder {
+      final MediaView mediaView;
+
+      MediaViewHolder(@NonNull View itemView) {
+        super(itemView);
+        mediaView = itemView.findViewById(R.id.media_view);
+      }
     }
   }
 

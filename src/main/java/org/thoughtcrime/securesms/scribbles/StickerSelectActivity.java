@@ -20,10 +20,10 @@ import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import org.thoughtcrime.securesms.R;
 
 public class StickerSelectActivity extends FragmentActivity
@@ -47,15 +47,16 @@ public class StickerSelectActivity extends FragmentActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.scribble_select_sticker_activity);
 
-    ViewPager viewPager = findViewById(R.id.camera_sticker_pager);
-    viewPager.setAdapter(new StickerPagerAdapter(getSupportFragmentManager(), this));
+    ViewPager2 viewPager = findViewById(R.id.camera_sticker_pager);
+    StickerPagerAdapter adapter = new StickerPagerAdapter(this, this);
+    viewPager.setAdapter(adapter);
 
     TabLayout tabLayout = findViewById(R.id.camera_sticker_tabs);
-    tabLayout.setupWithViewPager(viewPager);
-
-    for (int i = 0; i < tabLayout.getTabCount(); i++) {
-      tabLayout.getTabAt(i).setIcon(TAB_TITLES[i]);
-    }
+    new TabLayoutMediator(
+            tabLayout,
+            viewPager,
+            (tab, position) -> tab.setIcon(TAB_TITLES[position]))
+        .attach();
   }
 
   @Override
@@ -75,13 +76,13 @@ public class StickerSelectActivity extends FragmentActivity
     finish();
   }
 
-  static class StickerPagerAdapter extends FragmentStatePagerAdapter {
+  static class StickerPagerAdapter extends FragmentStateAdapter {
 
     private final Fragment[] fragments;
 
     StickerPagerAdapter(
-        FragmentManager fm, StickerSelectFragment.StickerSelectionListener listener) {
-      super(fm);
+        FragmentActivity activity, StickerSelectFragment.StickerSelectionListener listener) {
+      super(activity);
 
       this.fragments =
           new Fragment[] {
@@ -98,12 +99,12 @@ public class StickerSelectActivity extends FragmentActivity
     }
 
     @Override
-    public Fragment getItem(int position) {
+    public Fragment createFragment(int position) {
       return fragments[position];
     }
 
     @Override
-    public int getCount() {
+    public int getItemCount() {
       return fragments.length;
     }
   }

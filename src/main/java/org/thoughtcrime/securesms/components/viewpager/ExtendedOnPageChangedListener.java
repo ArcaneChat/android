@@ -1,8 +1,8 @@
 package org.thoughtcrime.securesms.components.viewpager;
 
-import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
-public abstract class ExtendedOnPageChangedListener implements ViewPager.OnPageChangeListener {
+public abstract class ExtendedOnPageChangedListener extends ViewPager2.OnPageChangeCallback {
 
   private Integer currentPage = null;
 
