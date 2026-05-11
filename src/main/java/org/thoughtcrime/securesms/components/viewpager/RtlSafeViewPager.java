@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.core.view.ViewCompat;
 
 public class RtlSafeViewPager extends HackyViewPager {
+  private final Matrix mirrorMatrix = new Matrix();
+  private boolean rtl;
 
   public RtlSafeViewPager(@NonNull Context context) {
     super(context);
@@ -16,6 +18,18 @@ public class RtlSafeViewPager extends HackyViewPager {
 
   public RtlSafeViewPager(@NonNull Context context, @Nullable AttributeSet attrs) {
     super(context, attrs);
+  }
+
+  @Override
+  protected void onAttachedToWindow() {
+    super.onAttachedToWindow();
+    updateLayoutDirection();
+  }
+
+  @Override
+  public void onRtlPropertiesChanged(int layoutDirection) {
+    super.onRtlPropertiesChanged(layoutDirection);
+    updateLayoutDirection();
   }
 
   @Override
@@ -47,14 +61,18 @@ public class RtlSafeViewPager extends HackyViewPager {
   }
 
   private boolean isRtl() {
-    return ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
+    return rtl;
   }
 
   private MotionEvent getMirroredMotionEvent(@NonNull MotionEvent ev) {
     MotionEvent mirrored = MotionEvent.obtain(ev);
-    Matrix matrix = new Matrix();
-    matrix.setScale(-1f, 1f, getWidth() / 2f, 0f);
-    mirrored.transform(matrix);
+    mirrorMatrix.reset();
+    mirrorMatrix.setScale(-1f, 1f, getWidth() / 2f, 0f);
+    mirrored.transform(mirrorMatrix);
     return mirrored;
+  }
+
+  private void updateLayoutDirection() {
+    rtl = ViewCompat.getLayoutDirection(this) == ViewCompat.LAYOUT_DIRECTION_RTL;
   }
 }
