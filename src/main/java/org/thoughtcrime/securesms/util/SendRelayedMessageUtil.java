@@ -156,10 +156,14 @@ public class SendRelayedMessageUtil {
       Activity activity = (Activity) context;
       Util.runOnMain(
           () -> {
-            if (!activity.isFinishing()) {
-              progressDialogRef.set(
-                  ProgressDialog.show(
-                      activity, "", context.getString(R.string.one_moment), true, false));
+            try {
+              if (!activity.isFinishing()) {
+                progressDialogRef.set(
+                    ProgressDialog.show(
+                        activity, "", context.getString(R.string.one_moment), true, false));
+              }
+            } catch (RuntimeException e) {
+              Log.w(TAG, "Failed to show recoding progress dialog", e);
             }
           });
     }
