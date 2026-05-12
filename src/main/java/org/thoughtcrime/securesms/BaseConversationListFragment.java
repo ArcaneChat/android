@@ -129,11 +129,16 @@ public abstract class BaseConversationListFragment extends Fragment implements A
                     .setPositiveButton(
                         R.string.menu_send,
                         (dialog, which) -> {
+                          Activity activity = getActivity();
+                          if (activity == null) {
+                            return;
+                          }
                           SendRelayedMessageUtil.immediatelyRelay(
-                              getActivity(), selectedChats.toArray(new Long[selectedChats.size()]));
+                              activity,
+                              selectedChats.toArray(new Long[selectedChats.size()]),
+                              () -> activity.finish());
                           actionMode.finish();
                           actionMode = null;
-                          getActivity().finish();
                         })
                     .show();
               }

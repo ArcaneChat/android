@@ -626,14 +626,18 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     final DcContext dcContext = DcHelper.getContext(this);
     int fwdAccId = getForwardedMessageAccountId(this);
     if (fwdAccId == dcContext.getAccountId() && dcContext.getChat(chatId).isSelfTalk()) {
-      SendRelayedMessageUtil.immediatelyRelay(this, chatId);
-      Toast.makeText(
-              this,
-              DynamicTheme.getCheckmarkEmoji(this) + " " + getString(R.string.saved),
-              Toast.LENGTH_SHORT)
-          .show();
-      handleResetRelaying();
-      finish();
+      SendRelayedMessageUtil.immediatelyRelay(
+          this,
+          chatId,
+          () -> {
+            Toast.makeText(
+                    this,
+                    DynamicTheme.getCheckmarkEmoji(this) + " " + getString(R.string.saved),
+                    Toast.LENGTH_SHORT)
+                .show();
+            handleResetRelaying();
+            finish();
+          });
     } else {
       Intent intent = new Intent(this, ConversationActivity.class);
       intent.putExtra(ConversationActivity.ACCOUNT_ID_EXTRA, dcContext.getAccountId());

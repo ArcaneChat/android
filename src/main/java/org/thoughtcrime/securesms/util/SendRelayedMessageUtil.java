@@ -39,48 +39,64 @@ public class SendRelayedMessageUtil {
   private static final String TAG = SendRelayedMessageUtil.class.getSimpleName();
 
   public static void immediatelyRelay(Activity activity, int chatId) {
-    immediatelyRelay(activity, new Long[] {(long) chatId});
+    immediatelyRelay(activity, chatId, null);
+  }
+
+  public static void immediatelyRelay(Activity activity, int chatId, Runnable onCompletion) {
+    immediatelyRelay(activity, new Long[] {(long) chatId}, onCompletion);
   }
 
   public static void immediatelyRelay(Activity activity, final Long[] chatIds) {
+    immediatelyRelay(activity, chatIds, null);
+  }
+
+  public static void immediatelyRelay(
+      Activity activity, final Long[] chatIds, Runnable onCompletion) {
     ConversationListRelayingActivity.finishActivity();
     if (isForwarding(activity)) {
       int forwardedMsgAccId = getForwardedMessageAccountId(activity);
       int[] forwardedMessageIDs = getForwardedMessageIDs(activity);
       resetRelayingMessageContent(activity);
-      if (forwardedMessageIDs == null || forwardedMsgAccId <= 0) return;
+      if (forwardedMessageIDs == null || forwardedMsgAccId <= 0) {
+        runOnCompletion(onCompletion);
+        return;
+      }
 
       Util.runOnAnyBackgroundThread(
           () -> {
-            DcContext dcContext = DcHelper.getContext(activity);
-            int accId = dcContext.getAccountId();
-            if (forwardedMsgAccId != accId) {
-              Rpc rpc = DcHelper.getRpc(activity);
-              List<Integer> list = Util.toList(forwardedMessageIDs);
-              for (long longChatId : chatIds) {
-                try {
-                  rpc.forwardMessagesToAccount(forwardedMsgAccId, list, accId, (int) longChatId);
-                } catch (RpcException e) {
-                  e.printStackTrace();
-                }
-              }
-              return;
-            }
-
-            for (long longChatId : chatIds) {
-              int chatId = (int) longChatId;
-              if (dcContext.getChat(chatId).isSelfTalk()) {
-                for (int msgId : forwardedMessageIDs) {
-                  DcMsg msg = dcContext.getMsg(msgId);
-                  if (msg.canSave() && msg.getSavedMsgId() == 0 && msg.getChatId() != chatId) {
-                    dcContext.saveMsgs(new int[] {msgId});
-                  } else {
-                    handleForwarding(activity, chatId, new int[] {msgId});
+            try {
+              DcContext dcContext = DcHelper.getContext(activity);
+              int accId = dcContext.getAccountId();
+              if (forwardedMsgAccId != accId) {
+                Rpc rpc = DcHelper.getRpc(activity);
+                List<Integer> list = Util.toList(forwardedMessageIDs);
+                for (long longChatId : chatIds) {
+                  try {
+                    rpc.forwardMessagesToAccount(forwardedMsgAccId, list, accId, (int) longChatId);
+                  } catch (RpcException e) {
+                    e.printStackTrace();
                   }
                 }
-              } else {
-                handleForwarding(activity, chatId, forwardedMessageIDs);
+                return;
               }
+
+              for (long longChatId : chatIds) {
+                int chatId = (int) longChatId;
+                if (dcContext.getChat(chatId).isSelfTalk()) {
+                  for (int msgId : forwardedMessageIDs) {
+                    DcMsg msg = dcContext.getMsg(msgId);
+                    if (msg.canSave() && msg.getSavedMsgId() == 0 && msg.getChatId() != chatId) {
+                      dcContext.saveMsgs(new int[] {msgId});
+                    } else {
+                      handleForwarding(activity, chatId, new int[] {msgId});
+                    }
+                  }
+                } else {
+                  handleForwarding(activity, chatId, forwardedMessageIDs);
+                }
+              }
+            } finally {
+              runOnCompletion(onCompletion);
             }
           });
     } else if (isSharing(activity)) {
@@ -92,11 +108,23 @@ public class SendRelayedMessageUtil {
       resetRelayingMessageContent(activity);
       Util.runOnAnyBackgroundThread(
           () -> {
-            for (long chatId : chatIds) {
-              sendMultipleMsgs(
-                  activity, (int) chatId, sharedUris, msgType, sharedHtml, subject, sharedText);
+            try {
+              for (long chatId : chatIds) {
+                sendMultipleMsgs(
+                    activity, (int) chatId, sharedUris, msgType, sharedHtml, subject, sharedText);
+              }
+            } finally {
+              runOnCompletion(onCompletion);
             }
           });
+    } else {
+      runOnCompletion(onCompletion);
+    }
+  }
+
+  private static void runOnCompletion(Runnable onCompletion) {
+    if (onCompletion != null) {
+      Util.runOnMain(onCompletion);
     }
   }
 
