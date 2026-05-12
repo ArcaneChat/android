@@ -52,7 +52,6 @@ public class SendRelayedMessageUtil {
 
   public static void immediatelyRelay(
       Activity activity, final Long[] chatIds, Runnable onCompletion) {
-    ConversationListRelayingActivity.finishActivity();
     if (isForwarding(activity)) {
       int forwardedMsgAccId = getForwardedMessageAccountId(activity);
       int[] forwardedMessageIDs = getForwardedMessageIDs(activity);
@@ -123,9 +122,13 @@ public class SendRelayedMessageUtil {
   }
 
   private static void runOnCompletion(Runnable onCompletion) {
-    if (onCompletion != null) {
-      Util.runOnMain(onCompletion);
-    }
+    Util.runOnMain(
+        () -> {
+          ConversationListRelayingActivity.finishActivity();
+          if (onCompletion != null) {
+            onCompletion.run();
+          }
+        });
   }
 
   private static void handleForwarding(Context context, int chatId, int[] forwardedMessageIDs) {
