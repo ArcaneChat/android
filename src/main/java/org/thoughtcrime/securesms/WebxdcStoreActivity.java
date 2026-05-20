@@ -6,13 +6,16 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
@@ -101,6 +104,18 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
           public WebResourceResponse shouldInterceptRequest(
               WebView view, WebResourceRequest request) {
             return interceptRequest(request.getUrl().toString());
+          }
+
+          @Override
+          @RequiresApi(Build.VERSION_CODES.M)
+          public void onReceivedError(
+              WebView view, WebResourceRequest request, WebResourceError error) {
+            super.onReceivedError(view, request, error);
+            if (request.isForMainFrame()) {
+              Log.w(
+                  TAG,
+                  "Store load failed: " + error.getErrorCode() + " " + error.getDescription());
+            }
           }
         });
 
