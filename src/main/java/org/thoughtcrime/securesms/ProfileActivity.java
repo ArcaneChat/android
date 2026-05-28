@@ -412,8 +412,8 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
         ArrayList<Uri> uris = new ArrayList<>();
         uris.add(vcardUri);
         ShareUtil.setSharedUris(composeIntent, uris);
-      } catch (RpcException e) {
-        Log.e(TAG, "Failed to create vCard for sharing", e);
+      } catch (Exception e) {
+        Log.e(TAG, "Failed to create vCard for sharing contactId=" + contactId, e);
         ShareUtil.setSharedText(composeIntent, dcContact.getAddr());
       }
     } else {
