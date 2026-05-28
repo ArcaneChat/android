@@ -70,6 +70,10 @@ window.webxdc = (() => {
 
     selfName: InternalJSApi.selfName(),
 
+    isAppSender: InternalJSApi.isAppSender(),
+
+    isBroadcast: InternalJSApi.isBroadcast(),
+
     joinRealtimeChannel: () => {
       realtimeChannel = createRealtimeChannel();
       InternalJSApi.sendRealtimeAdvertisement();

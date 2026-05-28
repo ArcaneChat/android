@@ -1,5 +1,12 @@
 # Delta Chat Android Changelog
 
+## Unreleased
+
+* Add new webxdc.isAppSender and webxdc.isBroadcast APIs for mini-apps
+* Fix: Location streaming now works correctly with multiple accounts
+* Fix debouncing in chatlist and search
+* Fix sharing contact across profiles
+
 ## v2.50.0
 2026-05
 

@@ -879,13 +879,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
   private void handleSharing() {
     ArrayList<Uri> uriList = ShareUtil.getSharedUris(this);
-    int sharedContactId = ShareUtil.getSharedContactId(this);
     if (uriList.size() > 1) {
       askSendingFiles(uriList, () -> SendRelayedMessageUtil.immediatelyRelay(this, chatId));
     } else {
-      if (sharedContactId != 0) {
-        addAttachmentContactInfo(sharedContactId);
-      } else if (ShareUtil.getSharedHtml(this) != null
+      if (ShareUtil.getSharedHtml(this) != null
           || ShareUtil.getSharedSubject(this) != null
           || ("sticker".equals(ShareUtil.getSharedType(this)) && !uriList.isEmpty())) {
         SendRelayedMessageUtil.immediatelyRelay(this, chatId);

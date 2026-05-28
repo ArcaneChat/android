@@ -15,7 +15,6 @@ public class ShareUtil {
   private static final String FORWARDED_MESSAGE_ACCID = "forwarded_message_accid";
   private static final String FORWARDED_MESSAGE_IDS = "forwarded_message_ids";
   private static final String SHARED_URIS = "shared_uris";
-  private static final String SHARED_CONTACT_ID = "shared_contact_id";
   private static final String IS_SHARING = "is_sharing";
   private static final String IS_FROM_WEBXDC = "is_from_webxdc";
   private static final String SHARED_TITLE = "shared_title";
@@ -112,15 +111,6 @@ public class ShareUtil {
     }
   }
 
-  public static int getSharedContactId(Activity activity) {
-    try {
-      return activity.getIntent().getIntExtra(SHARED_CONTACT_ID, 0);
-    } catch (Exception e) {
-      e.printStackTrace();
-      return 0;
-    }
-  }
-
   public static String getSharedText(Activity activity) {
     try {
       return activity.getIntent().getStringExtra(TEXT_EXTRA);
@@ -142,7 +132,6 @@ public class ShareUtil {
       activity.getIntent().removeExtra(FORWARDED_MESSAGE_ACCID);
       activity.getIntent().removeExtra(FORWARDED_MESSAGE_IDS);
       activity.getIntent().removeExtra(SHARED_URIS);
-      activity.getIntent().removeExtra(SHARED_CONTACT_ID);
       activity.getIntent().removeExtra(IS_SHARING);
       activity.getIntent().removeExtra(DIRECT_SHARING_CHAT_ID);
       activity.getIntent().removeExtra(TEXT_EXTRA);
@@ -166,9 +155,6 @@ public class ShareUtil {
       }
       if (!getSharedUris(currentActivity).isEmpty()) {
         newActivityIntent.putParcelableArrayListExtra(SHARED_URIS, getSharedUris(currentActivity));
-      }
-      if (getSharedContactId(currentActivity) != 0) {
-        newActivityIntent.putExtra(SHARED_CONTACT_ID, getSharedContactId(currentActivity));
       }
       if (getSharedText(currentActivity) != null) {
         newActivityIntent.putExtra(TEXT_EXTRA, getSharedText(currentActivity));
@@ -217,11 +203,6 @@ public class ShareUtil {
 
   public static void setSharedType(Intent composeIntent, String type) {
     composeIntent.putExtra(MSG_TYPE_EXTRA, type);
-    composeIntent.putExtra(IS_SHARING, true);
-  }
-
-  public static void setSharedContactId(Intent composeIntent, int contactId) {
-    composeIntent.putExtra(SHARED_CONTACT_ID, contactId);
     composeIntent.putExtra(IS_SHARING, true);
   }
 
