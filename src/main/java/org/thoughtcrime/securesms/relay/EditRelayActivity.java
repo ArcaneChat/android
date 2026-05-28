@@ -165,7 +165,6 @@ public class EditRelayActivity extends BaseActionBarActivity
         (view, focused) -> focusListener(view, focused, VerificationType.SERVER));
     imapPortInput.setOnFocusChangeListener(
         (view, focused) -> focusListener(view, focused, VerificationType.PORT));
-    imapFolderInput.setEnabled(false);
     smtpServerInput.setOnFocusChangeListener(
         (view, focused) -> focusListener(view, focused, VerificationType.SERVER));
     smtpPortInput.setOnFocusChangeListener(
@@ -199,8 +198,10 @@ public class EditRelayActivity extends BaseActionBarActivity
       if (config.imapPort != null) imapPortInput.setText(config.imapPort.toString());
       expandAdvanced = expandAdvanced || config.imapPort != null;
 
-      imapFolderInput.setText(config.imapFolder);
-      expandAdvanced = expandAdvanced || !TextUtils.isEmpty(config.imapFolder);
+      if (config.imapFolder != null) {
+        imapFolderInput.setText(config.imapFolder);
+        expandAdvanced = expandAdvanced || !config.imapFolder.isEmpty();
+      }
 
       intVal = socketSecurityToInt(config.imapSecurity);
       imapSecurity.setSelection(ViewUtil.checkBounds(intVal, imapSecurity));
