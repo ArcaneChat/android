@@ -201,12 +201,10 @@ public class EditRelayActivity extends BaseActionBarActivity
       if (config.imapPort != null) imapPortInput.setText(config.imapPort.toString());
       expandAdvanced = expandAdvanced || config.imapPort != null;
 
-      if (config.imapFolder != null) {
-        imapFolderHasValue = !config.imapFolder.isEmpty();
-        if (imapFolderHasValue) {
-          imapFolderInput.setText(config.imapFolder);
-          expandAdvanced = true;
-        }
+      imapFolderHasValue = !TextUtils.isEmpty(config.imapFolder);
+      if (imapFolderHasValue) {
+        imapFolderInput.setText(config.imapFolder);
+        expandAdvanced = true;
       }
 
       intVal = socketSecurityToInt(config.imapSecurity);
