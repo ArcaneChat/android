@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 public class ProfileActivity extends PassphraseRequiredActionBarActivity
     implements DcEventCenter.DcEventDelegate {
 
+  private static final String TAG = "ProfileActivity";
   public static final String CHAT_ID_EXTRA = "chat_id";
   public static final String CONTACT_ID_EXTRA = "contact_id";
 
@@ -411,7 +413,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
         uris.add(vcardUri);
         ShareUtil.setSharedUris(composeIntent, uris);
       } catch (RpcException e) {
-        e.printStackTrace();
+        Log.e(TAG, "Failed to create vCard for sharing", e);
         ShareUtil.setSharedText(composeIntent, dcContact.getAddr());
       }
     } else {
