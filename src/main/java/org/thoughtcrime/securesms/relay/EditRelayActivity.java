@@ -70,6 +70,8 @@ public class EditRelayActivity extends BaseActionBarActivity
 
   private Group advancedGroup;
   private ImageView advancedIcon;
+  private View imapFolderLayout;
+  private boolean imapFolderHasValue = false;
   private ProgressDialog progressDialog;
   private boolean cancelled = false;
 
@@ -102,6 +104,7 @@ public class EditRelayActivity extends BaseActionBarActivity
 
     advancedGroup = findViewById(R.id.advanced_group);
     advancedIcon = findViewById(R.id.advanced_icon);
+    imapFolderLayout = findViewById(R.id.imap_folder);
     TextView advancedTextView = findViewById(R.id.advanced_text);
     TextInputEditText imapServerInput = findViewById(R.id.imap_server_text);
     TextInputEditText imapPortInput = findViewById(R.id.imap_port_text);
@@ -199,8 +202,11 @@ public class EditRelayActivity extends BaseActionBarActivity
       expandAdvanced = expandAdvanced || config.imapPort != null;
 
       if (config.imapFolder != null) {
-        imapFolderInput.setText(config.imapFolder);
-        expandAdvanced = expandAdvanced || !config.imapFolder.isEmpty();
+        imapFolderHasValue = !config.imapFolder.isEmpty();
+        if (imapFolderHasValue) {
+          imapFolderInput.setText(config.imapFolder);
+          expandAdvanced = true;
+        }
       }
 
       intVal = socketSecurityToInt(config.imapSecurity);
@@ -399,9 +405,11 @@ public class EditRelayActivity extends BaseActionBarActivity
     boolean advancedViewVisible = advancedGroup.getVisibility() == View.VISIBLE;
     if (advancedViewVisible) {
       advancedGroup.setVisibility(View.GONE);
+      imapFolderLayout.setVisibility(View.GONE);
       advancedIcon.setRotation(45);
     } else {
       advancedGroup.setVisibility(View.VISIBLE);
+      imapFolderLayout.setVisibility(imapFolderHasValue ? View.VISIBLE : View.GONE);
       advancedIcon.setRotation(0);
     }
   }
