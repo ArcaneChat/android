@@ -834,6 +834,7 @@
     <string name="pref_background_btn_gallery">Select From Gallery</string>
     <!-- deprecated -->
     <string name="pref_imap_folder_warn_disable_defaults">If you change this option, make sure, your server and your other clients are configured accordingly.\n\nOtherwise things may not work at all.</string>
+    <string name="login_imap_folder">IMAP folder</string>
     <!-- No need to be literal here, you can also use "Use Multiple Devices", "Support Multiple Devices" or other fitting terms. However, it should fit to the wording or your language at https://delta.chat/help -->
     <string name="pref_multidevice">Multi-Device Mode</string>
     <string name="pref_multidevice_explain">Synchronize your messages with your other devices. Automatically enabled on adding a second device</string>

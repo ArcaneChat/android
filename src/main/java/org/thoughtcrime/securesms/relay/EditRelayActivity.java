@@ -105,6 +105,7 @@ public class EditRelayActivity extends BaseActionBarActivity
     TextView advancedTextView = findViewById(R.id.advanced_text);
     TextInputEditText imapServerInput = findViewById(R.id.imap_server_text);
     TextInputEditText imapPortInput = findViewById(R.id.imap_port_text);
+    TextInputEditText imapFolderInput = findViewById(R.id.imap_folder_text);
     TextInputEditText smtpServerInput = findViewById(R.id.smtp_server_text);
     TextInputEditText smtpPortInput = findViewById(R.id.smtp_port_text);
     TextView viewLogText = findViewById(R.id.view_log_button);
@@ -164,6 +165,7 @@ public class EditRelayActivity extends BaseActionBarActivity
         (view, focused) -> focusListener(view, focused, VerificationType.SERVER));
     imapPortInput.setOnFocusChangeListener(
         (view, focused) -> focusListener(view, focused, VerificationType.PORT));
+    imapFolderInput.setEnabled(false);
     smtpServerInput.setOnFocusChangeListener(
         (view, focused) -> focusListener(view, focused, VerificationType.SERVER));
     smtpPortInput.setOnFocusChangeListener(
@@ -196,6 +198,9 @@ public class EditRelayActivity extends BaseActionBarActivity
 
       if (config.imapPort != null) imapPortInput.setText(config.imapPort.toString());
       expandAdvanced = expandAdvanced || config.imapPort != null;
+
+      imapFolderInput.setText(config.imapFolder);
+      expandAdvanced = expandAdvanced || !TextUtils.isEmpty(config.imapFolder);
 
       intVal = socketSecurityToInt(config.imapSecurity);
       imapSecurity.setSelection(ViewUtil.checkBounds(intVal, imapSecurity));
@@ -498,6 +503,7 @@ public class EditRelayActivity extends BaseActionBarActivity
     param.password = getParam(R.id.password_text, false);
     param.imapServer = getParam(R.id.imap_server_text, true);
     param.imapPort = Util.objectToInt(getParam(R.id.imap_port_text, true));
+    param.imapFolder = getParam(R.id.imap_folder_text, false);
     param.imapSecurity = socketSecurityFromInt(imapSecurity.getSelectedItemPosition());
     param.imapUser = getParam(R.id.imap_login_text, false);
     param.smtpServer = getParam(R.id.smtp_server_text, true);
