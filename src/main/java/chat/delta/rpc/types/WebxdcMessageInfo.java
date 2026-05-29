@@ -2,6 +2,8 @@
 package chat.delta.rpc.types;
 
 public class WebxdcMessageInfo {
+  @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.SET)
+  public String orientation;
   /** if the Webxdc represents a document, then this is the name of the document */
   @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.SET)
   public String document;

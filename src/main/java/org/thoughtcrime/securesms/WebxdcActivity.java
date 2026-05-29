@@ -225,18 +225,19 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     // also a random-id is not that useful for debugging)
     this.baseURL = "https://acc" + accountId + "-msg" + appMessageId + ".localhost";
 
-    if ("landscape".equals(JsonUtils.optString(this.dcAppMsg.getWebxdcInfo(), "orientation"))) {
-      setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    } else {
-      // enter fullscreen mode if necessary,
-      // this is needed here because if the app is opened while already in landscape mode,
-      // onConfigurationChanged() is not triggered
-      setScreenMode(getResources().getConfiguration());
-    }
-
     WebxdcMessageInfo info;
     try {
       info = rpc.getWebxdcInfo(accountId, appMessageId);
+
+      if ("landscape".equals(info.orientation)) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+      } else {
+        // enter fullscreen mode if necessary,
+        // this is needed here because if the app is opened while already in landscape mode,
+        // onConfigurationChanged() is not triggered
+        setScreenMode(getResources().getConfiguration());
+      }
+
       internetAccess = info.internetAccess;
       selfAddr = info.selfAddr;
       isAppSender = info.isAppSender;
