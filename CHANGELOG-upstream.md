@@ -1,13 +1,6 @@
 # Delta Chat Android Changelog
 
-## Unreleased
-
-* Add new webxdc.isAppSender and webxdc.isBroadcast APIs for mini-apps
-* Fix: Location streaming now works correctly with multiple accounts
-* Fix debouncing in chatlist and search
-* Fix sharing contact across profiles
-
-## v2.50.0
+## 2.51.0
 2026-05
 
 * Better incoming call system integration
@@ -41,11 +34,16 @@
 * Resend the last 10 messages to new broadcast channel member
 * Enable PQC (Post-Quantum Cryptography) support. We do not generate PQC keys yet, this step is needed for forward compatibility
 * Improve avatar quality
+* Add new webxdc.isAppSender and webxdc.isBroadcast APIs for mini-apps
 * Fix: avoid invalid empty "~" notifications when some peer is streaming location
 * Fix: Improve detection of stickers
 * Fix text direction issues for RTL languages in "Show full message" view
 * Fix: Reconnect when removing a relay
-* Update to core 2.50.0
+* Fix: Location streaming now works correctly with multiple accounts
+* Fix debouncing in chatlist and search
+* Fix sharing contact across profiles
+* Fix: Reset scroll location after switching account
+* Update to core 2.51.0
 
 ## v2.49.0
 2026-04
