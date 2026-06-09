@@ -28,7 +28,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
-import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
@@ -147,21 +146,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     return intent;
   }
 
-  private static Intent[] getWebxdcIntentWithParentStack(Context context, int msgId) {
-    DcContext dcContext = DcHelper.getContext(context);
-
-    final Intent chatIntent =
-        new Intent(context, ConversationActivity.class)
-            .putExtra(ConversationActivity.CHAT_ID_EXTRA, dcContext.getMsg(msgId).getChatId())
-            .setAction(Intent.ACTION_VIEW);
-
-    final Intent webxdcIntent = getWebxdcIntent(context, msgId, false, "");
-
-    return TaskStackBuilder.create(context)
-        .addNextIntentWithParentStack(chatIntent)
-        .addNextIntent(webxdcIntent)
-        .getIntents();
-  }
 
   @Override
   protected boolean immersiveMode() {
@@ -559,7 +543,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
                   IconCompat.createWithBitmap(
                       bitmap)) // createWithAdaptiveBitmap() removes decorations but cuts out a too
               // small circle and defamiliarize the icon too much
-              .setIntents(getWebxdcIntentWithParentStack(context, msgId))
+              .setIntent(getWebxdcIntent(context, msgId, false, ""))
               .build();
 
       Toast.makeText(context, R.string.one_moment, Toast.LENGTH_SHORT).show();
