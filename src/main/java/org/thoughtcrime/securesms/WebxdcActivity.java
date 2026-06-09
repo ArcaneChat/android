@@ -126,22 +126,24 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   public static void openWebxdcActivity(
       Context context, int msgId, boolean hideActionBar, String href) {
     if (!Util.isClickedRecently()) {
-      context.startActivity(getWebxdcIntent(context, msgId, hideActionBar, href, true));
+      context.startActivity(getWebxdcIntent(context, msgId, hideActionBar, href));
     }
   }
 
   private static Intent getWebxdcIntent(
-      Context context, int msgId, boolean hideActionBar, String href, boolean openInSeparateTask) {
+      Context context, int msgId, boolean hideActionBar, String href) {
     DcContext dcContext = DcHelper.getContext(context);
+    int accountId = dcContext.getAccountId();
     Intent intent = new Intent(context, WebxdcActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
-    intent.putExtra(EXTRA_ACCOUNT_ID, dcContext.getAccountId());
+    // Unique URI per webxdc instance so FLAG_ACTIVITY_NEW_DOCUMENT can identify the document:
+    // same app → same URI → existing task reused; different apps → different URIs → separate tasks.
+    intent.setData(Uri.parse("webxdc://" + accountId + "/" + msgId));
+    intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
     intent.putExtra(EXTRA_APP_MSG_ID, msgId);
     intent.putExtra(EXTRA_HIDE_ACTION_BAR, hideActionBar);
     intent.putExtra(EXTRA_HREF, href);
-    if (openInSeparateTask) {
-      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-    }
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
     return intent;
   }
 
@@ -153,7 +155,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
             .putExtra(ConversationActivity.CHAT_ID_EXTRA, dcContext.getMsg(msgId).getChatId())
             .setAction(Intent.ACTION_VIEW);
 
-    final Intent webxdcIntent = getWebxdcIntent(context, msgId, false, "", false);
+    final Intent webxdcIntent = getWebxdcIntent(context, msgId, false, "");
 
     return TaskStackBuilder.create(context)
         .addNextIntentWithParentStack(chatIntent)
