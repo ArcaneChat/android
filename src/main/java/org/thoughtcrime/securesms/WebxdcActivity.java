@@ -70,6 +70,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   private ValueCallback<Uri[]> filePathCallback;
   private DcContext dcContext;
+  private int accountId;
   private Rpc rpc;
   private DcMsg dcAppMsg;
   private String baseURL;
@@ -133,12 +134,16 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private static Intent getWebxdcIntent(
       Context context, int msgId, boolean hideActionBar, String href) {
     DcContext dcContext = DcHelper.getContext(context);
+    int accountId = dcContext.getAccountId();
     Intent intent = new Intent(context, WebxdcActivity.class);
     intent.setAction(Intent.ACTION_VIEW);
-    intent.putExtra(EXTRA_ACCOUNT_ID, dcContext.getAccountId());
+    // Unique URI per webxdc instance so FLAG_ACTIVITY_NEW_DOCUMENT can identify the document:
+    intent.setData(Uri.parse("webxdc://" + accountId + "/" + msgId));
+    intent.putExtra(EXTRA_ACCOUNT_ID, accountId);
     intent.putExtra(EXTRA_APP_MSG_ID, msgId);
     intent.putExtra(EXTRA_HIDE_ACTION_BAR, hideActionBar);
     intent.putExtra(EXTRA_HREF, href);
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
     return intent;
   }
 
@@ -198,16 +203,15 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
     DcEventCenter eventCenter =
         DcHelper.getEventCenter(WebxdcActivity.this.getApplicationContext());
-    eventCenter.addObserver(DcContext.DC_EVENT_WEBXDC_STATUS_UPDATE, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_MSGS_CHANGED, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_WEBXDC_REALTIME_DATA, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_WEBXDC_STATUS_UPDATE, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_MSGS_CHANGED, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_WEBXDC_REALTIME_DATA, this);
 
     int appMessageId = b.getInt(EXTRA_APP_MSG_ID);
-    int accountId = b.getInt(EXTRA_ACCOUNT_ID);
+    accountId = b.getInt(EXTRA_ACCOUNT_ID);
     this.dcContext = DcHelper.getContext(getApplicationContext());
     if (accountId != dcContext.getAccountId()) {
-      AccountManager.getInstance().switchAccount(getApplicationContext(), accountId);
-      this.dcContext = DcHelper.getContext(getApplicationContext());
+      this.dcContext = DcHelper.getAccounts(getApplicationContext()).getAccount(accountId);
     }
 
     this.dcAppMsg = this.dcContext.getMsg(appMessageId);
@@ -329,7 +333,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     super.onOptionsItemSelected(item);
     int itemId = item.getItemId();
     if (itemId == R.id.menu_add_to_home_screen) {
-      addToHomeScreen(this, dcAppMsg.getId());
+      addToHomeScreen(this, dcContext, dcAppMsg.getId());
       return true;
     } else if (itemId == R.id.webxdc_help) {
       DcHelper.openHelp(this, "#webxdc");
@@ -482,6 +486,8 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   @Override
   public void handleEvent(@NonNull DcEvent event) {
+    if (event.getAccountId() != accountId) return;
+
     int eventId = event.getId();
     if ((eventId == DcContext.DC_EVENT_WEBXDC_STATUS_UPDATE
         && event.getData1Int() == dcAppMsg.getId())) {
@@ -525,6 +531,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   private void showInChat() {
     Intent intent = new Intent(this, ConversationActivity.class);
+    intent.putExtra(ConversationActivity.ACCOUNT_ID_EXTRA, accountId);
     intent.putExtra(ConversationActivity.CHAT_ID_EXTRA, dcAppMsg.getChatId());
     intent.putExtra(
         ConversationActivity.STARTING_POSITION_EXTRA,
@@ -533,9 +540,12 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   }
 
   public static void addToHomeScreen(Activity activity, int msgId) {
+    addToHomeScreen(activity, DcHelper.getContext(activity), msgId);
+  }
+
+  public static void addToHomeScreen(Activity activity, DcContext dcContext, int msgId) {
     Context context = activity.getApplicationContext();
     try {
-      DcContext dcContext = DcHelper.getContext(context);
       Rpc rpc = DcHelper.getRpc(context);
       int accountId = dcContext.getAccountId();
       DcMsg msg = dcContext.getMsg(msgId);
@@ -554,7 +564,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
                   IconCompat.createWithBitmap(
                       bitmap)) // createWithAdaptiveBitmap() removes decorations but cuts out a too
               // small circle and defamiliarize the icon too much
-              .setIntents(getWebxdcIntentWithParentStack(context, msgId))
+              .setIntent(getWebxdcIntent(context, msgId, false, ""))
               .build();
 
       Toast.makeText(context, R.string.one_moment, Toast.LENGTH_SHORT).show();
