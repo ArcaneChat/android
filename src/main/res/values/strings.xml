@@ -540,6 +540,7 @@
     <string name="send_file_to">Send \"%1$s\" to…</string>
     <!-- title shown above a list contacts where one should be selected (eg. when a webxdc attempts to send a message to a chat) -->
     <string name="send_message_to">Send Message to…</string>
+    <string name="webxdc_requires_modern_webview">Please update Android System WebView to open this app securely.</string>
 
     <!-- punycode warning / labeled links -->
     <string name="puny_code_warning_header">Suspicious link detected</string>

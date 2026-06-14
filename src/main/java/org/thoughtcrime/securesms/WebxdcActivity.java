@@ -300,8 +300,10 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
-    if (!internetAccess) {
-      installWebRtcBlockerScript();
+    if (!installWebRtcBlockerScript()) {
+      Toast.makeText(this, R.string.webxdc_requires_modern_webview, Toast.LENGTH_LONG).show();
+      finish();
+      return;
     }
 
     String extraHref = b.getString(EXTRA_HREF, "");
@@ -492,8 +494,8 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       res = new WebResourceResponse("text/plain", "UTF-8", targetStream);
     }
 
+    Map<String, String> headers = new HashMap<>();
     if (!internetAccess) {
-      Map<String, String> headers = new HashMap<>();
       headers.put(
           "Content-Security-Policy",
           "default-src 'self'; "
@@ -505,23 +507,29 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
               + "media-src 'self' data: blob: ;"
               + "webrtc 'block' ; ");
       headers.put("X-DNS-Prefetch-Control", "off");
-      headers.put("Permissions-Policy", "camera=(), microphone=(), display-capture=()");
-      res.setResponseHeaders(headers);
     }
+    headers.put("Permissions-Policy", "camera=(), microphone=(), display-capture=()");
+    res.setResponseHeaders(headers);
     return res;
   }
 
-  private void installWebRtcBlockerScript() {
+  private boolean installWebRtcBlockerScript() {
     if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
       Log.w(TAG, "Document start script not supported, cannot hard-block WebRTC.");
-      return;
+      return false;
     }
     if (webRtcBlockerScriptHandler != null) {
-      return;
+      return true;
     }
-    webRtcBlockerScriptHandler =
-        WebViewCompat.addDocumentStartJavaScript(
-            webView, WEBRTC_BLOCKER_SCRIPT, Collections.singleton("*"));
+    try {
+      webRtcBlockerScriptHandler =
+          WebViewCompat.addDocumentStartJavaScript(
+              webView, WEBRTC_BLOCKER_SCRIPT, Collections.singleton("*"));
+      return true;
+    } catch (RuntimeException e) {
+      Log.e(TAG, "Failed to add WebRTC blocker document-start script.", e);
+      return false;
+    }
   }
 
   private void callJavaScriptFunction(String func) {
