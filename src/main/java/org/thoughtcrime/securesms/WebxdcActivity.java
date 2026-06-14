@@ -32,6 +32,9 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.webkit.ScriptHandler;
+import androidx.webkit.WebViewCompat;
+import androidx.webkit.WebViewFeature;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import chat.delta.rpc.types.WebxdcMessageInfo;
@@ -47,6 +50,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -67,8 +71,33 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private static final String EXTRA_HREF = "href";
   private static final int REQUEST_CODE_FILE_PICKER = 51426;
   private static long lastOpenTime = 0;
+  private static final String WEBRTC_BLOCKER_SCRIPT =
+      "(function(){"
+          + "const message='WebRTC is disabled in webxdc';"
+          + "const reject=function(){"
+          + "if(typeof DOMException==='function'){return Promise.reject(new DOMException(message,'NotAllowedError'));}"
+          + "return Promise.reject(new Error(message));"
+          + "};"
+          + "const define=function(scope,name,value){"
+          + "if(!scope){return;}"
+          + "try{Object.defineProperty(scope,name,{configurable:false,writable:false,value:value});}catch(e){}"
+          + "};"
+          + "const blockCtor=function(name){"
+          + "const blocked=function(){throw new TypeError(message+': '+name);};"
+          + "define(globalThis,name,blocked);"
+          + "define(window,name,blocked);"
+          + "define(self,name,blocked);"
+          + "};"
+          + "['RTCPeerConnection','webkitRTCPeerConnection','RTCDataChannel','RTCRtpSender',"
+          + "'RTCRtpReceiver','RTCSessionDescription','RTCIceCandidate'].forEach(blockCtor);"
+          + "if(navigator&&navigator.mediaDevices){"
+          + "define(navigator.mediaDevices,'getUserMedia',function(){return reject();});"
+          + "define(navigator.mediaDevices,'getDisplayMedia',function(){return reject();});"
+          + "}"
+          + "})();";
 
   private ValueCallback<Uri[]> filePathCallback;
+  private ScriptHandler webRtcBlockerScriptHandler;
   private DcContext dcContext;
   private int accountId;
   private Rpc rpc;
@@ -271,6 +300,9 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
+    if (!internetAccess) {
+      installWebRtcBlockerScript();
+    }
 
     String extraHref = b.getString(EXTRA_HREF, "");
     if (TextUtils.isEmpty(extraHref)) {
@@ -315,6 +347,10 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     lastOpenTime = System.currentTimeMillis();
     DcHelper.getEventCenter(this.getApplicationContext()).removeObservers(this);
     leaveRealtimeChannel();
+    if (webRtcBlockerScriptHandler != null) {
+      webRtcBlockerScriptHandler.remove();
+      webRtcBlockerScriptHandler = null;
+    }
     tts.shutdown();
     super.onDestroy();
   }
@@ -421,11 +457,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       } else if (path.equalsIgnoreCase("/webxdc_bootstrap324567869.html")) {
         InputStream targetStream = getResources().openRawResource(R.raw.webxdc_wrapper);
         res = new WebResourceResponse("text/html", "UTF-8", targetStream);
-      } else if (path.equalsIgnoreCase(
-          "/sandboxed_iframe_rtcpeerconnection_check_5965668501706.html")) {
-        InputStream targetStream =
-            getResources().openRawResource(R.raw.sandboxed_iframe_rtcpeerconnection_check);
-        res = new WebResourceResponse("text/html", "UTF-8", targetStream);
       } else {
         byte[] blob = this.dcAppMsg.getWebxdcBlob(path);
         if (blob == null) {
@@ -474,9 +505,23 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
               + "media-src 'self' data: blob: ;"
               + "webrtc 'block' ; ");
       headers.put("X-DNS-Prefetch-Control", "off");
+      headers.put("Permissions-Policy", "camera=(), microphone=(), display-capture=()");
       res.setResponseHeaders(headers);
     }
     return res;
+  }
+
+  private void installWebRtcBlockerScript() {
+    if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+      Log.w(TAG, "Document start script not supported, cannot hard-block WebRTC.");
+      return;
+    }
+    if (webRtcBlockerScriptHandler != null) {
+      return;
+    }
+    webRtcBlockerScriptHandler =
+        WebViewCompat.addDocumentStartJavaScript(
+            webView, WEBRTC_BLOCKER_SCRIPT, Collections.singleton("*"));
   }
 
   private void callJavaScriptFunction(String func) {
