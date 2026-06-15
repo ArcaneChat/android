@@ -302,7 +302,10 @@ public class ApplicationContext extends MultiDexApplication {
               Log.i(
                   "DeltaChat",
                   "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
-              getDcAccounts().maybeNetwork();
+              // onBlockedStatusChanged is only available on API 29+
+              if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                getDcAccounts().maybeNetwork();
+              }
             }
 
             @Override
@@ -310,8 +313,13 @@ public class ApplicationContext extends MultiDexApplication {
                 @NonNull android.net.Network network, boolean blocked) {
               Log.i(
                   "DeltaChat",
-                  "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged() #"
+                  "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged("
+                      + blocked
+                      + ") #"
                       + debugOnBlockedStatusChangedCount++);
+              if (!blocked) {
+                getDcAccounts().maybeNetwork();
+              }
             }
 
             @Override

@@ -3,6 +3,11 @@
 ## Unreleased
 
 * Use message style notifications for longer message previews
+* Remove notification after audio playback ends
+* Fix: do not allow blocked contacts to use our invite links
+* Fix sending mini-app that was used/prepared before sending
+* Some more small fixes and updated translations
+* Update to core 2.53.0
 
 ## v2.52.0
 2026-06
@@ -12,7 +17,6 @@
 * Fix: Audio files in draft showing total time from wrong file
 * Fix: Update the channel title after joining if the QR code had an outdated title
 * Voice recording will be automatically saved as draft when interrupted
-* Remove notification after audio playback ends
 * Update to core 2.52.0
 
 ## v2.51.0
