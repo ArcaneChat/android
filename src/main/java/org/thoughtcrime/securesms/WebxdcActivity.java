@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import org.json.JSONObject;
-import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.util.IntentUtils;
