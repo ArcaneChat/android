@@ -185,3 +185,29 @@ window.webxdc = (() => {
     },
   };
 })();
+
+// Audio/video media session integration: notify Android when media plays/pauses/stops.
+(function() {
+  function setupMediaListeners(doc) {
+    var elements = doc.querySelectorAll('audio, video');
+    for (var i = 0; i < elements.length; i++) {
+      (function(el) {
+        if (el._arcaneMediaListened) return;
+        el._arcaneMediaListened = true;
+        el.addEventListener('play', function() {
+          if (window.InternalJSApi) InternalJSApi.notifyAudioStarted(document.title || '');
+        });
+        el.addEventListener('pause', function() {
+          if (window.InternalJSApi) InternalJSApi.notifyAudioPaused();
+        });
+        el.addEventListener('ended', function() {
+          if (window.InternalJSApi) InternalJSApi.notifyAudioStopped();
+        });
+      })(elements[i]);
+    }
+  }
+  // Poll periodically so dynamically created audio/video elements are also detected.
+  setInterval(function() {
+    try { setupMediaListeners(document); } catch(e) {}
+  }, 2000);
+})();

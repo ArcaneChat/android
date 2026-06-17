@@ -1,8 +1,11 @@
 package org.thoughtcrime.securesms;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -26,12 +29,18 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.core.app.TaskStackBuilder;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.media3.session.MediaController;
+import androidx.media3.session.SessionCommand;
+import androidx.media3.session.SessionToken;
+import com.google.common.util.concurrent.ListenableFuture;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import chat.delta.rpc.types.WebxdcMessageInfo;
@@ -53,6 +62,7 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
+import org.thoughtcrime.securesms.service.WebxdcMediaSessionService;
 import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.JsonUtils;
 import org.thoughtcrime.securesms.util.MediaUtil;
@@ -83,6 +93,12 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private boolean hideActionBar = false;
 
   private TextToSpeech tts;
+
+  private boolean isAudioPlaying = false;
+  private String currentAudioTitle = "";
+  private @Nullable MediaController webxdcMediaController;
+  private @Nullable ListenableFuture<MediaController> webxdcMediaControllerFuture;
+  private @Nullable BroadcastReceiver notificationControlReceiver;
 
   public static void openMaps(Context context, int chatId) {
     openMaps(context, chatId, "");
@@ -286,6 +302,8 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
     webView.loadUrl(this.baseURL + "/webxdc_bootstrap324567869.html?i=1&href=" + encodedHref);
 
+    initializeWebxdcMediaController();
+
     Util.runOnAnyBackgroundThread(
         () -> {
           final DcChat chat = dcContext.getChat(dcAppMsg.getChatId());
@@ -310,11 +328,71 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   }
 
   @Override
+  protected boolean pauseWebViewOnPause() {
+    // Keep the WebView JS timers/audio running in the background when audio is playing,
+    // mirroring what browsers do when a tab has media playing.
+    return !isAudioPlaying;
+  }
+
+  private void initializeWebxdcMediaController() {
+    SessionToken sessionToken =
+        new SessionToken(this, new ComponentName(this, WebxdcMediaSessionService.class));
+    webxdcMediaControllerFuture =
+        new MediaController.Builder(this, sessionToken).buildAsync();
+    webxdcMediaControllerFuture.addListener(
+        () -> {
+          try {
+            webxdcMediaController = webxdcMediaControllerFuture.get();
+          } catch (Exception e) {
+            Log.e(TAG, "Error connecting to WebxdcMediaSessionService", e);
+          }
+        },
+        ContextCompat.getMainExecutor(this));
+
+    // Register receiver for play/pause commands from the system notification.
+    notificationControlReceiver =
+        new BroadcastReceiver() {
+          @Override
+          public void onReceive(Context context, Intent intent) {
+            if (WebxdcMediaSessionService.ACTION_NOTIFICATION_PAUSE.equals(intent.getAction())) {
+              webView.evaluateJavascript(
+                  "document.querySelectorAll('audio,video').forEach(function(el){el.pause();});",
+                  null);
+            } else if (WebxdcMediaSessionService.ACTION_NOTIFICATION_RESUME.equals(
+                intent.getAction())) {
+              webView.evaluateJavascript(
+                  "document.querySelectorAll('audio,video').forEach(function(el){el.play();});",
+                  null);
+            }
+          }
+        };
+    IntentFilter filter = new IntentFilter();
+    filter.addAction(WebxdcMediaSessionService.ACTION_NOTIFICATION_PAUSE);
+    filter.addAction(WebxdcMediaSessionService.ACTION_NOTIFICATION_RESUME);
+    ContextCompat.registerReceiver(
+        this, notificationControlReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED);
+  }
+
+  @Override
   protected void onDestroy() {
     lastOpenTime = System.currentTimeMillis();
     DcHelper.getEventCenter(this.getApplicationContext()).removeObservers(this);
     leaveRealtimeChannel();
     tts.shutdown();
+    if (isAudioPlaying && webxdcMediaController != null) {
+      webxdcMediaController.sendCustomCommand(
+          new SessionCommand(WebxdcMediaSessionService.COMMAND_AUDIO_STOPPED, new Bundle()),
+          Bundle.EMPTY);
+    }
+    if (notificationControlReceiver != null) {
+      unregisterReceiver(notificationControlReceiver);
+      notificationControlReceiver = null;
+    }
+    if (webxdcMediaControllerFuture != null) {
+      MediaController.releaseFuture(webxdcMediaControllerFuture);
+      webxdcMediaControllerFuture = null;
+      webxdcMediaController = null;
+    }
     super.onDestroy();
   }
 
@@ -785,6 +863,80 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     public void ttsSpeak(String text, String lang) {
       if (lang != null && !lang.isEmpty()) tts.setLanguage(Locale.forLanguageTag(lang));
       tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
+    }
+
+    /**
+     * @noinspection unused
+     */
+    @JavascriptInterface
+    public void notifyAudioStarted(String title) {
+      Util.runOnMain(
+          () -> {
+            if (webxdcMediaController == null) return;
+            isAudioPlaying = true;
+            currentAudioTitle = title;
+            Bundle args = new Bundle();
+            args.putString("title", title);
+            args.putString(
+                "artist",
+                WebxdcActivity.this.dcAppMsg.getWebxdcInfo().optString("name", ""));
+            args.putInt("msg_id", WebxdcActivity.this.dcAppMsg.getId());
+            args.putInt("account_id", WebxdcActivity.this.dcContext.getAccountId());
+            webxdcMediaController.sendCustomCommand(
+                new SessionCommand(WebxdcMediaSessionService.COMMAND_AUDIO_STARTED, new Bundle()),
+                args);
+          });
+    }
+
+    /**
+     * @noinspection unused
+     */
+    @JavascriptInterface
+    public void notifyAudioStopped() {
+      Util.runOnMain(
+          () -> {
+            if (webxdcMediaController == null) return;
+            isAudioPlaying = false;
+            currentAudioTitle = "";
+            webxdcMediaController.sendCustomCommand(
+                new SessionCommand(WebxdcMediaSessionService.COMMAND_AUDIO_STOPPED, new Bundle()),
+                Bundle.EMPTY);
+          });
+    }
+
+    /**
+     * @noinspection unused
+     */
+    @JavascriptInterface
+    public void notifyAudioPaused() {
+      Util.runOnMain(
+          () -> {
+            if (webxdcMediaController == null) return;
+            isAudioPlaying = false;
+            webxdcMediaController.sendCustomCommand(
+                new SessionCommand(WebxdcMediaSessionService.COMMAND_AUDIO_PAUSED, new Bundle()),
+                Bundle.EMPTY);
+          });
+    }
+
+    /**
+     * @noinspection unused
+     */
+    @JavascriptInterface
+    public void notifyAudioResumed() {
+      Util.runOnMain(
+          () -> {
+            if (webxdcMediaController == null) return;
+            isAudioPlaying = true;
+            Bundle args = new Bundle();
+            args.putString("title", currentAudioTitle);
+            args.putString(
+                "artist",
+                WebxdcActivity.this.dcAppMsg.getWebxdcInfo().optString("name", ""));
+            webxdcMediaController.sendCustomCommand(
+                new SessionCommand(WebxdcMediaSessionService.COMMAND_AUDIO_RESUMED, new Bundle()),
+                args);
+          });
     }
   }
 }

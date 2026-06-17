@@ -166,10 +166,21 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
+  /**
+   * Returns true if the WebView should be paused when the activity is paused.
+   * Subclasses can override to keep the WebView running in the background (e.g., during audio
+   * playback).
+   */
+  protected boolean pauseWebViewOnPause() {
+    return true;
+  }
+
   @Override
   protected void onPause() {
     super.onPause();
-    webView.onPause();
+    if (pauseWebViewOnPause()) {
+      webView.onPause();
+    }
   }
 
   @Override
