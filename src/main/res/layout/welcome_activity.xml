@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_welcome_gradient"
     tools:context=".WelcomeActivity">
-
-    <include layout="@layout/status_bar_background" />
 
     <LinearLayout
         android:id="@+id/content_container"
@@ -16,7 +15,7 @@
         android:gravity="center_horizontal">
 
         <androidx.legacy.widget.Space
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
 
@@ -24,23 +23,25 @@
             android:id="@+id/welcome_icon"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
-            android:layout_weight="10"
-            android:gravity="bottom"
-            android:src="@drawable/intro1"
-            android:paddingLeft="32dp"
-            android:paddingRight="32dp"
-            tools:ignore="contentDescription" />
-
-        <TextView
-            android:id="@+id/welcome_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_weight="4"
             android:gravity="center"
-            android:padding="8dp"
+            android:src="@drawable/app_logo"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
+            android:scaleType="fitCenter"
+            android:importantForAccessibility="no" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:src="@drawable/app_name_logo"
+            android:paddingLeft="35dp"
+            android:paddingRight="35dp"
+            android:scaleType="fitCenter"
             android:layout_marginBottom="20dp"
-            android:text="@string/welcome_chat_over_email"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:importantForAccessibility="no" />
 
         <LinearLayout
             android:orientation="vertical"
@@ -50,7 +51,7 @@
             android:gravity="center_horizontal">
 
             <Button
-                style="@style/ButtonPrimary"
+                style="@style/WhiteButtonPrimary"
                 android:id="@+id/signup_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -60,7 +61,7 @@
                 android:text="@string/onboarding_create_instant_account" />
 
             <Button
-                style="@style/ButtonSecondary"
+                style="@style/WhiteButtonSecondary"
                 android:id="@+id/add_as_second_device_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +71,7 @@
                 android:text="@string/multidevice_receiver_title" />
 
             <Button
-                style="@style/ButtonSecondary"
+                style="@style/WhiteButtonSecondary"
                 android:id="@+id/backup_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +83,7 @@
         </LinearLayout>
 
         <androidx.legacy.widget.Space
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
 
