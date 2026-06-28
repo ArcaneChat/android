@@ -70,7 +70,6 @@ import org.thoughtcrime.securesms.util.MediaUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.guava.Optional;
-import org.thoughtcrime.securesms.util.views.Stub;
 
 public class AttachmentManager {
 

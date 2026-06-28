@@ -1179,7 +1179,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
         beforeSearchAttachmentEditorHidden = isAttachmentHidden;
       } else {
         inputPanel.setVisibility(inputPanelVisibility);
-        //attachmentManager.setHidden(isAttachmentHidden);
+        // attachmentManager.setHidden(isAttachmentHidden);
       }
     }
   }
@@ -1917,7 +1917,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       beforeSearchMsgRequestVisibility = messageRequestBottomView.getVisibility();
       beforeSearchInputPanelVisibility = inputPanel.getVisibility();
 
-      //attachmentManager.setHidden(true);
+      // attachmentManager.setHidden(true);
       messageRequestBottomView.setVisibility(View.GONE);
       inputPanel.setVisibility(View.GONE);
     }
@@ -1928,7 +1928,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void searchCollapse() {
     synchronized (searchLock) {
       searchMenu = null;
-      //attachmentManager.setHidden(beforeSearchAttachmentEditorHidden);
+      // attachmentManager.setHidden(beforeSearchAttachmentEditorHidden);
       messageRequestBottomView.setVisibility(beforeSearchMsgRequestVisibility);
       inputPanel.setVisibility(beforeSearchInputPanelVisibility);
     }

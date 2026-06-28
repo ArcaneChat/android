@@ -18,8 +18,7 @@
     android:clipToPadding="false"
     android:background="@drawable/input_panel_rounded_bg"
     android:elevation="1dp"
-    android:outlineProvider="background"
-    >
+    android:outlineProvider="background">
 
     <org.thoughtcrime.securesms.components.QuoteView
         android:id="@+id/quote_view"
@@ -38,8 +37,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/quote_view"
-         />
+        app:layout_constraintTop_toBottomOf="@id/quote_view" />
 
     <EditText
         android:id="@+id/subject_text"
