@@ -1053,7 +1053,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     // apply padding top to avoid drawing behind top bar
     ViewUtil.applyWindowInsets(findViewById(R.id.fragment_content), false, true, false, false);
     // apply padding to root to avoid collision with system bars
-    ViewUtil.applyWindowInsets(findViewById(R.id.root_layout), true, false, true, true);
+    ViewUtil.applyWindowInsets(findViewById(R.id.root_layout), true, false, true, false);
+    ViewUtil.applyWindowInsets(emojiPickerContainer, false, false, false, true);
 
     container.addOnKeyboardShownListener(this);
     container.addOnKeyboardHiddenListener(backgroundView);
@@ -1178,7 +1179,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
         beforeSearchAttachmentEditorHidden = isAttachmentHidden;
       } else {
         inputPanel.setVisibility(inputPanelVisibility);
-        attachmentManager.setHidden(isAttachmentHidden);
+        // attachmentManager.setHidden(isAttachmentHidden);
       }
     }
   }
@@ -1916,7 +1917,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       beforeSearchMsgRequestVisibility = messageRequestBottomView.getVisibility();
       beforeSearchInputPanelVisibility = inputPanel.getVisibility();
 
-      attachmentManager.setHidden(true);
+      // attachmentManager.setHidden(true);
       messageRequestBottomView.setVisibility(View.GONE);
       inputPanel.setVisibility(View.GONE);
     }
@@ -1927,7 +1928,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void searchCollapse() {
     synchronized (searchLock) {
       searchMenu = null;
-      attachmentManager.setHidden(beforeSearchAttachmentEditorHidden);
+      // attachmentManager.setHidden(beforeSearchAttachmentEditorHidden);
       messageRequestBottomView.setVisibility(beforeSearchMsgRequestVisibility);
       inputPanel.setVisibility(beforeSearchInputPanelVisibility);
     }

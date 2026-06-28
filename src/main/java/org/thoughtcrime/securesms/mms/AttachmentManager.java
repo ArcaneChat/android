@@ -70,14 +70,13 @@ import org.thoughtcrime.securesms.util.MediaUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.guava.Optional;
-import org.thoughtcrime.securesms.util.views.Stub;
 
 public class AttachmentManager {
 
   private static final String TAG = "AttachmentManager";
 
   private final @NonNull Context context;
-  private final @NonNull Stub<View> attachmentViewStub;
+  private final @NonNull View attachmentView;
   private final @NonNull AttachmentListener attachmentListener;
 
   private RemovableEditableMediaView removableMediaView;
@@ -98,20 +97,16 @@ public class AttachmentManager {
   public AttachmentManager(@NonNull Activity activity, @NonNull AttachmentListener listener) {
     this.context = activity;
     this.attachmentListener = listener;
-    this.attachmentViewStub = ViewUtil.findStubById(activity, R.id.attachment_editor_stub);
-  }
 
-  private void inflateStub() {
-    if (!attachmentViewStub.resolved()) {
-      View root = attachmentViewStub.get();
-
-      this.thumbnail = ViewUtil.findById(root, R.id.attachment_thumbnail);
-      this.audioView = ViewUtil.findById(root, R.id.attachment_audio);
-      this.documentView = ViewUtil.findById(root, R.id.attachment_document);
-      this.webxdcView = ViewUtil.findById(root, R.id.attachment_webxdc);
-      this.vcardView = ViewUtil.findById(root, R.id.attachment_vcard);
-      // this.mapView            = ViewUtil.findById(root, R.id.attachment_location);
-      this.removableMediaView = ViewUtil.findById(root, R.id.removable_media_view);
+    this.attachmentView = ViewUtil.findById(activity, R.id.attachment_editor);
+    if (this.attachmentView != null) {
+      this.thumbnail = ViewUtil.findById(attachmentView, R.id.attachment_thumbnail);
+      this.audioView = ViewUtil.findById(attachmentView, R.id.attachment_audio);
+      this.documentView = ViewUtil.findById(attachmentView, R.id.attachment_document);
+      this.webxdcView = ViewUtil.findById(attachmentView, R.id.attachment_webxdc);
+      this.vcardView = ViewUtil.findById(attachmentView, R.id.attachment_vcard);
+      // this.mapView = ViewUtil.findById(attachmentView, R.id.attachment_location);
+      this.removableMediaView = ViewUtil.findById(attachmentView, R.id.removable_media_view);
 
       removableMediaView.addRemoveClickListener(new RemoveButtonListener());
       removableMediaView.setEditClickListener(new EditButtonListener());
@@ -120,10 +115,10 @@ public class AttachmentManager {
   }
 
   public void clear(@NonNull GlideRequests glideRequests, boolean animate) {
-    if (attachmentViewStub.resolved()) {
+    if (this.attachmentView != null) {
 
       if (animate) {
-        ViewUtil.fadeOut(attachmentViewStub.get(), 200)
+        ViewUtil.fadeOut(attachmentView, 200)
             .addListener(
                 new ListenableFuture.Listener<Boolean>() {
                   @Override
@@ -229,7 +224,6 @@ public class AttachmentManager {
       final int height,
       final int chatId,
       AudioPlaybackViewModel playbackViewModel) {
-    inflateStub();
 
     final SettableFuture<Boolean> result = new SettableFuture<>();
 
@@ -803,9 +797,9 @@ public class AttachmentManager {
     } else {
       vis = View.GONE;
     }
-    if (vis == View.GONE && !attachmentViewStub.resolved()) {
+    if (attachmentView == null) {
       return;
     }
-    attachmentViewStub.get().setVisibility(vis);
+    attachmentView.setVisibility(vis);
   }
 }

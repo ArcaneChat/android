@@ -5,7 +5,6 @@
     android:id="@+id/attachment_editor"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/input_panel_bg_color"
     android:gravity="center_horizontal"
     android:visibility="gone">
 
@@ -29,9 +28,9 @@
             android:contentDescription="@string/menu_add_attachment"
             app:thumbnail_radius="@dimen/message_corner_radius"
             app:minWidth="100dp"
-            app:maxWidth="300dp"
+            app:maxWidth="200dp"
             app:minHeight="100dp"
-            app:maxHeight="300dp" />
+            app:maxHeight="200dp" />
 
         <org.thoughtcrime.securesms.components.audioplay.AudioView
             android:id="@+id/attachment_audio"

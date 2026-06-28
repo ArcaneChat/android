@@ -36,20 +36,19 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <ViewStub
-                android:id="@+id/attachment_editor_stub"
-                android:inflatedId="@+id/attachment_editor"
-                android:layout="@layout/conversation_activity_attachment_editor_stub"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
             <org.thoughtcrime.securesms.messagerequests.MessageRequestsBottomView
                 android:id="@+id/conversation_activity_message_request_bottom_bar"
-                android:background="?android:attr/windowBackground"
+                android:background="@drawable/input_panel_rounded_bg"
+                android:elevation="1dp"
+                android:outlineProvider="background"
                 android:visibility="gone"
                 android:clickable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginStart="6dp"
+                android:layout_marginEnd="6dp"
                 android:paddingLeft="16dp"
                 android:paddingStart="16dp"
                 android:paddingRight="16dp"
