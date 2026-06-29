@@ -69,6 +69,11 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
+  protected boolean allowInLockedMode() {
+    return true;
+  }
+
+  @Override
   protected void onCreate(Bundle state, boolean ready) {
     setContentView(R.layout.web_view_activity);
     ActionBar actionBar = getSupportActionBar();
