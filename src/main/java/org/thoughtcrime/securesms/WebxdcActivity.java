@@ -221,11 +221,11 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
     DcEventCenter eventCenter =
         DcHelper.getEventCenter(WebxdcActivity.this.getApplicationContext());
-    eventCenter.addObserver(DcContext.DC_EVENT_WEBXDC_STATUS_UPDATE, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_MSGS_CHANGED, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_MSG_DELETED, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_CHAT_DELETED, this);
-    eventCenter.addObserver(DcContext.DC_EVENT_WEBXDC_REALTIME_DATA, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_WEBXDC_STATUS_UPDATE, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_MSGS_CHANGED, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_MSG_DELETED, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_CHAT_DELETED, this);
+    eventCenter.addMultiAccountObserver(DcContext.DC_EVENT_WEBXDC_REALTIME_DATA, this);
 
     // `msg_id` in the subdomain makes sure, different apps using same files do not share the same
     // cache entry
