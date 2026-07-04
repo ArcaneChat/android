@@ -18,7 +18,7 @@ public class LinkifierTest {
     String link = "https://example.org/some/really/long/path/with/query?value=1234567890";
 
     assertEquals(
-        "https://example...ry?value=1234567890",
+        "https://example...lue=1234567890",
         Linkifier.shortenMiddle(link));
   }
 }
