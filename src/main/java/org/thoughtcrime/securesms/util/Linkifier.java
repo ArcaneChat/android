@@ -9,6 +9,8 @@ import java.util.regex.Pattern;
 
 /* Utility for text linkify-ing */
 public class Linkifier {
+  static final int MAX_DISPLAY_LINK_LENGTH = 32;
+  private static final String MIDDLE_ELLIPSIS = "...";
   private static final Pattern CMD_PATTERN =
       Pattern.compile("(?<=^|\\s)/[a-zA-Z][a-zA-Z@\\d_/.-]{0,254}");
   private static final Pattern CUSTOM_PATTERN =
@@ -48,6 +50,47 @@ public class Linkifier {
     }
   }
 
+  private static void shortenLongLinks(Spannable messageBody) {
+    LongClickCopySpan[] urlSpans =
+        messageBody.getSpans(0, messageBody.length(), LongClickCopySpan.class);
+
+    for (int i = urlSpans.length - 1; i >= 0; i--) {
+      LongClickCopySpan urlSpan = urlSpans[i];
+      int start = messageBody.getSpanStart(urlSpan);
+      int end = messageBody.getSpanEnd(urlSpan);
+
+      if (start < 0 || end <= start) {
+        continue;
+      }
+
+      String linkText = messageBody.subSequence(start, end).toString();
+      String shortenedLinkText = shortenMiddle(linkText);
+
+      if (linkText.equals(shortenedLinkText)) {
+        continue;
+      }
+
+      messageBody.removeSpan(urlSpan);
+      messageBody.replace(start, end, shortenedLinkText);
+      messageBody.setSpan(
+          urlSpan, start, start + shortenedLinkText.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    }
+  }
+
+  static String shortenMiddle(String text) {
+    if (text.length() <= MAX_DISPLAY_LINK_LENGTH) {
+      return text;
+    }
+
+    int visibleCharacters = MAX_DISPLAY_LINK_LENGTH - MIDDLE_ELLIPSIS.length();
+    int prefixLength = (visibleCharacters + 1) / 2;
+    int suffixLength = visibleCharacters - prefixLength;
+
+    return text.substring(0, prefixLength)
+        + MIDDLE_ELLIPSIS
+        + text.substring(text.length() - suffixLength);
+  }
+
   public static Spannable linkify(Spannable messageBody) {
     // linkify commands such as `/echo` -
     // do this first to avoid `/xkcd_123456` to be treated partly as a phone number
@@ -83,6 +126,8 @@ public class Linkifier {
     if (Linkify.addLinks(messageBody, flags)) {
       replaceURLSpan(messageBody);
     }
+
+    shortenLongLinks(messageBody);
 
     return messageBody;
   }
