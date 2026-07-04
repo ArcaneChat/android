@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcMsg;
 import com.google.common.base.Charsets;
+import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -71,59 +73,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private static final String EXTRA_HREF = "href";
   private static final int REQUEST_CODE_FILE_PICKER = 51426;
   private static long lastOpenTime = 0;
-  private static final String WEBRTC_BLOCKER_SCRIPT =
-      "(function(){"
-          + "const message='WebRTC is disabled in webxdc';"
-          + "const reject=function(){"
-          + "if(typeof DOMException==='function'){return Promise.reject(new DOMException(message,'NotAllowedError'));}"
-          + "return Promise.reject(new Error(message));"
-          + "};"
-          + "const define=function(scope,name,value){"
-          + "if(!scope){return;}"
-          + "try{Object.defineProperty(scope,name,{configurable:false,writable:false,value:value});}catch(e){}"
-          + "};"
-          + "const blockOnScope=function(scope){"
-          + "if(!scope){return;}"
-          + "['RTCPeerConnection','webkitRTCPeerConnection','RTCDataChannel','RTCRtpSender',"
-          + "'RTCRtpReceiver','RTCSessionDescription','RTCIceCandidate'].forEach(function(name){"
-          + "const blocked=function(){throw new TypeError(message+': '+name);};"
-          + "define(scope,name,blocked);"
-          + "});"
-          + "try{"
-          + "if(scope.navigator&&scope.navigator.mediaDevices){"
-          + "define(scope.navigator.mediaDevices,'getUserMedia',function(){return reject();});"
-          + "define(scope.navigator.mediaDevices,'getDisplayMedia',function(){return reject();});"
-          + "}"
-          + "}catch(e){}"
-          + "};"
-          + "blockOnScope(globalThis);"
-          + "blockOnScope(window);"
-          + "blockOnScope(self);"
-          // Override HTMLIFrameElement.prototype.contentWindow so that RTC is
-          // blocked on the iframe's window the moment the parent accesses it.
-          // This is necessary because addDocumentStartJavaScript runs
-          // asynchronously after the iframe document is created, so there is a
-          // window of time during which the native RTCPeerConnection constructor
-          // is reachable via a freshly-constructed about:blank iframe's
-          // contentWindow.
-          + "try{"
-          + "if(typeof HTMLIFrameElement!=='undefined'){"
-          + "const proto=HTMLIFrameElement.prototype;"
-          + "const cwDesc=Object.getOwnPropertyDescriptor(proto,'contentWindow');"
-          + "if(cwDesc&&cwDesc.get){"
-          + "const origGetter=cwDesc.get;"
-          + "Object.defineProperty(proto,'contentWindow',{"
-          + "configurable:true,"
-          + "get:function(){"
-          + "const win=origGetter.call(this);"
-          + "if(win&&win!==window){try{blockOnScope(win);}catch(e){}}"
-          + "return win;"
-          + "}"
-          + "});"
-          + "}"
-          + "}"
-          + "}catch(e){}"
-          + "})();";
 
   private ValueCallback<Uri[]> filePathCallback;
   private ScriptHandler webRtcBlockerScriptHandler;
@@ -551,13 +500,25 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       return true;
     }
     try {
+      String webRtcBlockerScript = loadRawTextResource(R.raw.webxdc_webrtc_blocker);
       webRtcBlockerScriptHandler =
           WebViewCompat.addDocumentStartJavaScript(
-              webView, WEBRTC_BLOCKER_SCRIPT, Collections.singleton("*"));
+              webView, webRtcBlockerScript, Collections.singleton("*"));
       return true;
+    } catch (Resources.NotFoundException | IOException e) {
+      Log.e(TAG, "Failed to load WebRTC blocker script resource.", e);
+      return false;
     } catch (RuntimeException e) {
       Log.e(TAG, "Failed to add WebRTC blocker document-start script.", e);
       return false;
+    }
+  }
+
+  private String loadRawTextResource(int resourceId) throws IOException {
+    try (InputStream inputStream = getResources().openRawResource(resourceId);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      Util.copy(inputStream, outputStream);
+      return new String(outputStream.toByteArray(), Charsets.UTF_8);
     }
   }
 
