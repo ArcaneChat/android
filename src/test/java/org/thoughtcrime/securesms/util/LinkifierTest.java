@@ -2,6 +2,7 @@ package org.thoughtcrime.securesms.util;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import org.junit.Test;
 
 public class LinkifierTest {
@@ -48,12 +49,8 @@ public class LinkifierTest {
   }
 
   private static String repeat(char value, int count) {
-    StringBuilder builder = new StringBuilder(count);
-
-    for (int i = 0; i < count; i++) {
-      builder.append(value);
-    }
-
-    return builder.toString();
+    char[] chars = new char[count];
+    Arrays.fill(chars, value);
+    return new String(chars);
   }
 }

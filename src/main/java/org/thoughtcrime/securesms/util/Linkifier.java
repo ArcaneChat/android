@@ -56,6 +56,7 @@ public class Linkifier {
     LongClickCopySpan[] urlSpans =
         messageBody.getSpans(0, messageBody.length(), LongClickCopySpan.class);
 
+    // Process spans from end to start so text replacement does not invalidate earlier positions.
     Arrays.sort(urlSpans, Comparator.comparingInt(messageBody::getSpanStart).reversed());
 
     for (LongClickCopySpan urlSpan : urlSpans) {
