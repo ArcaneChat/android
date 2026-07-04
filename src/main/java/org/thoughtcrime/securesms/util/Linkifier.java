@@ -5,6 +5,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.regex.Pattern;
 
 /* Utility for text linkify-ing */
@@ -54,8 +56,9 @@ public class Linkifier {
     LongClickCopySpan[] urlSpans =
         messageBody.getSpans(0, messageBody.length(), LongClickCopySpan.class);
 
-    for (int i = urlSpans.length - 1; i >= 0; i--) {
-      LongClickCopySpan urlSpan = urlSpans[i];
+    Arrays.sort(urlSpans, Comparator.comparingInt(messageBody::getSpanStart).reversed());
+
+    for (LongClickCopySpan urlSpan : urlSpans) {
       int start = messageBody.getSpanStart(urlSpan);
       int end = messageBody.getSpanEnd(urlSpan);
 

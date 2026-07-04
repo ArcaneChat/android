@@ -16,9 +16,44 @@ public class LinkifierTest {
   @Test
   public void shortenMiddle_shortensLongLinksInTheMiddle() {
     String link = "https://example.org/some/really/long/path/with/query?value=1234567890";
+    String shortened = Linkifier.shortenMiddle(link);
 
     assertEquals(
         "https://example...lue=1234567890",
-        Linkifier.shortenMiddle(link));
+        shortened);
+    assertEquals(Linkifier.MAX_DISPLAY_LINK_LENGTH, shortened.length());
+  }
+
+  @Test
+  public void shortenMiddle_keepsLinksAtTheLimit() {
+    String link = repeat('a', Linkifier.MAX_DISPLAY_LINK_LENGTH);
+
+    assertEquals(link, Linkifier.shortenMiddle(link));
+  }
+
+  @Test
+  public void shortenMiddle_shortensLinksJustOverTheLimit() {
+    String link = "123456789012345678901234567890123";
+
+    assertEquals("123456789012345...01234567890123", Linkifier.shortenMiddle(link));
+  }
+
+  @Test
+  public void shortenMiddle_handlesVeryLongLinks() {
+    String link = repeat('b', 256);
+    String shortened = Linkifier.shortenMiddle(link);
+
+    assertEquals(Linkifier.MAX_DISPLAY_LINK_LENGTH, shortened.length());
+    assertEquals(repeat('b', 15) + "..." + repeat('b', 14), shortened);
+  }
+
+  private static String repeat(char value, int count) {
+    StringBuilder builder = new StringBuilder(count);
+
+    for (int i = 0; i < count; i++) {
+      builder.append(value);
+    }
+
+    return builder.toString();
   }
 }
