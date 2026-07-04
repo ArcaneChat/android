@@ -82,18 +82,47 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
           + "if(!scope){return;}"
           + "try{Object.defineProperty(scope,name,{configurable:false,writable:false,value:value});}catch(e){}"
           + "};"
-          + "const blockCtor=function(name){"
-          + "const blocked=function(){throw new TypeError(message+': '+name);};"
-          + "define(globalThis,name,blocked);"
-          + "define(window,name,blocked);"
-          + "define(self,name,blocked);"
-          + "};"
+          + "const blockOnScope=function(scope){"
+          + "if(!scope){return;}"
           + "['RTCPeerConnection','webkitRTCPeerConnection','RTCDataChannel','RTCRtpSender',"
-          + "'RTCRtpReceiver','RTCSessionDescription','RTCIceCandidate'].forEach(blockCtor);"
-          + "if(navigator&&navigator.mediaDevices){"
-          + "define(navigator.mediaDevices,'getUserMedia',function(){return reject();});"
-          + "define(navigator.mediaDevices,'getDisplayMedia',function(){return reject();});"
+          + "'RTCRtpReceiver','RTCSessionDescription','RTCIceCandidate'].forEach(function(name){"
+          + "const blocked=function(){throw new TypeError(message+': '+name);};"
+          + "define(scope,name,blocked);"
+          + "});"
+          + "try{"
+          + "if(scope.navigator&&scope.navigator.mediaDevices){"
+          + "define(scope.navigator.mediaDevices,'getUserMedia',function(){return reject();});"
+          + "define(scope.navigator.mediaDevices,'getDisplayMedia',function(){return reject();});"
           + "}"
+          + "}catch(e){}"
+          + "};"
+          + "blockOnScope(globalThis);"
+          + "blockOnScope(window);"
+          + "blockOnScope(self);"
+          // Override HTMLIFrameElement.prototype.contentWindow so that RTC is
+          // blocked on the iframe's window the moment the parent accesses it.
+          // This is necessary because addDocumentStartJavaScript runs
+          // asynchronously after the iframe document is created, so there is a
+          // window of time during which the native RTCPeerConnection constructor
+          // is reachable via a freshly-constructed about:blank iframe's
+          // contentWindow.
+          + "try{"
+          + "if(typeof HTMLIFrameElement!=='undefined'){"
+          + "const proto=HTMLIFrameElement.prototype;"
+          + "const cwDesc=Object.getOwnPropertyDescriptor(proto,'contentWindow');"
+          + "if(cwDesc&&cwDesc.get){"
+          + "const origGetter=cwDesc.get;"
+          + "Object.defineProperty(proto,'contentWindow',{"
+          + "configurable:true,"
+          + "get:function(){"
+          + "const win=origGetter.call(this);"
+          + "if(win&&win!==window){try{blockOnScope(win);}catch(e){}}"
+          + "return win;"
+          + "}"
+          + "});"
+          + "}"
+          + "}"
+          + "}catch(e){}"
           + "})();";
 
   private ValueCallback<Uri[]> filePathCallback;
