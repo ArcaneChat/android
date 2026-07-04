@@ -39,7 +39,12 @@
      const params = new URLSearchParams(document.location.search);
      const href = params.get("href");
      if (href) {
-       iframe.src = href;
+       try {
+         const url = new URL(href, document.location.href);
+         if (url.origin === document.location.origin) {
+           iframe.src = url.toString();
+         }
+       } catch (error) {}
      }
     </script>
   </body>
