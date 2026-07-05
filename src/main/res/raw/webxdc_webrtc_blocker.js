@@ -116,7 +116,41 @@
     return scope;
   };
 
+  const blockIframeNode = function (node) {
+    try {
+      node.addEventListener("load", function () {
+        try {
+          blockOnScope(node.contentWindow);
+        } catch (e) {}
+      });
+      blockOnScope(node.contentWindow);
+    } catch (e) {}
+  };
+
+  const observeFrames = function (scope) {
+    if (!scope || !scope.document || !scope.MutationObserver) {
+      return;
+    }
+    try {
+      new scope.MutationObserver(function (mutations) {
+        mutations.forEach(function (mutation) {
+          mutation.addedNodes.forEach(function (node) {
+            if (node.tagName === "IFRAME") {
+              blockIframeNode(node);
+            } else if (node.querySelectorAll) {
+              node.querySelectorAll("iframe").forEach(blockIframeNode);
+            }
+          });
+        });
+      }).observe(scope.document.documentElement || scope.document, {
+        subtree: true,
+        childList: true,
+      });
+    } catch (e) {}
+  };
+
   blockOnScope(globalThis);
   blockOnScope(window);
   blockOnScope(self);
+  observeFrames(window);
 })();
