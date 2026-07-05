@@ -32,6 +32,9 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+import androidx.webkit.ScriptHandler;
+import androidx.webkit.WebViewCompat;
+import androidx.webkit.WebViewFeature;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import chat.delta.rpc.types.WebxdcMessageInfo;
@@ -41,12 +44,14 @@ import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcMsg;
 import com.google.common.base.Charsets;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -68,6 +73,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private static final int REQUEST_CODE_FILE_PICKER = 51426;
   private static long lastOpenTime = 0;
 
+  private ScriptHandler webrtcBlockerScriptHandler;
   private ValueCallback<Uri[]> filePathCallback;
   private DcContext dcContext;
   private int accountId;
@@ -277,6 +283,15 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
+    if (!installWebrtcBlockerScript()) {
+      Toast.makeText(
+              this,
+              "Please update Android System WebView to open this app securely.",
+              Toast.LENGTH_LONG)
+          .show();
+      finish();
+      return;
+    }
 
     String extraHref = b.getString(EXTRA_HREF, "");
     if (TextUtils.isEmpty(extraHref)) {
@@ -486,6 +501,37 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       res.setResponseHeaders(headers);
     }
     return res;
+  }
+
+  private String getWebrtcBlockerScript() throws IOException {
+    try (InputStream inputStream = getResources().openRawResource(R.raw.webxdc_block_webrtc);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+      Util.copy(inputStream, outputStream);
+      return outputStream.toString(Charsets.UTF_8.name());
+    }
+  }
+
+  private boolean installWebrtcBlockerScript() {
+    if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
+      Log.w(TAG, "Document start script not supported, cannot block WebRTC.");
+      return false;
+    }
+    if (webrtcBlockerScriptHandler != null) {
+      return true;
+    }
+
+    try {
+      webrtcBlockerScriptHandler =
+          WebViewCompat.addDocumentStartJavaScript(
+              webView, getWebrtcBlockerScript(), Collections.singleton("*"));
+      return true;
+    } catch (IOException e) {
+      Log.e(TAG, "Error loading webrtc blocker script", e);
+      return false;
+    } catch (RuntimeException e) {
+      Log.e(TAG, "Failed to add WebRTC blocker document-start script.", e);
+      return false;
+    }
   }
 
   private void callJavaScriptFunction(String func) {
