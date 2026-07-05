@@ -473,21 +473,20 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     }
 
     Map<String, String> headers = new HashMap<>();
+    String csp = "webrtc 'block' ; ";
     if (!internetAccess) {
-      headers.put(
-          "Content-Security-Policy",
+      csp =
           "default-src 'self'; "
               + "style-src 'self' 'unsafe-inline' blob: ; "
               + "font-src 'self' data: blob: ; "
               + "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: ; "
               + "connect-src 'self' data: blob: ; "
               + "img-src 'self' data: blob: ; "
-              + "media-src 'self' data: blob: ;"
-              + "webrtc 'block' ; ");
+              + "media-src 'self' data: blob: ; "
+              + csp;
       headers.put("X-DNS-Prefetch-Control", "off");
-    } else {
-      headers.put("Content-Security-Policy", "webrtc 'block' ; ");
     }
+    headers.put("Content-Security-Policy", csp);
     headers.put("Permissions-Policy", "camera=(), microphone=(), display-capture=(), webrtc=()");
     res.setResponseHeaders(headers);
     return res;
