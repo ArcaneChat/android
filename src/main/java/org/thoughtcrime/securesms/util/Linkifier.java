@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 /* Utility for text linkify-ing */
 public class Linkifier {
   static final int MAX_DISPLAY_LINK_LENGTH = 32;
-  private static final String MIDDLE_ELLIPSIS = "...";
+  private static final String ELLIPSIS = "...";
   private static final Pattern CMD_PATTERN =
       Pattern.compile("(?<=^|\\s)/[a-zA-Z][a-zA-Z@\\d_/.-]{0,254}");
   private static final Pattern CUSTOM_PATTERN =
@@ -48,7 +48,7 @@ public class Linkifier {
 
       if (shorten && start >= 0 && end > start) {
         String linkText = messageBody.subSequence(start, end).toString();
-        String shortenedLinkText = shortenMiddle(linkText);
+        String shortenedLinkText = shortenLink(linkText);
 
         if (!linkText.equals(shortenedLinkText)) {
           messageBody.replace(start, end, shortenedLinkText);
@@ -66,18 +66,30 @@ public class Linkifier {
     }
   }
 
-  static String shortenMiddle(String text) {
+  static String shortenLink(String text) {
     if (text.length() <= MAX_DISPLAY_LINK_LENGTH) {
       return text;
     }
 
-    int visibleCharacters = MAX_DISPLAY_LINK_LENGTH - MIDDLE_ELLIPSIS.length();
-    int prefixLength = (visibleCharacters + 1) / 2;
-    int suffixLength = visibleCharacters - prefixLength;
+    // Keep the domain prefix (scheme + "://" + host + "/") and shorten only the path.
+    int schemeEnd = text.indexOf("://");
+    if (schemeEnd >= 0) {
+      int slashAfterAuthority = text.indexOf('/', schemeEnd + 3);
+      if (slashAfterAuthority >= 0) {
+        String domainPart = text.substring(0, slashAfterAuthority + 1);
+        String rest = text.substring(slashAfterAuthority + 1);
+        int available = MAX_DISPLAY_LINK_LENGTH - domainPart.length();
+        int tailLength = available - ELLIPSIS.length();
+        if (tailLength > 0) {
+          return domainPart + ELLIPSIS + rest.substring(rest.length() - tailLength);
+        } else {
+          return domainPart + ELLIPSIS;
+        }
+      }
+    }
 
-    return text.substring(0, prefixLength)
-        + MIDDLE_ELLIPSIS
-        + text.substring(text.length() - suffixLength);
+    // Fallback for links without a "://host/path" structure: truncate at end.
+    return text.substring(0, MAX_DISPLAY_LINK_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
   }
 
   public static Spannable linkify(Spannable messageBody) {
