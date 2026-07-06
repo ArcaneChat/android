@@ -24,6 +24,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Build;
 import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -446,7 +447,7 @@ public class ConversationItem extends BaseConversationItem {
     if (messageRecord.getType() == DcMsg.DC_MSG_CALL || text.isEmpty()) {
       bodyText.setVisibility(View.GONE);
     } else {
-      Spannable spannable = MarkdownUtil.toMarkdown(context, text);
+      SpannableStringBuilder spannable = new SpannableStringBuilder(MarkdownUtil.toMarkdown(context, text));
       if (batchSelected.isEmpty()) {
         Linkifier.linkify(spannable);
       }

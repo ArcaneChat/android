@@ -1,7 +1,7 @@
 package org.thoughtcrime.securesms.util;
 
-import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
@@ -38,7 +38,7 @@ public class Linkifier {
     return brokenPhoneLinkifier == 1;
   }
 
-  private static void replaceURLSpan(Spannable messageBody, boolean shorten) {
+  private static void replaceURLSpan(SpannableStringBuilder messageBody, boolean shorten) {
     URLSpan[] urlSpans = messageBody.getSpans(0, messageBody.length(), URLSpan.class);
     // Iterate in reverse so that text replacements (messageBody.replace) do not shift the
     // positions of spans that haven't been processed yet.
@@ -94,7 +94,7 @@ public class Linkifier {
     return text.substring(0, MAX_DISPLAY_LINK_LENGTH - ELLIPSIS.length()) + ELLIPSIS;
   }
 
-  public static Spannable linkify(Spannable messageBody) {
+  public static SpannableStringBuilder linkify(SpannableStringBuilder messageBody) {
     // linkify commands such as `/echo` -
     // do this first to avoid `/xkcd_123456` to be treated partly as a phone number
     Linkify.addLinks(messageBody, CMD_PATTERN, "cmd:", null, null);
