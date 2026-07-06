@@ -60,4 +60,10 @@ public class LinkifierTest {
     assertEquals(Linkifier.MAX_DISPLAY_LINK_LENGTH, shortened.length());
     assertEquals(repeat('b', 29) + "...", shortened);
   }
+
+  private static String repeat(char value, int count) {
+    char[] chars = new char[count];
+    Arrays.fill(chars, value);
+    return new String(chars);
+  }
 }

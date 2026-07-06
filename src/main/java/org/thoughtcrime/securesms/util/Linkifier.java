@@ -40,6 +40,8 @@ public class Linkifier {
 
   private static void replaceURLSpan(Spannable messageBody, boolean shorten) {
     URLSpan[] urlSpans = messageBody.getSpans(0, messageBody.length(), URLSpan.class);
+    // Iterate in reverse so that text replacements (messageBody.replace) do not shift the
+    // positions of spans that haven't been processed yet.
     for (int i = urlSpans.length - 1; i >= 0; i--) {
       URLSpan urlSpan = urlSpans[i];
       int start = messageBody.getSpanStart(urlSpan);
@@ -81,7 +83,7 @@ public class Linkifier {
         int available = MAX_DISPLAY_LINK_LENGTH - domainPart.length();
         int tailLength = available - ELLIPSIS.length();
         if (tailLength > 0) {
-          return domainPart + ELLIPSIS + rest.substring(rest.length() - tailLength);
+          return domainPart + ELLIPSIS + rest.substring(rest.length() - Math.min(tailLength, rest.length()));
         } else {
           return domainPart + ELLIPSIS;
         }
