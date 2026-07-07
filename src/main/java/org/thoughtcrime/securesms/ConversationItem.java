@@ -450,6 +450,8 @@ public class ConversationItem extends BaseConversationItem {
       SpannableStringBuilder spannable = new SpannableStringBuilder(MarkdownUtil.toMarkdown(context, text));
       if (batchSelected.isEmpty()) {
         Linkifier.linkify(spannable);
+      } else {
+        Linkifier.linkifyForDisplay(spannable);
       }
       bodyText.setText(spannable);
       bodyText.setVisibility(View.VISIBLE);

@@ -38,7 +38,8 @@ public class Linkifier {
     return brokenPhoneLinkifier == 1;
   }
 
-  private static void replaceURLSpan(SpannableStringBuilder messageBody, boolean shorten) {
+  private static void replaceURLSpan(
+      SpannableStringBuilder messageBody, boolean shorten, boolean clickable) {
     URLSpan[] urlSpans = messageBody.getSpans(0, messageBody.length(), URLSpan.class);
     // Iterate in reverse so that text replacements (messageBody.replace) do not shift the
     // positions of spans that haven't been processed yet.
@@ -58,13 +59,16 @@ public class Linkifier {
         }
       }
 
-      // LongClickCopySpan must not be derived from URLSpan, otherwise links will be removed on the
-      // next addLinks() call
-      messageBody.setSpan(
-          new LongClickCopySpan(urlSpan.getURL()),
-          start,
-          spanEnd,
-          Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      messageBody.removeSpan(urlSpan);
+      if (clickable) {
+        // LongClickCopySpan must not be derived from URLSpan, otherwise links will be removed on
+        // the next addLinks() call
+        messageBody.setSpan(
+            new LongClickCopySpan(urlSpan.getURL()),
+            start,
+            spanEnd,
+            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+      }
     }
   }
 
@@ -95,18 +99,31 @@ public class Linkifier {
   }
 
   public static SpannableStringBuilder linkify(SpannableStringBuilder messageBody) {
+    return linkifyInternal(messageBody, true);
+  }
+
+  public static SpannableStringBuilder linkifyForDisplay(SpannableStringBuilder messageBody) {
+    return linkifyInternal(messageBody, false);
+  }
+
+  private static SpannableStringBuilder linkifyInternal(
+      SpannableStringBuilder messageBody, boolean clickable) {
     // linkify commands such as `/echo` -
     // do this first to avoid `/xkcd_123456` to be treated partly as a phone number
     Linkify.addLinks(messageBody, CMD_PATTERN, "cmd:", null, null);
     replaceURLSpan(
-        messageBody, false); // replace URLSpan so that it is not removed on the next addLinks() call
+        messageBody,
+        false,
+        clickable); // replace URLSpan so that it is not removed on the next addLinks() call
 
     Linkify.addLinks(messageBody, CUSTOM_PATTERN, null, null, null);
-    replaceURLSpan(messageBody, false);
+    replaceURLSpan(messageBody, false, clickable);
 
     if (Linkify.addLinks(messageBody, PROXY_PATTERN, null, null, null)) {
       replaceURLSpan(
-          messageBody, false); // replace URLSpan so that it is not removed on the next addLinks() call
+          messageBody,
+          false,
+          clickable); // replace URLSpan so that it is not removed on the next addLinks() call
     }
 
     int flags;
@@ -119,7 +136,8 @@ public class Linkifier {
           Linkify.sPhoneNumberTransformFilter)) {
         replaceURLSpan(
             messageBody,
-            false); // replace URLSpan so that it is not removed on the next addLinks() call
+            false,
+            clickable); // replace URLSpan so that it is not removed on the next addLinks() call
       }
       flags = Linkify.EMAIL_ADDRESSES | Linkify.WEB_URLS;
     } else {
@@ -128,7 +146,7 @@ public class Linkifier {
 
     // linkyfiy urls etc., this removes all existing URLSpan
     if (Linkify.addLinks(messageBody, flags)) {
-      replaceURLSpan(messageBody, true);
+      replaceURLSpan(messageBody, true, clickable);
     }
 
     return messageBody;
