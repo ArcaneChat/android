@@ -255,12 +255,6 @@ public class ApplicationContext extends MultiDexApplication {
                 // 2025-12-16: The setting was removed.
                 // Revert it to the default if it was changed in the past.
                 ac.setConfigInt("webxdc_realtime_enabled", 1);
-
-                // 2025-11-12: this is needed until core starts ignoring "delete_server_after" for
-                // chatmail
-                if (ac.isChatmail()) {
-                  ac.setConfig("delete_server_after", null); // reset
-                }
               }
               if (allAccounts.length == 0) {
                 try {
@@ -308,7 +302,10 @@ public class ApplicationContext extends MultiDexApplication {
               Log.i(
                   "DeltaChat",
                   "++++++++++++++++++ NetworkCallback.onAvailable() #" + debugOnAvailableCount++);
-              getDcAccounts().maybeNetwork();
+              // onBlockedStatusChanged is only available on API 29+
+              if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                getDcAccounts().maybeNetwork();
+              }
             }
 
             @Override
@@ -316,8 +313,13 @@ public class ApplicationContext extends MultiDexApplication {
                 @NonNull android.net.Network network, boolean blocked) {
               Log.i(
                   "DeltaChat",
-                  "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged() #"
+                  "++++++++++++++++++ NetworkCallback.onBlockedStatusChanged("
+                      + blocked
+                      + ") #"
                       + debugOnBlockedStatusChangedCount++);
+              if (!blocked) {
+                getDcAccounts().maybeNetwork();
+              }
             }
 
             @Override

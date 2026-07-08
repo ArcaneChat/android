@@ -19,13 +19,12 @@ ArcaneChat is a Delta Chat client and was created with a focus on usability, goo
 <b>Main differences with official Delta Chat client:</b>
 
 <ul>
+<li>Support for having multiple mini-apps open at the same time and you can keep navigating the chats while you have a mini-app open</li>
 <li>Support for some markdown styles in text messages (bold, italic, strike, etc.)</li>
 <li>Support for displaying Telegram's animated stickers (.tgs files)</li>
 <li>Support for SVG images previews</li>
 <li>Multiple color themes/skins</li>
 <li>It is possible to disable profiles to completely disconnect them saving data/bandwidth</li>
-<li>You can easily see the connection status of all your profiles in the profile switcher</li>
-<li>Extra option to share location for 24 hours</li>
 <li>Clicking on a message with a POI location, will open the POI on the map</li>
 <li>Last-seen status of contacts is shown in your contact list, like in WhatsApp, Telegram, etc.</li>
 <li>Videos are played in loop, useful for short GIF videos</li>

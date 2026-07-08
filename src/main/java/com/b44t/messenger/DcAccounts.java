@@ -84,7 +84,7 @@ public class DcAccounts {
   public boolean isAllChatmail() {
     for (int accountId : getAll()) {
       DcContext dcContext = getAccount(accountId);
-      if (!dcContext.isChatmail()) {
+      if (dcContext.getConfigInt("is_chatmail") == 0) {
         return false;
       }
     }

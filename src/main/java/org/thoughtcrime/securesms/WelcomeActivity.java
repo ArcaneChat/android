@@ -1,10 +1,14 @@
 package org.thoughtcrime.securesms;
 
 import android.Manifest;
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,6 +75,11 @@ public class WelcomeActivity extends BaseActionBarActivity
         .setOnClickListener((v) -> showSignInDialogWithPermission());
     findViewById(R.id.backup_button).setOnClickListener((v) -> startImportBackup());
 
+    AnimatorSet floating =
+        (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.floating_logo);
+    floating.setTarget(findViewById(R.id.welcome_icon));
+    floating.start();
+
     registerForEvents();
     initializeActionBar();
 
@@ -120,7 +129,15 @@ public class WelcomeActivity extends BaseActionBarActivity
 
     boolean canGoBack = AccountManager.getInstance().canRollbackAccountCreation(this);
     supportActionBar.setDisplayHomeAsUpEnabled(canGoBack);
-    getSupportActionBar().setTitle(canGoBack ? R.string.add_account : R.string.app_name);
+    if (canGoBack) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        supportActionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        supportActionBar.setElevation(0);
+      }
+      supportActionBar.setTitle(R.string.add_account);
+    } else {
+      supportActionBar.hide();
+    }
   }
 
   private void registerForEvents() {
@@ -189,7 +206,12 @@ public class WelcomeActivity extends BaseActionBarActivity
               File imexDir = DcHelper.getImexDir();
               if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 AttachmentManager.selectMediaType(
-                    this, "application/x-tar", null, PICK_BACKUP, StorageUtil.getDownloadUri());
+                    this,
+                    "application/x-tar",
+                    null,
+                    PICK_BACKUP,
+                    StorageUtil.getDownloadUri(),
+                    false);
               } else {
                 final String backupFile = dcContext.imexHasBackup(imexDir.getAbsolutePath());
                 if (backupFile != null) {

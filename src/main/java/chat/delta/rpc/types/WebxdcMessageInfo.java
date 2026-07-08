@@ -2,6 +2,8 @@
 package chat.delta.rpc.types;
 
 public class WebxdcMessageInfo {
+  @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.SET)
+  public String orientation;
   /** if the Webxdc represents a document, then this is the name of the document */
   @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.SET)
   public String document;
@@ -15,6 +17,10 @@ public class WebxdcMessageInfo {
   public String icon;
   /** True if full internet access should be granted to the app. */
   public Boolean internetAccess;
+  /** Define if the local user is the one who initially shared the webxdc application in the chat. */
+  public Boolean isAppSender;
+  /** Define if the app runs in a broadcasting context. */
+  public Boolean isBroadcast;
   /**
    * The name of the app.
    * <p>

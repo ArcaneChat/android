@@ -1643,12 +1643,6 @@ JNIEXPORT void Java_com_b44t_messenger_DcMsg_setHtml(JNIEnv *env, jobject obj, j
 }
 
 
-JNIEXPORT void Java_com_b44t_messenger_DcMsg_forceSticker(JNIEnv *env, jobject obj)
-{
-    dc_msg_force_sticker(get_dc_msg(env, obj));
-}
-
-
 JNIEXPORT jstring Java_com_b44t_messenger_DcMsg_getPOILocation(JNIEnv *env, jobject obj)
 {
     char* temp = dc_msg_get_poi_location(get_dc_msg(env, obj));

@@ -151,7 +151,6 @@ public class SendRelayedMessageUtil {
       message = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
     } else if ("sticker".equals(type)) {
       message = new DcMsg(dcContext, DcMsg.DC_MSG_STICKER);
-      message.forceSticker();
     } else if ("image".equals(type) || MediaUtil.isImageType(mimeType)) {
       message = new DcMsg(dcContext, DcMsg.DC_MSG_IMAGE);
     } else if ("audio".equals(type) || MediaUtil.isAudioType(mimeType)) {
