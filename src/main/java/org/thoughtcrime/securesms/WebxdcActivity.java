@@ -283,7 +283,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
-    if (!installWebrtcBlockerScript()) {
+    if (!internetAccess && !installWebrtcBlockerScript()) {
       Toast.makeText(
               this,
               "Please update Android System WebView to open this app securely.",
