@@ -113,8 +113,7 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
             super.onReceivedError(view, request, error);
             if (request.isForMainFrame()) {
               Log.w(
-                  TAG,
-                  "Store load failed: " + error.getErrorCode() + " " + error.getDescription());
+                  TAG, "Store load failed: " + error.getErrorCode() + " " + error.getDescription());
             }
           }
         });
