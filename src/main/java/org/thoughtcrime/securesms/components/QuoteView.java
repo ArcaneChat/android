@@ -3,7 +3,6 @@ package org.thoughtcrime.securesms.components;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.net.Uri;
-import android.text.Spannable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -187,7 +186,7 @@ public class QuoteView extends FrameLayout implements RecipientForeverObserver {
     if (!TextUtils.isEmpty(body) || !attachments.containsMediaSlide()) {
       bodyView.setVisibility(VISIBLE);
       bodyView.setText(
-          (Spannable) MarkdownUtil.toMarkdown(getContext(), body == null ? "" : body.toString()));
+          MarkdownUtil.toMarkdown(getContext(), body == null ? "" : body.toString(), false));
     } else {
       bodyView.setVisibility(GONE);
     }

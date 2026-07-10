@@ -2,6 +2,7 @@ package org.thoughtcrime.securesms.util;
 
 import android.content.Context;
 import android.text.Spannable;
+import android.text.style.URLSpan;
 import androidx.annotation.NonNull;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
@@ -52,6 +53,17 @@ public class MarkdownUtil {
   }
 
   public static Spannable toMarkdown(Context context, String text) {
-    return (Spannable) getInstance(context).markwon.toMarkdown(text);
+    return toMarkdown(context, text, true);
+  }
+
+  public static Spannable toMarkdown(Context context, String text, boolean clickable) {
+    Spannable spannable = (Spannable) getInstance(context).markwon.toMarkdown(text);
+    if (clickable) return spannable;
+
+    URLSpan[] urlSpans = spannable.getSpans(0, spannable.length(), URLSpan.class);
+    for (URLSpan urlSpan : urlSpans) {
+      spannable.removeSpan(urlSpan);
+    }
+    return spannable;
   }
 }
