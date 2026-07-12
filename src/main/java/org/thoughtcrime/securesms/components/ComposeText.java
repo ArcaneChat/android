@@ -198,8 +198,12 @@ public class ComposeText extends AppCompatEditText {
       }
 
       if (inputContentInfo.getDescription().getMimeTypeCount() > 0) {
+        boolean isSticker =
+            (flags & InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0;
         mediaListener.onMediaSelected(
-            inputContentInfo.getContentUri(), inputContentInfo.getDescription().getMimeType(0));
+            inputContentInfo.getContentUri(),
+            inputContentInfo.getDescription().getMimeType(0),
+            isSticker);
 
         return true;
       }
