@@ -94,6 +94,7 @@ public class ComposeText extends AppCompatEditText {
       if (uri == null) continue;
 
       String contentType = MediaUtil.getMimeType(getContext(), uri);
+      if (contentType == null) continue;
 
       if (MediaUtil.isImageVideoOrAudioType(contentType)) {
         mediaListener.onMediaSelected(uri, contentType);
