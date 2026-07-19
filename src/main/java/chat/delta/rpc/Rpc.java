@@ -692,6 +692,10 @@ public class Rpc {
     return transport.callForResult(new TypeReference<Integer>(){}, "create_group_chat", mapper.valueToTree(accountId), mapper.valueToTree(name), mapper.valueToTree(protect));
   }
 
+  public Integer createGroupWithAdmin(Integer accountId, String name) throws RpcException {
+    return transport.callForResult(new TypeReference<Integer>(){}, "create_group_with_admin", mapper.valueToTree(accountId), mapper.valueToTree(name));
+  }
+
   /**
    * Create a new unencrypted group chat.
    * <p>

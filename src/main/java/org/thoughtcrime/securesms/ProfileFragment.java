@@ -20,6 +20,7 @@ import androidx.appcompat.view.ActionMode;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import chat.delta.rpc.RpcException;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcChatlist;
 import com.b44t.messenger.DcContact;
@@ -50,6 +51,7 @@ public class ProfileFragment extends Fragment
   private DcContext dcContext;
   protected int chatId;
   private int contactId;
+  private boolean isAdmin = true;
 
   @Override
   public void onCreate(Bundle bundle) {
@@ -58,6 +60,17 @@ public class ProfileFragment extends Fragment
     chatId = getArguments() != null ? getArguments().getInt(CHAT_ID_EXTRA, -1) : -1;
     contactId = getArguments().getInt(CONTACT_ID_EXTRA, -1);
     dcContext = DcHelper.getContext(requireContext());
+
+    try {
+      Integer adminId =
+          DcHelper.getRpc(requireContext())
+              .getFullChatById(dcContext.getAccountId(), chatId)
+              .groupAdminId;
+      isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+    } catch (RpcException e) {
+      e.printStackTrace();
+    }
+
     pickContactLauncher =
         registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -158,7 +171,7 @@ public class ProfileFragment extends Fragment
       sharedChats = dcContext.getChatlist(0, null, contactId);
     }
 
-    adapter.changeData(memberList, dcContact, sharedChats, dcChat);
+    adapter.changeData(memberList, dcContact, sharedChats, dcChat, isAdmin);
   }
 
   // handle events
@@ -206,7 +219,7 @@ public class ProfileFragment extends Fragment
         || contactId == DcContact.DC_CONTACT_ID_SELF) {
       if (actionMode == null) {
         DcChat dcChat = dcContext.getChat(chatId);
-        if (dcChat.canSend() && dcChat.isEncrypted()) {
+        if (isAdmin && dcChat.canSend() && dcChat.isEncrypted()) {
           adapter.toggleMemberSelection(contactId);
           actionMode =
               ((AppCompatActivity) requireActivity()).startSupportActionMode(actionModeCallback);

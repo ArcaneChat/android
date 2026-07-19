@@ -305,7 +305,8 @@ public class ProfileAdapter extends RecyclerView.Adapter {
       @Nullable int[] memberList,
       @Nullable DcContact dcContact,
       @Nullable DcChatlist sharedChats,
-      @Nullable DcChat dcChat) {
+      @Nullable DcChat dcChat,
+      boolean isAdmin) {
     this.dcChat = dcChat;
     this.dcContact = dcContact;
     itemData.clear();
@@ -382,10 +383,12 @@ public class ProfileAdapter extends RecyclerView.Adapter {
       itemData.add(new ItemData(ITEM_DIVIDER, null, 0));
       if (dcChat != null) {
         if (dcChat.canSend() && dcChat.isEncrypted()) {
-          if (!isOutBroadcast) {
+          if (!isOutBroadcast && isAdmin) {
             itemData.add(new ItemData(ITEM_MEMBERS, DcContact.DC_CONTACT_ID_ADD_MEMBER, 0));
           }
-          itemData.add(new ItemData(ITEM_MEMBERS, DcContact.DC_CONTACT_ID_QR_INVITE, 0));
+          if (isAdmin) {
+            itemData.add(new ItemData(ITEM_MEMBERS, DcContact.DC_CONTACT_ID_QR_INVITE, 0));
+          }
         }
       }
       for (int value : memberList) {

@@ -198,6 +198,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private Rpc rpc;
   private DcChat dcChat = new DcChat(0, 0);
   private int chatId;
+  private boolean isAdmin = true;
   private final boolean isSecureText = true;
   private boolean isDefaultSms = true;
   private boolean isSecurityInitialized = false;
@@ -561,6 +562,8 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     if (!dcChat.isEncrypted() || !dcChat.canSend() || dcChat.isMailingList()) {
       menu.findItem(R.id.menu_ephemeral_messages).setVisible(false);
+    } else {
+      menu.findItem(R.id.menu_ephemeral_messages).setVisible(isAdmin);
     }
 
     if (dcChat.shallLeaveBeforeDelete(DcHelper.getContext(context))) {
@@ -1142,6 +1145,13 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (chatId == DcChat.DC_CHAT_NO_CHAT)
       throw new IllegalStateException("can't display a conversation for no chat.");
     dcChat = DcHelper.getContext(context).getChat(chatId);
+    try {
+      Integer adminId = rpc.getFullChatById(accountId, chatId).groupAdminId;
+      isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+    } catch (RpcException e) {
+      Log.e(TAG, "RPC failed", e);
+    }
+
     attachmentTypeSelector = null;
     recipient = new Recipient(this, dcChat);
     glideRequests = GlideApp.with(this);
