@@ -80,10 +80,10 @@ public abstract class MessageSelectorFragment extends Fragment
     DcContext dcContext = DcHelper.getContext(getContext());
 
     Rpc rpc = DcHelper.getRpc(getContext());
-    boolean isAdmin = true;
+    boolean isAdmin = false;
     try {
       Integer adminId = rpc.getFullChatById(dcContext.getAccountId(), chatId).groupAdminId;
-      isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+      isAdmin = adminId != null && adminId == DcContact.DC_CONTACT_ID_SELF;
     } catch (RpcException e) {
       e.printStackTrace();
     }
