@@ -14,7 +14,10 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.util.Consumer;
 import androidx.fragment.app.Fragment;
+import chat.delta.rpc.Rpc;
+import chat.delta.rpc.RpcException;
 import com.b44t.messenger.DcChat;
+import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcMsg;
 import java.util.Set;
@@ -75,12 +78,22 @@ public abstract class MessageSelectorFragment extends Fragment
       Consumer<int[]> deleteForMeListenerExtra,
       Consumer<int[]> deleteForAllListenerExtra) {
     DcContext dcContext = DcHelper.getContext(getContext());
+
+    Rpc rpc = DcHelper.getRpc(getContext());
+    boolean isAdmin = true;
+    try {
+      Integer adminId = rpc.getFullChatById(dcContext.getAccountId(), chatId).groupAdminId;
+      isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+    } catch (RpcException e) {
+      e.printStackTrace();
+    }
+
     DcChat dcChat = dcContext.getChat(chatId);
     boolean canDeleteForAll = true;
     if (dcChat.isEncrypted() && dcChat.canSend() && !dcChat.isSelfTalk()) {
       for (int msgId : messageIds) {
         DcMsg msg = dcContext.getMsg(msgId);
-        if (!msg.isOutgoing() || msg.isInfo()) {
+        if (!(isAdmin || msg.isOutgoing()) || msg.isInfo()) {
           canDeleteForAll = false;
           break;
         }

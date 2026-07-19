@@ -50,6 +50,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
   private DcContext dcContext;
   private Rpc rpc;
   private int chatId;
+  private boolean isAdmin = true;
   private boolean chatIsMultiUser;
   private boolean chatIsDeviceTalk;
   private boolean chatIsMailingList;
@@ -120,6 +121,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
           menu.findItem(R.id.share).setVisible(false);
         } else if (chatIsMultiUser) {
           // menu.findItem(R.id.edit_name).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+          menu.findItem(R.id.edit_name).setVisible(isAdmin);
           if (chatIsOutBroadcast) {
             canReceive = false;
           } else {
@@ -207,6 +209,14 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
 
     if (chatId != 0) {
       DcChat dcChat = dcContext.getChat(chatId);
+
+      try {
+        Integer adminId = rpc.getFullChatById(dcContext.getAccountId(), chatId).groupAdminId;
+        isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+      } catch (RpcException e) {
+        Log.e(TAG, "RPC failed", e);
+      }
+
       chatIsMultiUser = dcChat.isMultiUser();
       chatIsDeviceTalk = dcChat.isDeviceTalk();
       chatIsMailingList = dcChat.isMailingList();
@@ -350,7 +360,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       intent.putExtra(MediaPreviewActivity.ACTIVITY_TITLE_EXTRA, title);
       intent.putExtra( // show edit-button, if the user is allowed to edit the name/avatar
           MediaPreviewActivity.EDIT_AVATAR_CHAT_ID,
-          (chatIsMultiUser && !chatIsInBroadcast && !chatIsMailingList) ? chatId : 0);
+          (isAdmin && chatIsMultiUser && !chatIsInBroadcast && !chatIsMailingList) ? chatId : 0);
       startActivity(intent);
     } else if (chatIsMultiUser) {
       onEditName();

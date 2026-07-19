@@ -38,4 +38,5 @@ public class FullChat {
   /** Note that this is different from [`ChatListItem::is_self_in_group`](`crate::api::types::chat_list::ChatListItemFetchResult::ChatListItem::is_self_in_group`). This property should only be accessed when [`FullChat::chat_type`] is [`Chattype::Group`]. */
   public Boolean selfInGroup;
   public Boolean wasSeenRecently;
+  public Integer groupAdminId;
 }
