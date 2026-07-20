@@ -65,7 +65,6 @@ public class CallActivity extends AppCompatActivity {
   public static final String ACTION_DECLINE_CALL = BuildConfig.APPLICATION_ID + ".DECLINE_CALL";
   public static final String ACTION_HANGUP_CALL = BuildConfig.APPLICATION_ID + ".HANGUP_CALL";
   public static final String ACTION_CALL_BACK = BuildConfig.APPLICATION_ID + ".CALL_BACK";
-  public static final String ACTION_MESSAGE = BuildConfig.APPLICATION_ID + ".MESSAGE";
   public static final String EXTRA_STARTS_WITH_VIDEO = "starts_with_video";
 
   // Views
@@ -326,8 +325,8 @@ public class CallActivity extends AppCompatActivity {
     switchCameraButton = findViewById(R.id.switch_camera_button);
 
     initializeVideoRenderers();
-
     setupButtonListeners();
+    setupAccessibility();
   }
 
   private void initializeVideoRenderers() {
@@ -443,6 +442,13 @@ public class CallActivity extends AppCompatActivity {
             });
   }
 
+  private void setupAccessibility() {
+    muteButton.setContentDescription(getString(R.string.microphone));
+    videoButton.setContentDescription(getString(R.string.camera));
+    switchCameraButton.setContentDescription(getString(R.string.switch_camera));
+    speakerButton.setContentDescription(getString(R.string.audio_output));
+  }
+
   private void initializeViewModel() {
     viewModel = new ViewModelProvider(this).get(CallViewModel.class);
 
@@ -498,8 +504,10 @@ public class CallActivity extends AppCompatActivity {
         .observe(
             this,
             enabled -> {
-              muteButton.setSelected(!enabled);
               muteButton.setImageResource(enabled ? R.drawable.ic_mic_on : R.drawable.ic_mic_off);
+
+              ViewCompat.setStateDescription(
+                  muteButton, getString(enabled ? R.string.on : R.string.off));
             });
 
     viewModel
@@ -507,9 +515,21 @@ public class CallActivity extends AppCompatActivity {
         .observe(
             this,
             enabled -> {
-              videoButton.setSelected(!enabled);
               videoButton.setImageResource(
                   enabled ? R.drawable.ic_videocam_on : R.drawable.ic_videocam_off);
+
+              ViewCompat.setStateDescription(
+                  videoButton, getString(enabled ? R.string.on : R.string.off));
+            });
+
+    viewModel
+        .getIsFrontCamera()
+        .observe(
+            this,
+            isFront -> {
+              ViewCompat.setStateDescription(
+                  switchCameraButton,
+                  getString(isFront ? R.string.front_camera : R.string.back_camera));
             });
 
     viewModel
@@ -519,6 +539,9 @@ public class CallActivity extends AppCompatActivity {
             endpoint -> {
               updateSpeakerButton(endpoint);
               updateProximityWakeLock();
+
+              ViewCompat.setStateDescription(
+                  speakerButton, endpoint != null ? endpoint.getName() : null);
             });
 
     viewModel
