@@ -21,14 +21,12 @@ APK="deltachat-gplay-release-$VERSION.apk"
 ls -l $APK
 read -p "upload this apk and belonging symbols to download.delta.chat/android? ENTER to continue, CTRL-C to abort."
 
-# you need the private SSH key of the jekyll user; you can find it in this file:
-# https://github.com/hpk42/otf-deltachat/blob/master/secrets/delta.chat
-# It is protected with [git-crypt](https://www.agwa.name/projects/git-crypt/) -
-# after installing it, you can decrypt it with `git crypt unlock`.
-# If your key isn't added to the secrets, and you know some of the team in person,
-# you can ask on irc #deltachat for access.
-# Add the key to your `~/.ssh/config` for the host, or to your ssh-agent, so rsync is able to use it)
-rsync --progress $APK jekyll@download.delta.chat:/var/www/html/download/android/
+# If you want to be able to upload, send your public SSH key to sysadmin@testrun.org 
+if ! rsync --progress $APK www-download-android@download.delta.chat:/ ; then
+    echo "upload of $APK failed, aborting." >&2
+    exit 1
+fi
+
 
 cd ../..
 SYMBOLS_ZIP="$APK-symbols.zip"
@@ -36,7 +34,11 @@ rm $SYMBOLS_ZIP
 zip -r $SYMBOLS_ZIP obj
 zip $SYMBOLS_ZIP build/outputs/mapping/gplayRelease/mapping.txt
 ls -l $SYMBOLS_ZIP
-rsync --progress $SYMBOLS_ZIP jekyll@download.delta.chat:/var/www/html/download/android/symbols/
+if ! rsync --progress $SYMBOLS_ZIP www-download-android@download.delta.chat:/symbols/ ; then
+    echo "upload of $SYMBOLS_ZIP failed, aborting." >&2
+    exit 1
+fi
+
 
 echo "upload done."
 echo ""

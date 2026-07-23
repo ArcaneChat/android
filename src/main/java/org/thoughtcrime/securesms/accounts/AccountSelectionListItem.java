@@ -90,6 +90,9 @@ public class AccountSelectionListItem extends LinearLayout {
       }
 
       addrOrTag = dcContext.getConfig(CONFIG_PRIVATE_TAG);
+      if (TextUtils.isEmpty(addrOrTag) && dcContext.isTeamProfile()) {
+        addrOrTag = getContext().getString(R.string.team);
+      }
       unreadCount = dcContext.getFreshMsgs().length;
 
       enableSwitch.setChecked(dcContext.isEnabled());

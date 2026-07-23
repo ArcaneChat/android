@@ -37,8 +37,8 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        versionCode 30000748
-        versionName "2.55.0"
+        versionCode 30000749
+        versionName "2.56.0"
 
         applicationId "chat.delta.lite"
         multiDexEnabled true
