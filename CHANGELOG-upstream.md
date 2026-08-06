@@ -1,5 +1,21 @@
 # Delta Chat Android Changelog
 
+## Unreleased
+
+* Fix: Mic will stay active during a call when screen is off on Android 14+
+* Fix: allow to pick image without requiring storage permission
+* Fix: avoid overflow with big numbers in badge counters
+* Fix: make video players truly fullscreen
+* Fix: avoid ending search mode when a new message arrive to the chat
+* Fix: Recording now request and respect audio focus
+
+## v2.57.0
+2026-07
+
+* properly update message views counter for channel owner
+* Fix: Call now tries to reconnect when network changes instead of closing
+* Update to core 2.57.0
+
 ## v2.56.0
 2026-07
 

@@ -23,6 +23,7 @@ import org.thoughtcrime.securesms.components.AvatarView;
 import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.ThemeUtil;
+import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
 public class AccountSelectionListItem extends LinearLayout {
@@ -149,6 +150,7 @@ public class AccountSelectionListItem extends LinearLayout {
                     });
         color = attrs.getColor(0, Color.BLACK);
       }
+      String badgeText = Util.humanReadableCount(unreadCount);
       unreadIndicator.setImageDrawable(
           TextDrawable.builder()
               .beginConfig()
@@ -157,7 +159,7 @@ public class AccountSelectionListItem extends LinearLayout {
               .textColor(Color.WHITE)
               .bold()
               .endConfig()
-              .buildRound(String.valueOf(unreadCount), color));
+              .buildRound(badgeText, color));
       unreadIndicator.setVisibility(View.VISIBLE);
     }
   }

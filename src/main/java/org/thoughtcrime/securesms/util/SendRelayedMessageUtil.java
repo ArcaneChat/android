@@ -30,6 +30,7 @@ import org.thoughtcrime.securesms.ConversationListRelayingActivity;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.PartAuthority;
 import org.thoughtcrime.securesms.providers.PersistentBlobProvider;
+import org.thoughtcrime.securesms.video.recode.VideoRecoder;
 
 public class SendRelayedMessageUtil {
   private static final String TAG = SendRelayedMessageUtil.class.getSimpleName();
@@ -114,31 +115,26 @@ public class SendRelayedMessageUtil {
       String sharedHtml,
       String subject,
       String sharedText) {
-    DcContext dcContext = DcHelper.getContext(context);
     ArrayList<Uri> uris = sharedUris;
     String text = sharedText;
 
     if (uris.size() == 1) {
-      dcContext.sendMsg(
-          chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
+      sendMsgRecodingVideo(context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
     } else {
       if (text != null || sharedHtml != null) {
-        dcContext.sendMsg(chatId, createMessage(context, null, null, sharedHtml, subject, text));
+        sendMsgRecodingVideo(context, chatId, createMessage(context, null, null, sharedHtml, subject, text));
       }
       for (Uri uri : uris) {
-        dcContext.sendMsg(chatId, createMessage(context, uri, null, null, subject, null));
+        sendMsgRecodingVideo(context, chatId, createMessage(context, uri, null, null, subject, null));
       }
     }
   }
 
-  public static boolean containsVideoType(Context context, ArrayList<Uri> uris) {
-    for (final Uri uri : uris) {
-      final String mimeType = MediaUtil.getMimeType(context, uri);
-      if (MediaUtil.isVideoType(mimeType)) {
-        return true;
-      }
+  private static void sendMsgRecodingVideo(Context context, int chatId, DcMsg msg) {
+    if (msg.getType() == DcMsg.DC_MSG_VIDEO && !VideoRecoder.prepareVideo(context, chatId, msg)) {
+      return;
     }
-    return false;
+    DcHelper.getContext(context).sendMsg(chatId, msg);
   }
 
   public static DcMsg createMessage(

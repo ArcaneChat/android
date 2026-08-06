@@ -430,7 +430,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
                 });
         badgeColor = attrs.getColor(0, Color.BLACK);
       }
-      String label = unreadCount > 99 ? "99+" : String.valueOf(unreadCount);
+      String badgeText = Util.humanReadableCount(unreadCount);
       unreadIndicator.setImageDrawable(
           TextDrawable.builder()
               .beginConfig()
@@ -439,7 +439,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
               .textColor(isDarkTheme ? Color.WHITE : Color.BLACK)
               .bold()
               .endConfig()
-              .buildRound(label, badgeColor));
+              .buildRound(badgeText, badgeColor));
       unreadIndicator.setVisibility(View.VISIBLE);
     }
   }

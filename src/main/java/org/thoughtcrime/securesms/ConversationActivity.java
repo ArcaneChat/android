@@ -391,7 +391,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   protected void onPause() {
     super.onPause();
 
-    if (inputPanel.isRecording() && inputPanel.getRecordingDuration() > 1000) {
+    if (shouldSaveRecording()) {
       saveRecording();
     } else {
       processComposeControls(ACTION_SAVE_DRAFT);
@@ -889,9 +889,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   private void askSendingFiles(ArrayList<Uri> uriList, Runnable onConfirm) {
     String message =
         String.format(getString(R.string.ask_send_files_to_chat), uriList.size(), dcChat.getName());
-    if (SendRelayedMessageUtil.containsVideoType(context, uriList)) {
-      message += "\n\n" + getString(R.string.videos_sent_without_recoding);
-    }
     new AlertDialog.Builder(this)
         .setMessage(message)
         .setCancelable(false)
@@ -1070,7 +1067,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     attachmentTypeSelector = null;
     attachmentManager = new AttachmentManager(this, this);
-    audioRecorder = new AudioRecorder(this);
+    audioRecorder = new AudioRecorder(this, this::handleRecordingInterrupted);
 
     SendButtonListener sendButtonListener = new SendButtonListener();
     ComposeKeyPressedListener composeKeyPressedListener = new ComposeKeyPressedListener();
@@ -1156,6 +1153,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     recipient = new Recipient(this, dcChat);
     glideRequests = GlideApp.with(this);
 
+    searchMenu = null; // reset search on new intent
     setInputPanelVisibility(true);
     initializeContactRequest();
   }
@@ -1495,6 +1493,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+    playbackViewModel.setRecording(true);
     audioRecorder.startRecording();
   }
 
@@ -1512,7 +1511,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    ListenableFuture<Pair<Uri, Long>> future = audioRecorder.stopRecording();
+    ListenableFuture<Pair<Uri, Long>> future = stopAudioRecorder();
     future.addListener(
         new ListenableFuture.Listener<Pair<Uri, Long>>() {
           @Override
@@ -1563,7 +1562,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-    ListenableFuture<Pair<Uri, Long>> future = audioRecorder.stopRecording();
+    ListenableFuture<Pair<Uri, Long>> future = stopAudioRecorder();
     future.addListener(
         new ListenableFuture.Listener<Pair<Uri, Long>>() {
           @Override
@@ -1727,6 +1726,39 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     }
   }
 
+  private ListenableFuture<Pair<Uri, Long>> stopAudioRecorder() {
+    ListenableFuture<Pair<Uri, Long>> future = audioRecorder.stopRecording();
+    future.addListener(
+        new ListenableFuture.Listener<Pair<Uri, Long>>() {
+          @Override
+          public void onSuccess(Pair<Uri, Long> result) {
+            playbackViewModel.setRecording(false);
+          }
+
+          @Override
+          public void onFailure(ExecutionException e) {
+            playbackViewModel.setRecording(false);
+          }
+        });
+    return future;
+  }
+
+  private boolean shouldSaveRecording() {
+    return inputPanel.isRecording() && inputPanel.getRecordingDuration() > 1000;
+  }
+
+  private void handleRecordingInterrupted() {
+    if (!inputPanel.isRecording()) {
+      return;
+    }
+
+    if (shouldSaveRecording()) {
+      saveRecording();
+    } else {
+      inputPanel.cancelRecording();
+    }
+  }
+
   private void saveRecording() {
     inputPanel.resetRecordingUI();
     getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -1734,7 +1766,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     final int thisChatId = chatId;
     final Optional<QuoteModel> quote = inputPanel.getQuote();
 
-    ListenableFuture<Pair<Uri, Long>> future = audioRecorder.stopRecording();
+    ListenableFuture<Pair<Uri, Long>> future = stopAudioRecorder();
     future.addListener(
         new ListenableFuture.Listener<Pair<Uri, Long>>() {
           @Override
@@ -1886,7 +1918,11 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       initializeSecurity(isSecureText, isDefaultSms);
       setInputPanelVisibility(false);
       initializeContactRequest();
-      invalidateOptionsMenu();
+      if (searchMenu == null) {
+        // invalidateOptionsMenu collapses the search bar,
+        // so only call it when user is not in search mode
+        invalidateOptionsMenu();
+      }
     } else if ((eventId == DcContext.DC_EVENT_INCOMING_MSG
             || eventId == DcContext.DC_EVENT_MSG_READ)
         && event.getData1Int() == chatId) {

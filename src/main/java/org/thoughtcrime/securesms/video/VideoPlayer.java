@@ -18,6 +18,7 @@ package org.thoughtcrime.securesms.video;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -46,10 +47,15 @@ import org.thoughtcrime.securesms.video.exo.AttachmentDataSourceFactory;
 
 public class VideoPlayer extends FrameLayout {
 
+  public interface ControlsVisibilityListener {
+    void onControlsVisibilityChanged(boolean visible);
+  }
+
   @Nullable private final StyledPlayerView exoView;
 
   @Nullable private SimpleExoPlayer exoPlayer;
   @Nullable private Window window;
+  @Nullable private ControlsVisibilityListener controlsVisibilityListener;
 
   public VideoPlayer(Context context) {
     this(context, null);
@@ -65,10 +71,30 @@ public class VideoPlayer extends FrameLayout {
     inflate(context, R.layout.video_player, this);
 
     this.exoView = ViewUtil.findById(this, R.id.video_view);
+
+    exoView.setControllerVisibilityListener(
+        (StyledPlayerView.ControllerVisibilityListener)
+            visibility -> {
+              if (controlsVisibilityListener != null) {
+                controlsVisibilityListener.onControlsVisibilityChanged(visibility == View.VISIBLE);
+              }
+            });
+
+    exoView.setControllerAutoShow(false);
   }
 
   public void setVideoSource(@NonNull VideoSlide videoSource, boolean autoplay) {
     setExoViewSource(videoSource, autoplay);
+  }
+
+  public void setControlsVisibilityListener(@Nullable ControlsVisibilityListener listener) {
+    this.controlsVisibilityListener = listener;
+  }
+
+  public void setControlsVisible(boolean visible) {
+    if (exoView == null) return;
+    if (visible) exoView.showController();
+    else exoView.hideController();
   }
 
   public void pause() {
