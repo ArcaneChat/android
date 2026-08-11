@@ -119,13 +119,16 @@ public class SendRelayedMessageUtil {
     String text = sharedText;
 
     if (uris.size() == 1) {
-      sendMsgRecodingVideo(context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
+      sendMsgRecodingVideo(
+          context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
     } else {
       if (text != null || sharedHtml != null) {
-        sendMsgRecodingVideo(context, chatId, createMessage(context, null, null, sharedHtml, subject, text));
+        sendMsgRecodingVideo(
+            context, chatId, createMessage(context, null, null, sharedHtml, subject, text));
       }
       for (Uri uri : uris) {
-        sendMsgRecodingVideo(context, chatId, createMessage(context, uri, null, null, subject, null));
+        sendMsgRecodingVideo(
+            context, chatId, createMessage(context, uri, null, null, subject, null));
       }
     }
   }
