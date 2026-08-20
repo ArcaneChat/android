@@ -47,6 +47,7 @@ import org.thoughtcrime.securesms.mms.GlideApp;
 import org.thoughtcrime.securesms.notifications.FcmReceiveService;
 import org.thoughtcrime.securesms.notifications.UnifiedPushUtils;
 import org.thoughtcrime.securesms.permissions.Permissions;
+import org.thoughtcrime.securesms.updater.AppUpdate;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ShareUtil;
 import org.thoughtcrime.securesms.util.Util;
@@ -194,6 +195,8 @@ public class ConversationListFragment extends BaseConversationListFragment
           if (DozeReminder.isEligible(context)) {
             DozeReminder.addDozeReminderDeviceMsg(context);
           }
+          AppUpdate.cleanupUpdated(context);
+          AppUpdate.maybeCheckUpdate(context);
           FcmReceiveService.waitForRegisterFinished();
           UnifiedPushUtils.waitForRegisterFinished(context);
         } catch (Exception e) {
