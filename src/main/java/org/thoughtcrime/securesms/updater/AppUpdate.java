@@ -22,7 +22,7 @@ import org.thoughtcrime.securesms.util.Prefs;
 public class AppUpdate {
   private static final String TAG = "AppUpdate";
 
-  private static final String CLIENT_ID = "deltachat";
+  private static final String CLIENT_ID = "arcanechat";
   private static final String SOURCE_ID = "gplay";
   private static final String PLAY_STORE_PACKAGE = "com.android.vending";
 
@@ -30,7 +30,7 @@ public class AppUpdate {
 
   private static final String SEPARATOR = "\n";
 
-  static final String APK_FILENAME = "deltachat-update.apk";
+  static final String APK_FILENAME = "arcanechat-update.apk";
 
   private static class StoredUpdate {
     final int version;
