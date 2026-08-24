@@ -14,7 +14,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <androidx.legacy.widget.Space
+        <android.widget.Space
             android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
@@ -82,7 +82,7 @@
 
         </LinearLayout>
 
-        <androidx.legacy.widget.Space
+        <android.widget.Space
             android:layout_weight="4"
             android:layout_width="match_parent"
             android:layout_height="0dp" />
