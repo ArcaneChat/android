@@ -34,6 +34,10 @@ fetch:
 clean:
 	./gradlew --offline clean
 
+.PHONY: fmt
+fmt:
+	./gradlew spotlessApply
+
 
 # CORE:
 

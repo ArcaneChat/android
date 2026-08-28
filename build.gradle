@@ -184,13 +184,7 @@ android {
     androidComponents {
         onVariants(selector().all()) { variant ->
             variant.outputs.each { output ->
-                output.outputFileName.set(
-                        output.outputFileName.get()
-                        .replace("android", "ArcaneChat")
-                        .replace("-release", "")
-                        .replace(".apk", "-${output.versionName.get()}.apk")
-                        )
-
+                def apkSuffix = "-${output.versionName.get()}.apk"
                 def vCode = output.versionCode.get()
                 def abiFilter = output.filters.find {
                     it.filterType == com.android.build.api.variant.FilterConfiguration.FilterType.ABI
@@ -198,11 +192,18 @@ android {
                 def abiName = abiFilter ? abiFilter.identifier : null
                 if(project.hasProperty("ABI_FILTER")) {
                     output.versionCode.set(vCode * 10 + project.ext.versionCodes.get(ABI_FILTER))
+                    apkSuffix = "-${ABI_FILTER}" + apkSuffix
                 } else if (abiName != null && project.ext.versionCodes.containsKey(abiName)) {
                     output.versionCode.set(vCode * 10 + project.ext.versionCodes.get(abiName))
                 } else {
                     output.versionCode.set(vCode * 10 + 4)
                 }
+                output.outputFileName.set(
+                        output.outputFileName.get()
+                        .replace("android", "ArcaneChat")
+                        .replace("-release", "")
+                        .replace(".apk", apkSuffix)
+                        )
             }
         }
     }
