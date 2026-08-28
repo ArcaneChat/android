@@ -55,12 +55,12 @@ jobs:
           echo "DC_RELEASE_KEY_ALIAS_FDROID=${{ secrets.ALIAS_FDROID }}" >> ~/.gradle/gradle.properties
           echo "DC_RELEASE_KEY_ALIAS_GPLAY=${{ secrets.ALIAS_GPLAY }}" >> ~/.gradle/gradle.properties
           echo "DC_RELEASE_KEY_PASSWORD=${{ secrets.KEYSTORE_PASSWORD }}" >> ~/.gradle/gradle.properties
-          ./gradlew assembleFossRelease
-          rm build/outputs/apk/foss/release/*universal*
+          mkdir dist
+          for abi in armeabi-v7a arm64-v8a x86 x86_64; do ./gradlew -PABI_FILTER=$abi assembleFossRelease; mv build/outputs/apk/foss/release/*.apk dist/; done
+          mv build/outputs/mapping/fossRelease/mapping.txt dist/mapping-foss.txt
           ./gradlew assembleGplayRelease
-          mv build/outputs/apk/gplay/release/*universal* build/outputs/apk/foss/release/ArcaneChat-gplay.apk
-          mv build/outputs/mapping/fossRelease/mapping.txt build/outputs/mapping/fossRelease/mapping-foss.txt
-          mv build/outputs/mapping/gplayRelease/mapping.txt build/outputs/mapping/fossRelease/mapping-gplay.txt
+          mv build/outputs/apk/gplay/release/*universal* dist/ArcaneChat-gplay.apk
+          mv build/outputs/mapping/gplayRelease/mapping.txt dist/mapping-gplay.txt
 
       - name: Release on GitHub
         uses: softprops/action-gh-release@b4309332981a82ec1c5618f44dd2e27cc8bfbfda # v3.0.0
@@ -70,5 +70,4 @@ jobs:
           prerelease: ${{ contains(github.event.ref, '-beta') }}
           fail_on_unmatched_files: true
           files: |
-            build/outputs/apk/foss/release/*.apk
-            build/outputs/mapping/fossRelease/mapping-*.txt
+            dist/*
