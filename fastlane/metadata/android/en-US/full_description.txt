@@ -14,24 +14,6 @@ ArcaneChat is a decentralized and secure instant messenger that is easy to use f
 
 • Sovereign. Can be run with your own e-mail address or server.
 
-ArcaneChat is a Delta Chat client and was created with a focus on usability, good user experience, and saving data plan. Also the app usually experiments with new features that eventually might get added to the official Delta Chat client.
+ArcaneChat is a chatmail client fork of Delta Chat app and it was created with a focus on usability, good user experience, and saving data plan. Also the app usually experiments with new features that eventually might get added to the official Delta Chat client.
 
-<b>Main differences with official Delta Chat client:</b>
-
-<ul>
-<li>Support for having multiple mini-apps open at the same time and you can keep navigating the chats while you have a mini-app open</li>
-<li>Support for some markdown styles in text messages (bold, italic, strike, etc.)</li>
-<li>Support for displaying Telegram's animated stickers (.tgs files)</li>
-<li>Support for SVG images previews</li>
-<li>Multiple color themes/skins</li>
-<li>It is possible to disable profiles to completely disconnect them saving data/bandwidth</li>
-<li>Clicking on a message with a POI location, will open the POI on the map</li>
-<li>Last-seen status of contacts is shown in your contact list, like in WhatsApp, Telegram, etc.</li>
-<li>Videos are played in loop, useful for short GIF videos</li>
-<li>Verified icon is shown in the chat list for the "Device Messages" and "Saved Messages" chat to avoid fishing attempts by scammer pretending to be the official chats</li>
-<li>Voice messages have more aggressive compression in "worse quality" mode to save data plan</li>
-<li>Automatic download of messages limited to 640KB by default</li>
-<li>Profile's display name is always shown in the app's title bar instead of the name of the app</li>
-<li>For mini-apps developers: there are some extra features in the WebXDC API, check https://github.com/ArcaneChat/android/#webxdc</li>
-<li>Better settings organization with additional "Privacy" section</li>
-</ul>
+Main differences with Delta Chat client can be found at: https://github.com/ArcaneChat/android/
