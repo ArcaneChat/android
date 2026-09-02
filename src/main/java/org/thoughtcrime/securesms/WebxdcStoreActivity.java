@@ -1,6 +1,5 @@
 package org.thoughtcrime.securesms;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -8,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -44,6 +44,7 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
     rpc = DcHelper.getRpc(this);
     dcContext = DcHelper.getContext(this);
     WebView webView = findViewById(R.id.webview);
+    WebRtcHolder.getInstance(this).start();
 
     // add padding to avoid content hidden behind system bars
     ViewUtil.applyWindowInsets(findViewById(R.id.content_container));
@@ -94,8 +95,8 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
             return true;
           }
 
-          @TargetApi(Build.VERSION_CODES.N)
           @Override
+          @RequiresApi(Build.VERSION_CODES.N)
           public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
             return shouldOverrideUrlLoading(view, request.getUrl().toString());
           }
@@ -116,6 +117,16 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
                   TAG, "Store load failed: " + error.getErrorCode() + " " + error.getDescription());
             }
           }
+
+          @Override
+          @RequiresApi(Build.VERSION_CODES.O)
+          public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+            Log.w(TAG, "renderer gone, didCrash=" + detail.didCrash());
+            WebRtcHolder.getInstance(WebxdcStoreActivity.this).onRendererGone();
+            Toast.makeText(WebxdcStoreActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+            finish();
+            return true;
+          }
         });
 
     WebSettings webSettings = webView.getSettings();
@@ -123,8 +134,6 @@ public class WebxdcStoreActivity extends PassphraseRequiredActionBarActivity {
     webSettings.setAllowFileAccess(false);
     webSettings.setAllowContentAccess(false);
     webSettings.setGeolocationEnabled(false);
-    webSettings.setAllowFileAccessFromFileURLs(false);
-    webSettings.setAllowUniversalAccessFromFileURLs(false);
     webSettings.setDatabaseEnabled(true);
     webSettings.setDomStorageEnabled(true);
     webView.setNetworkAvailable(

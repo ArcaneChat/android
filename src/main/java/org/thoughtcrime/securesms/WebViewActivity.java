@@ -6,6 +6,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -82,6 +85,7 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     }
 
     webView = findViewById(R.id.webview);
+    WebRtcHolder.getInstance(this).start();
 
     if (immersiveMode()) {
       // set a shadow in the status bar to make it more readable
@@ -137,7 +141,6 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
           }
 
           @Override
-          @RequiresApi(21)
           public WebResourceResponse shouldInterceptRequest(
               WebView view, WebResourceRequest request) {
             WebResourceResponse res = interceptRequest(request.getUrl().toString());
@@ -145,6 +148,16 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
               return res;
             }
             return super.shouldInterceptRequest(view, request);
+          }
+
+          @Override
+          @RequiresApi(Build.VERSION_CODES.O)
+          public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+            Log.w(TAG, "Renderer gone, didCrash=" + detail.didCrash());
+            WebRtcHolder.getInstance(WebViewActivity.this).onRendererGone();
+            Toast.makeText(WebViewActivity.this, R.string.error, Toast.LENGTH_LONG).show();
+            finish();
+            return true;
           }
         });
     webView.setFindListener(this);
@@ -185,8 +198,15 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
 
   @Override
   protected void onDestroy() {
+    if (webView != null) {
+      ViewParent parent = webView.getParent();
+      if (parent instanceof ViewGroup) {
+        ((ViewGroup) parent).removeView(webView);
+      }
+      webView.destroy();
+      webView = null;
+    }
     super.onDestroy();
-    webView.destroy();
   }
 
   @Override

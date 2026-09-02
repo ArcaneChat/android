@@ -32,9 +32,6 @@ import androidx.core.app.TaskStackBuilder;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
-import androidx.webkit.ScriptHandler;
-import androidx.webkit.WebViewCompat;
-import androidx.webkit.WebViewFeature;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import chat.delta.rpc.types.WebxdcMessageInfo;
@@ -44,14 +41,12 @@ import com.b44t.messenger.DcEvent;
 import com.b44t.messenger.DcMsg;
 import com.google.common.base.Charsets;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -71,9 +66,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   private static final String EXTRA_HIDE_ACTION_BAR = "hideActionBar";
   private static final String EXTRA_HREF = "href";
   private static final int REQUEST_CODE_FILE_PICKER = 51426;
-  private static long lastOpenTime = 0;
 
-  private ScriptHandler webrtcBlockerScriptHandler;
   private ValueCallback<Uri[]> filePathCallback;
   private DcContext dcContext;
   private int accountId;
@@ -170,6 +163,16 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         .addNextIntentWithParentStack(chatIntent)
         .addNextIntent(webxdcIntent)
         .getIntents();
+  }
+
+  private String buildBootstrapUrl(boolean blockedByHolder, String encodedHref) {
+    return this.baseURL
+        + "/webxdc_bootstrap324567869.html?i="
+        + (internetAccess ? "1" : "0")
+        + "&h="
+        + (blockedByHolder ? "1" : "0")
+        + "&href="
+        + encodedHref;
   }
 
   @Override
@@ -283,15 +286,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
-    if (!internetAccess && !installWebrtcBlockerScript()) {
-      Toast.makeText(
-              this,
-              "Please update Android System WebView to open this app securely.",
-              Toast.LENGTH_LONG)
-          .show();
-      finish();
-      return;
-    }
 
     String extraHref = b.getString(EXTRA_HREF, "");
     if (TextUtils.isEmpty(extraHref)) {
@@ -305,8 +299,28 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     } catch (UnsupportedEncodingException e) {
       e.printStackTrace();
     }
+    final String finalEncodedHref = encodedHref;
 
-    webView.loadUrl(this.baseURL + "/webxdc_bootstrap324567869.html?i=1&href=" + encodedHref);
+    if (internetAccess) {
+      webView.loadUrl(buildBootstrapUrl(false, finalEncodedHref));
+    } else {
+      // Wait until the state of the RTCPeerConnection budget is settled.
+      final WebRtcHolder holder = WebRtcHolder.getInstance(this);
+      holder.awaitSettled(
+          () -> {
+            if (isFinishing() || isDestroyed() || webView == null) {
+              return;
+            }
+            if (!holder.isSettled()) {
+              Log.e(TAG, "Cannot block WebRTC (" + holder.getState() + "), refusing to load");
+              finish();
+              return;
+            }
+            webView.loadUrl(
+                buildBootstrapUrl(
+                    holder.getState() == WebRtcHolder.State.CONFIRMED, finalEncodedHref));
+          });
+    }
 
     Util.runOnAnyBackgroundThread(
         () -> {
@@ -333,7 +347,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   @Override
   protected void onDestroy() {
-    lastOpenTime = System.currentTimeMillis();
     DcHelper.getEventCenter(this.getApplicationContext()).removeObservers(this);
     leaveRealtimeChannel();
     tts.shutdown();
@@ -503,37 +516,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     return res;
   }
 
-  private String getWebrtcBlockerScript() throws IOException {
-    try (InputStream inputStream = getResources().openRawResource(R.raw.webxdc_block_webrtc);
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-      Util.copy(inputStream, outputStream);
-      return outputStream.toString(Charsets.UTF_8.name());
-    }
-  }
-
-  private boolean installWebrtcBlockerScript() {
-    if (!WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-      Log.w(TAG, "Document start script not supported, cannot block WebRTC.");
-      return false;
-    }
-    if (webrtcBlockerScriptHandler != null) {
-      return true;
-    }
-
-    try {
-      webrtcBlockerScriptHandler =
-          WebViewCompat.addDocumentStartJavaScript(
-              webView, getWebrtcBlockerScript(), Collections.singleton("*"));
-      return true;
-    } catch (IOException e) {
-      Log.e(TAG, "Error loading webrtc blocker script", e);
-      return false;
-    } catch (RuntimeException e) {
-      Log.e(TAG, "Failed to add WebRTC blocker document-start script.", e);
-      return false;
-    }
-  }
-
   private void callJavaScriptFunction(String func) {
     webView.evaluateJavascript(
         "document.getElementById('frame').contentWindow." + func + ";", null);
@@ -684,13 +666,17 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   }
 
   private void leaveRealtimeChannel() {
-    int accountId = dcContext.getAccountId();
-    int msgId = dcAppMsg.getId();
-    try {
-      rpc.leaveWebxdcRealtime(accountId, msgId);
-    } catch (RpcException e) {
-      e.printStackTrace();
-    }
+    final Rpc rpc = this.rpc;
+    final int accountId = dcContext.getAccountId();
+    final int msgId = dcAppMsg.getId();
+    Util.runOnAnyBackgroundThread(
+        () -> {
+          try {
+            rpc.leaveWebxdcRealtime(accountId, msgId);
+          } catch (RpcException e) {
+            e.printStackTrace();
+          }
+        });
   }
 
   class InternalJSApi {

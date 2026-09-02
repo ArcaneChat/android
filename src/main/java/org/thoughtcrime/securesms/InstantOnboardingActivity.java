@@ -88,7 +88,7 @@ public class InstantOnboardingActivity extends BaseActionBarActivity
   private DcLot parsedQrData;
   private boolean isDcLogin;
   private boolean isContactInvitation;
-  private boolean isGroupInvitation;
+  private boolean isJoinInvitation;
 
   private AttachmentManager attachmentManager;
   private Bitmap avatarBmp;
@@ -252,8 +252,9 @@ public class InstantOnboardingActivity extends BaseActionBarActivity
         parsedQrData = qrParsed;
         updateProvider();
         break;
+      case DcContext.DC_QR_ASK_JOIN_BROADCAST:
       case DcContext.DC_QR_ASK_VERIFYGROUP:
-        isGroupInvitation = true;
+        isJoinInvitation = true;
         rawQrData = rawQr;
         parsedQrData = qrParsed;
         updateProvider();
@@ -430,7 +431,7 @@ public class InstantOnboardingActivity extends BaseActionBarActivity
           String name = dcContext.getContact(parsedQrData.getId()).getDisplayName();
           invitationText.setText(this.getString(R.string.instant_onboarding_contact_info, name));
           invitationText.setVisibility(View.VISIBLE);
-        } else if (isGroupInvitation) {
+        } else if (isJoinInvitation) {
           String groupName = parsedQrData.getText1();
           invitationText.setText(this.getString(R.string.instant_onboarding_group_info, groupName));
           invitationText.setVisibility(View.VISIBLE);
@@ -506,7 +507,7 @@ public class InstantOnboardingActivity extends BaseActionBarActivity
 
     Intent intent = new Intent(getApplicationContext(), ConversationListActivity.class);
     intent.putExtra(ConversationListActivity.FROM_WELCOME, true);
-    if (isContactInvitation || isGroupInvitation) {
+    if (isContactInvitation || isJoinInvitation) {
       intent.putExtra(ConversationListActivity.FROM_WELCOME_RAW_QR, rawQrData);
     }
 
