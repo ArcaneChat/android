@@ -54,11 +54,11 @@ public class UnifiedPushUtils {
    * @param initCallback Callback with [InitStatus]
    */
   public static void mayInitUnifiedPush(Activity activity, InitCallback initCallback) {
-    Log.d(TAG, "mayInitUnifiedPush");
     if (Prefs.isFcmPushEnabled(activity)) {
       initCallback.onInit(InitStatus.HasPush);
       return;
     }
+    Log.d(TAG, "mayInitUnifiedPush");
     if (Prefs.unifiedPushDisabled(activity)) {
       initCallback.onInit(InitStatus.NoPush);
       return;
@@ -182,7 +182,7 @@ public class UnifiedPushUtils {
     if (distributor == null) return null;
     try {
       ApplicationInfo ai;
-      if (Build.VERSION.SDK_INT >= 33) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         ai =
             context
                 .getPackageManager()
