@@ -183,6 +183,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
   @Override
   protected void onCreate(Bundle state, boolean ready) {
     Bundle b = getIntent().getExtras();
+    if (b == null) finish();
     hideActionBar = b.getBoolean(EXTRA_HIDE_ACTION_BAR, false);
 
     super.onCreate(state, ready);
