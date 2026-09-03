@@ -1,6 +1,7 @@
 package org.thoughtcrime.securesms;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -569,6 +570,10 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       title = docName + " – " + chat.getName();
     }
     getSupportActionBar().setTitle(title);
+
+    if (!hideActionBar) {
+      setTaskDescription(new ActivityManager.TaskDescription(title));
+    }
 
     String currSourceCodeUrl = info.sourceCodeUrl != null ? info.sourceCodeUrl : "";
     if (!sourceCodeUrl.equals(currSourceCodeUrl)) {
