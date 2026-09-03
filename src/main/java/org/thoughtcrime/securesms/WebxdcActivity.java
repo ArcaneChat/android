@@ -190,6 +190,11 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     rpc = DcHelper.getRpc(this);
     initTTS();
 
+    // enter fullscreen mode if necessary,
+    // this is needed here because if the app is opened while already in landscape mode,
+    // onConfigurationChanged() is not triggered
+    setScreenMode(getResources().getConfiguration());
+
     webView.setWebChromeClient(
         new WebChromeClient() {
           @Override
@@ -248,16 +253,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     WebxdcMessageInfo info;
     try {
       info = rpc.getWebxdcInfo(accountId, appMessageId);
-
-      if ("landscape".equals(info.orientation)) {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-      } else {
-        // enter fullscreen mode if necessary,
-        // this is needed here because if the app is opened while already in landscape mode,
-        // onConfigurationChanged() is not triggered
-        setScreenMode(getResources().getConfiguration());
-      }
-
       internetAccess = info.internetAccess;
       selfAddr = info.selfAddr;
       isAppSender = info.isAppSender;
