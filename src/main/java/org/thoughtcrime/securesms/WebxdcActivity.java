@@ -1,7 +1,9 @@
 package org.thoughtcrime.securesms;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -53,9 +55,12 @@ import java.util.Map;
 import org.json.JSONObject;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
+import org.thoughtcrime.securesms.permissions.LocalNetworkPermission;
+import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.util.IntentUtils;
 import org.thoughtcrime.securesms.util.JsonUtils;
 import org.thoughtcrime.securesms.util.MediaUtil;
+import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 
 public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcEventDelegate {
@@ -566,7 +571,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
     }
     getSupportActionBar().setTitle(title);
 
-    if (!hideActionBar) {
+    if (!hideActionBar) { // maps built-in mini-app
       setTaskDescription(new ActivityManager.TaskDescription(title));
     }
 
@@ -677,6 +682,28 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
             e.printStackTrace();
           }
         });
+  }
+
+  @NonNull
+  private Runnable getAdvertise() {
+    final int accountId = WebxdcActivity.this.dcContext.getAccountId();
+    final int msgId = WebxdcActivity.this.dcAppMsg.getId();
+    return () ->
+        Util.runOnAnyBackgroundThread(
+            () -> {
+              try {
+                this.rpc.sendWebxdcRealtimeAdvertisement(accountId, msgId);
+              } catch (RpcException e) {
+                e.printStackTrace();
+              }
+            });
+  }
+
+  @Override
+  public void onRequestPermissionsResult(
+      int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
   }
 
   class InternalJSApi {
@@ -797,18 +824,37 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       }
     }
 
-    /**
-     * @noinspection unused
-     */
     @JavascriptInterface
     public void sendRealtimeAdvertisement() {
-      int accountId = WebxdcActivity.this.dcContext.getAccountId();
-      int msgId = WebxdcActivity.this.dcAppMsg.getId();
-      try {
-        WebxdcActivity.this.rpc.sendWebxdcRealtimeAdvertisement(accountId, msgId);
-      } catch (RpcException e) {
-        e.printStackTrace();
-      }
+      final Runnable doAdvertise = getAdvertise();
+
+      Util.runOnMain(
+          () -> {
+            if (isFinishing() || isDestroyed()) {
+              return;
+            }
+            if (!LocalNetworkPermission.isNeeded()
+                || LocalNetworkPermission.hasPermission(WebxdcActivity.this)
+                || Prefs.getBooleanPreference(
+                    WebxdcActivity.this, Prefs.ASKED_FOR_LOCAL_NETWORK_PERMISSION, false)) {
+              doAdvertise.run();
+              return;
+            }
+            Prefs.setBooleanPreference(
+                WebxdcActivity.this, Prefs.ASKED_FOR_LOCAL_NETWORK_PERMISSION, true);
+            new AlertDialog.Builder(WebxdcActivity.this)
+                .setMessage(R.string.perm_explain_local_network_denied)
+                .setPositiveButton(R.string.perm_continue, null)
+                .setOnDismissListener(
+                    d ->
+                        Permissions.with(WebxdcActivity.this)
+                            .request(Manifest.permission.ACCESS_LOCAL_NETWORK)
+                            .ifNecessary()
+                            .onAllGranted(doAdvertise)
+                            .onAnyDenied(doAdvertise)
+                            .execute())
+                .show();
+          });
     }
 
     /**

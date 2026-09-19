@@ -376,6 +376,8 @@
     <string name="unpin_chat">Unpin Chat</string>
     <!-- Verb "to pin", making something sticky, not a noun or abbreviation for "pin number". -->
     <string name="pin">Pin</string>
+    <!-- Adj. of "pin", describing a state of being pinned. -->
+    <string name="pinned">Pinned</string>
     <!-- Opposite of "Pin chat", removing the sticky-state from a chat. -->
     <string name="unpin">Unpin</string>
     <string name="ConversationFragment_quoted_message_not_found">Original message not found</string>
@@ -506,6 +508,10 @@
     <plurals name="chat_n_new_messages">
         <item quantity="one">%d new message</item>
         <item quantity="other">%d new messages</item>
+    </plurals>
+    <plurals name="chat_n_unread_messages">
+        <item quantity="one">%1$d unread message</item>
+        <item quantity="other">%1$d unread messages</item>
     </plurals>
     <!-- The placeholder will be replaced by the name of the recipient in a one-to-one chat. -->
     <string name="chat_new_one_to_one_hint">Send a message to %1$s.</string>
@@ -732,7 +738,7 @@
     <string name="confirm_add_transport">Add this relay?</string>
     <string name="invalid_transport_qr">The scanned QR code does not contain a valid relay.</string>
     <!-- placeholder will be replaced by a relay server name -->
-    <string name="confirm_remove_relay_x">Remove relay \"%1$s\"?\n\nBefore deletion, it will be gradually phased out so your contacts can switch over smoothly.</string>
+    <string name="confirm_remove_relay_x">Remove relay \"%1$s\"?</string>
     <!-- deprecated -->
     <string name="confirm_remove_or_hide_transport_x">Remove relay \"%1$s\"?\n\nContacts who only know this relay may not reach you until you message them again.\n\nIf in doubt, hide it rather than removing it.</string>
     <string name="login_certificate_checks">Certificate Checks</string>
@@ -1132,6 +1138,7 @@
     <string name="perm_explain_access_to_storage_denied">To receive or send files, go to the app settings, select \"Permissions\", and enable \"Storage\".</string>
     <string name="perm_explain_access_to_location_denied">To attach a location, go to the app settings, select \"Permissions\", and enable \"Location\".</string>
     <string name="perm_explain_access_to_notifications_denied">To receive notifications, go to \"System Settings / Apps / Delta Chat\" and enable \"Notifications\".</string>
+    <string name="perm_explain_local_network_denied">Delta Chat needs the "Nearby devices" permission to connect to devices on the local network. You can set it under Apps / Delta Chat / Permissions.</string>
 
     <!-- ImageEditorHud -->
     <string name="ImageEditorHud_draw_anywhere_to_blur">Draw anywhere to blur</string>

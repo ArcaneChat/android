@@ -1348,7 +1348,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
                         new DcMsg(
                             dcContext,
                             MediaUtil.isGif(contentType) ? DcMsg.DC_MSG_GIF : DcMsg.DC_MSG_IMAGE);
-                    msg.setDimension(attachment.getWidth(), attachment.getHeight());
                   } else if (MediaUtil.isAudioType(contentType)) {
                     msg =
                         new DcMsg(
