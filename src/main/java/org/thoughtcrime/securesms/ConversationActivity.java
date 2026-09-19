@@ -1394,6 +1394,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
             if (msg != null) {
               boolean doSend = true;
+              VideoRecoder videoRecoder = new VideoRecoder();
               if (recompress == DcMsg.DC_MSG_VIDEO) {
                 Util.runOnMain(
                     () -> {
@@ -1404,9 +1405,10 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
                               "",
                               getString(R.string.one_moment),
                               true,
-                              false);
+                              true,
+                              (d) -> videoRecoder.cancelConversion());
                     });
-                doSend = VideoRecoder.prepareVideo(ConversationActivity.this, currentChatId, msg);
+                doSend = videoRecoder.prepareVideo(ConversationActivity.this, currentChatId, msg);
                 Util.runOnMain(
                     () -> {
                       try {
