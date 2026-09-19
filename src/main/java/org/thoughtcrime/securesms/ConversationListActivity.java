@@ -91,7 +91,7 @@ import org.thoughtcrime.securesms.util.ViewUtil;
 
 public class ConversationListActivity extends PassphraseRequiredActionBarActivity
     implements ConversationListFragment.ConversationSelectedListener {
-  private static final String TAG = "ConversationListActivity";
+  private static final String TAG = "ConversationListActv";
   private static final String OPENPGP4FPR = "openpgp4fpr";
   private static final String NDK_ARCH_WARNED = "ndk_arch_warned";
   public static final String CLEAR_NOTIFICATIONS = "clear_notifications";
@@ -379,7 +379,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
       }
       getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     } else {
-      title.setText(DcHelper.getContext(this).getName());
+      String name = DcHelper.get(this, DcHelper.CONFIG_DISPLAY_NAME);
+      if (name.isEmpty()) name = getString(R.string.unnamed);
+      title.setText(name);
       // refreshTitle is called by ConversationListFragment when connectivity changes so update
       // connectivity dot here
       selfAvatar.setConnectivity(DcHelper.getContext(this).getConnectivity());
@@ -395,11 +397,11 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     } else {
       selfAvatarContainer.setVisibility(View.VISIBLE);
       DcContext dcContext = DcHelper.getContext(this);
-      DcContact self = dcContext.getContact(DcContact.DC_CONTACT_ID_SELF);
-      String name = dcContext.getConfig("displayname");
+      String name = dcContext.getConfig(DcHelper.CONFIG_DISPLAY_NAME);
       if (TextUtils.isEmpty(name)) {
-        name = self.getAddr();
+        name = getString(R.string.unnamed);
       }
+      DcContact self = dcContext.getContact(DcContact.DC_CONTACT_ID_SELF);
       selfAvatar.setAvatar(GlideApp.with(this), new Recipient(this, self, name), false);
     }
   }

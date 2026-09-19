@@ -8,13 +8,11 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -177,12 +175,6 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
   }
 
   @Override
-  public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-    super.onCreateContextMenu(menu, v, menuInfo);
-    getMenuInflater().inflate(R.menu.profile_title_context, menu);
-  }
-
-  @Override
   public void onDestroy() {
     DcHelper.getEventCenter(this).removeObservers(this);
     super.onDestroy();
@@ -269,15 +261,6 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       onClone();
     }
 
-    return false;
-  }
-
-  @Override
-  public boolean onContextItemSelected(@NonNull MenuItem item) {
-    super.onContextItemSelected(item);
-    if (item.getItemId() == R.id.copy_addr_to_clipboard) {
-      onCopyAddrToClipboard();
-    }
     return false;
   }
 
@@ -381,7 +364,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
 
       String authName = dcContact.getAuthName();
       if (TextUtils.isEmpty(authName)) {
-        authName = dcContact.getAddr();
+        authName = getString(R.string.unnamed);
       }
 
       View gl = View.inflate(this, R.layout.single_line_input, null);
@@ -430,12 +413,6 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       ShareUtil.setSharedText(composeIntent, dcContact.getAddr());
     }
     ConversationListRelayingActivity.start(this, composeIntent);
-  }
-
-  private void onCopyAddrToClipboard() {
-    DcContact dcContact = dcContext.getContact(contactId);
-    Util.writeTextToClipboard(this, dcContact.getAddr());
-    Toast.makeText(this, getString(R.string.copied_to_clipboard), Toast.LENGTH_SHORT).show();
   }
 
   private void onEncrInfo() {
