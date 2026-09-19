@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="terms_n_privacy_policy">Termos e política de privacidade</string>
+
+</resources>
