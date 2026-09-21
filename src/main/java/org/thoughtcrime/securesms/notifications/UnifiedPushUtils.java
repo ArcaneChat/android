@@ -54,6 +54,7 @@ public class UnifiedPushUtils {
    * @param initCallback Callback with [InitStatus]
    */
   public static void mayInitUnifiedPush(Activity activity, InitCallback initCallback) {
+    Prefs.setUnifiedPushManualSelection(activity, false);
     if (Prefs.isFcmPushEnabled(activity)) {
       initCallback.onInit(InitStatus.HasPush);
       return;
@@ -94,6 +95,7 @@ public class UnifiedPushUtils {
    */
   private static void selectUnifiedPushDistributor(Activity activity, InitCallback initCallback) {
     Log.d(TAG, "selectUnifiedPushDistributor");
+    Prefs.setUnifiedPushManualSelection(activity, true);
     DialogCallback callback =
         new DialogCallback() {
           private final Activity context = activity;
@@ -146,6 +148,7 @@ public class UnifiedPushUtils {
    * @param callback Callback
    */
   public static void tryPickUnifiedPushDistributor(Activity activity, TryPickCallback callback) {
+    Prefs.setUnifiedPushManualSelection(activity, true);
     Log.d(TAG, "tryPickUnifiedPushDistributor");
     UnifiedPush.tryPickDistributor(
         activity,
@@ -204,11 +207,18 @@ public class UnifiedPushUtils {
    * try to start the KeepAliveService
    *
    * @param context
+   * @return whether the registration is marked is manual
    */
-  public static void disableOnError(Context context) {
-    Prefs.disableUnifiedPush(context);
-    UnifiedPushService.unregister(context);
-    Prefs.resetReliableService(context);
+  public static boolean onError(Context context) {
+    boolean manualSelection = Prefs.unifiedPushManualSelection(context);
+    if (manualSelection) {
+      Prefs.disableUnifiedPush(context);
+      UnifiedPushService.unregister(context);
+      Prefs.resetReliableService(context);
+      Prefs.setUnifiedPushManualSelection(context, false);
+    } else {
+      Prefs.setUnifiedPushError(context, true);
+    }
     context.sendBroadcast(
         new Intent().setPackage(context.getPackageName()).setAction(PUSH_ERROR_ACTION));
     try {
@@ -216,6 +226,7 @@ public class UnifiedPushUtils {
     } catch (Exception e) {
       Log.e(TAG, "An error occurred while trying to start KeepAliveService", e);
     }
+    return manualSelection;
   }
 
   /**
@@ -235,15 +246,20 @@ public class UnifiedPushUtils {
       String saved = UnifiedPush.getSavedDistributor(context);
       // This is the distributor we registered to, which has sent an endpoint
       String ack = UnifiedPush.getAckDistributor(context);
-      // If we don't have a saved distributor (saved == null: 1. we never registered,
-      // or 2. it received registrationFailed during the first registration
-      // or 3. we were unregistered)
+      boolean error = Prefs.unifiedPushError(context);
+      // If we received an error (automatic, non-manual, registration)
+      // Or if we don't have a saved distributor (saved == null:
+      //   1. we were never registered,
+      //   or 2. it received registrationFailed during the first registration,
+      //         with a manual registration
+      //   or 3. we were unregistered
+      // )
       // Or if we received an endpoint (saved.equals(ack))
       // => return
-      if (saved == null || saved.equals(ack)) return;
+      if (error || saved == null || saved.equals(ack)) return;
       Util.sleep(500);
     }
-    disableOnError(context);
-    UnifiedPushNotifications.showRegistrationTimeout(context);
+    boolean manualRegistration = onError(context);
+    if (manualRegistration) UnifiedPushNotifications.showRegistrationTimeout(context);
   }
 }

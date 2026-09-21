@@ -52,6 +52,8 @@ public class Prefs {
   public static final String NOTIFICATION_PRIORITY_PREF = "pref_notification_priority";
 
   public static final String DISABLE_UNIFIEDPUSH = "pref_disable_unifiedpush";
+  public static final String UNIFIEDPUSH_MANUAL_SELECTION = "pref_unifiedpush_manual_selection";
+  public static final String UNIFIEDPUSH_ERROR = "pref_unifiedpush_error";
 
   private static final String PROFILE_AVATAR_ID_PREF = "pref_profile_avatar_id";
   public static final String INCOGNITO_KEYBORAD_PREF = "pref_incognito_keyboard";
@@ -278,9 +280,17 @@ public class Prefs {
   }
 
   /**
-   * Allow UnifiedPush to be used if a distributor is available
+   * Disable UnifiedPush even if a distributor is available
    *
    * <p>We use 2 functions enableUnifiedPush/disableUnifiedPush to make things more clear
+   *
+   * <p>We disable UnifiedPush when:
+   *
+   * <ul>
+   *   <li>A dialog is shown to select a UnifiedPush distributor, and the use dismiss it
+   *   <li>The user enables <i>Force Background Connection</i> even if there is a distributor
+   *       installed
+   * </ul>
    *
    * @param context
    */
@@ -292,6 +302,36 @@ public class Prefs {
     // By default, allow UnifiedPush.
     // This is never used if the flavor supports Play Services.
     return getBooleanPreference(context, DISABLE_UNIFIEDPUSH, false);
+  }
+
+  /**
+   * Mark UnifiedPush as manually registered
+   *
+   * <p>If the registration is considered as manually set, we may show a notification if the
+   * registration doesn't succeed
+   *
+   * @param context
+   */
+  public static void setUnifiedPushManualSelection(Context context, boolean value) {
+    setBooleanPreference(context, UNIFIEDPUSH_MANUAL_SELECTION, value);
+  }
+
+  /**
+   * If the UnifiedPush registration implied manual input from the user
+   *
+   * @param context
+   * @return whether the registration is marked is manual
+   */
+  public static boolean unifiedPushManualSelection(Context context) {
+    return getBooleanPreference(context, UNIFIEDPUSH_MANUAL_SELECTION, false);
+  }
+
+  public static void setUnifiedPushError(Context context, boolean value) {
+    setBooleanPreference(context, UNIFIEDPUSH_ERROR, value);
+  }
+
+  public static boolean unifiedPushError(Context context) {
+    return getBooleanPreference(context, UNIFIEDPUSH_ERROR, false);
   }
 
   // vibrate

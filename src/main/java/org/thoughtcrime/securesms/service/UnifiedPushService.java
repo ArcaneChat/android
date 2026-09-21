@@ -16,6 +16,7 @@ import org.thoughtcrime.securesms.connect.FetchWorker;
 import org.thoughtcrime.securesms.connect.KeepAliveService;
 import org.thoughtcrime.securesms.notifications.UnifiedPushNotifications;
 import org.thoughtcrime.securesms.notifications.UnifiedPushUtils;
+import org.thoughtcrime.securesms.util.Prefs;
 import org.unifiedpush.android.connector.FailedReason;
 import org.unifiedpush.android.connector.PushService;
 import org.unifiedpush.android.connector.UnifiedPush;
@@ -84,8 +85,8 @@ public class UnifiedPushService extends PushService {
   public void onRegistrationFailed(@NonNull FailedReason failedReason, @NonNull String _s) {
     Log.w(TAG, "Registration failed " + failedReason.name());
     if (!UnifiedPushUtils.hasPushDistributor(this, true)) {
-      UnifiedPushUtils.disableOnError(this);
-      UnifiedPushNotifications.showRegistrationFailed(this, failedReason);
+      boolean manualRegistration = UnifiedPushUtils.onError(this);
+      if (manualRegistration) UnifiedPushNotifications.showRegistrationFailed(this, failedReason);
     }
   }
 
@@ -121,6 +122,7 @@ public class UnifiedPushService extends PushService {
   }
 
   public static void register(Context context) {
+    Prefs.setUnifiedPushError(context, false);
     UnifiedPush.register(context, INSTANCE_DEFAULT, null, BuildConfig.VAPID_KEY);
   }
 

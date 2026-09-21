@@ -302,6 +302,7 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
       String currentDistributor = UnifiedPushUtils.getDistributorName(context);
       if (!dcContext.isMuted()
           && !Prefs.reliableService(context)
+          && !Prefs.unifiedPushError(context)
           && currentDistributor != null
           && UnifiedPushUtils.countAvailableDistributors(context) > 1) {
         selectDistributor.setVisible(true);
@@ -384,7 +385,8 @@ public class NotificationsPreferenceFragment extends ListSummaryPreferenceFragme
         // The summary may be updated as soon as we toggle off
         // the "unreliable bg service": we may have not yet received
         // the push endpoint => we rely on savedDistributor to know.
-      } else if (UnifiedPushUtils.hasPushDistributor(context, false)) {
+      } else if (UnifiedPushUtils.hasPushDistributor(context, false)
+          && !Prefs.unifiedPushError(context)) {
         // Always show
         return context.getString(R.string.pref_notification_desc_using_unifiedpush);
       } else {
