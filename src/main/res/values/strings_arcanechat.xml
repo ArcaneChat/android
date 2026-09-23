@@ -10,6 +10,15 @@
     <string name="gray">Gray</string>
     <string name="terms_n_privacy_policy">Terms &amp; Privacy Policy</string>
 
+    <string name="last_seen_recently">last seen recently</string>
+    <string name="last_seen_within_week">last seen within a week</string>
+    <string name="last_seen_within_month">last seen within a month</string>
+    <plurals name="last_seen_n_months_ago">
+        <item quantity="one">last seen %d month ago</item>
+        <item quantity="other">last seen %d months ago</item>
+    </plurals>
+    <string name="last_seen_long_ago">last seen a long time ago</string>
+
     <!-- device messages for updates -->
     <!-- when translating the sentence about the ArcaneChat channel, clarify that the channel is in English -->
     <string name="device_welcome_message">🔮 Welcome to ArcaneChat✨\n\nTo get in contact with friends:\n\n🤳🏻 Tap
@@ -18,5 +27,5 @@
         \"Invite friends\" in the menu\n\n📢 Join the [Official ArcaneChat Channel](%1$s) to keep
         updated about the development status.</string>
 
-    <string name="update_2_46ac">🔮 What\'s new?\n\n✦ Greatly enhanced experimental video/audio calls with better system integration\n\n✦ Added a basic sticker picker\n\n✦ Improved attachment selector\n\n✦ Further minimize metadata in messages\n\n✦ Increase resilience of multi-relay usage: if on relay goes down, messages are still received in the others\n\n✦ Better synchronization of notifications state across multiple devices\n\n✦ Fixed invitation link to join the 📢 [Official ArcaneChat Channel](%2$s)\n\n✦ Several bug fixes and updated translations\n\n\n💜 Please donate to help us remain independent and continue to bring improvements: %1$s</string>
+    <string name="update_2_62ac">🔮 What\'s new?\n\n✦ Your messages now travel smarter when using multiple relays: one going down won\'t stop them\n\n✦ Sent images now have higher quality\n\n✦ Improved integration with Android 17\n\n✦ Allow to open invitation links pasted in the global search bar and contact search\n\n✦ Several bug fixes and updated translations\n\n\n💜 Please donate to help us remain independent and continue to bring you improvements: %1$s</string>
 </resources>

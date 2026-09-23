@@ -134,4 +134,49 @@ public class DateUtils extends android.text.format.DateUtils {
     int hours = mins / 60;
     return c.getResources().getQuantityString(R.plurals.n_hours, hours, hours);
   }
+
+  public static String getFormattedFreshness(final Context context, final long timestamp) {
+    if (timestamp == 0) {
+      return context.getString(R.string.never_seen);
+    }
+
+    final long age = (System.currentTimeMillis() - timestamp) / 1000;
+    final int oneYear = 365 * 24 * 60 * 60;
+
+    if (age < oneYear) {
+      final int months = (int) (age / (31 * 24 * 60 * 60));
+      return context.getResources().getQuantityString(R.plurals.seen_n_months_ago, months, months);
+    }
+
+    final int years = (int) (age / oneYear);
+    return context.getResources().getQuantityString(R.plurals.seen_n_years_ago, years, years);
+  }
+
+  public static String getFormattedLastSeen(final Context context, final long timestamp) {
+    if (timestamp == 0) {
+      return context.getString(R.string.never_seen);
+    }
+
+    final long age = (System.currentTimeMillis() - timestamp) / 1000;
+    final int oneDay = 24 * 60 * 60;
+    final int oneWeek = 7 * oneDay;
+    final int oneMonth = 31 * oneDay;
+    final int oneYear = 365 * oneDay;
+
+    if (age < oneDay) {
+        return context.getString(R.string.last_seen_recently);
+    }
+    if (age < oneWeek) {
+        return context.getString(R.string.last_seen_within_week);
+    }
+    if (age <= oneMonth) {
+        return context.getString(R.string.last_seen_within_month);
+    }
+    if (age < oneYear) {
+      final int months = (int) (age / oneMonth);
+      return context.getResources().getQuantityString(R.plurals.last_seen_n_months_ago, months, months);
+    }
+
+    return context.getString(R.string.last_seen_long_ago);
+  }
 }

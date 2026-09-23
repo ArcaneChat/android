@@ -8,8 +8,17 @@
     <string name="gray">Gris</string>
     <string name="terms_n_privacy_policy">Términos y política de privacidad</string>
 
+    <string name="last_seen_recently">últ. vez recientemente</string>
+    <string name="last_seen_within_week">últ. vez hace unos días</string>
+    <string name="last_seen_within_month">últ. vez hace unas semanas</string>
+    <plurals name="last_seen_n_months_ago">
+      <item quantity="one">últ. vez hace %d mes</item>
+      <item quantity="other">últ. vez hace %d meses</item>
+    </plurals>
+    <string name="last_seen_long_ago">últ. vez hace mucho tiempo</string>
+
     <!-- device messages for updates -->
     <string name="device_welcome_message">🔮 Bienvenido a ArcaneChat✨\n\nPara ponerte en contacto con amigos:\n\n🤳🏻 Toca \"Código QR\" en la pantalla principal de ambos dispositivos. Elije \"Escanear código QR\" en un dispositivo y apunta la cámara hacia el otro\n\n🔗 Si no estás en la misma habitación, comparte tu enlace de invitación usando \"Invitar amigos\" en el menú\n\n📢 Únete al [Canal Oficial de ArcaneChat](%1$s) (en inglés) para noticias sobre el desarrollo de la aplicación.</string>
 
-    <string name="update_2_46ac">🔮 ¿Qué hay de nuevo?\n\n✦ Llamadas de audio/video experimentales mejoradas con una mejor integración con el sistema\n\n✦ Se agregó un selector de stickers básico\n\n✦ Se mejoró el selector de archivos adjuntos\n\n✦ Se minimizó aún más los metadatos en los mensajes\n\n✦ Mayor resiliencia con el uso de múltiples relays: si un relay falla, los mensajes se siguen recibiendo en los demás\n\n✦ Mejor sincronización del estado de las notificaciones en varios dispositivos\n\n✦ Enlace de invitación corregido para unirse al 📢 [Canal oficial de ArcaneChat](%2$s) (en inglés)\n\n✦ Varias correcciones de errores y traducciones actualizadas\n\n\n💜 Por favor, dona para ayudarnos a mantenernos independientes y continuar brindando mejoras: %1$s</string>
+    <string name="update_2_62ac">🔮 ¿Qué hay de nuevo?\n\n✦ Tus mensajes ahora viajan de forma más inteligente cuando usas varios nodos de retransmisión: la caída de uno de ellos no los detendrá\n\n✦ Las imágenes enviadas ahora tienen mayor calidad\n\n✦ Integración mejorada con Android 17\n\n✦ Posibilidad de abrir enlaces de invitación pegados en la barra de búsqueda global y en la búsqueda de contactos\n\n✦ Varias correcciones de errores y traducciones actualizadas\n\n\n💜 Por favor, dona para ayudarnos a mantenernos independientes y continuar brindando mejoras: %1$s</string>
 </resources>

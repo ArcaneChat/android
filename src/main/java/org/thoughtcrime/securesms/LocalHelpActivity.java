@@ -106,7 +106,7 @@ public class LocalHelpActivity extends WebViewActivity {
       openOnlineUrl("https://arcanechat.me");
       return true;
     } else if (itemId == R.id.privacy_policy) {
-      openOnlineUrl("https://arcanechat.me/privacy.html");
+      openOnlineUrl("https://arcanechat.me/privacy");
       return true;
     } else if (itemId == R.id.contribute) {
       openOnlineUrl("https://arcanechat.me/#contribute");

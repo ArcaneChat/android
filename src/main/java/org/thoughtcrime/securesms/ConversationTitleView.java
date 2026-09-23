@@ -89,19 +89,14 @@ public class ConversationTitleView extends RelativeLayout {
       } else {
         DcContact dcContact = dcContext.getContact(chatContacts[0]);
         isOnline = dcContact.wasSeenRecently();
-        if (!dcChat.isEncrypted()) {
+        if (!dcContact.isKeyContact()) {
           subtitleStr = dcContact.getAddr();
         } else if (dcContact.isBot()) {
           subtitleStr = context.getString(R.string.bot);
         } else if (isOnline) {
           subtitleStr = context.getString(R.string.online);
         } else {
-          long timestamp = dcContact.getLastSeen();
-          if (timestamp >= 0) {
-            subtitleStr =
-                context.getString(
-                    R.string.last_seen_at, DateUtils.getExtendedTimeSpanString(context, timestamp));
-          }
+          subtitleStr = DateUtils.getFormattedLastSeen(getContext(), dcContact.getLastSeen());
         }
       }
     }
@@ -119,20 +114,6 @@ public class ConversationTitleView extends RelativeLayout {
     }
     boolean isEphemeral = dcContext.getChatEphemeralTimer(chatId) != 0;
     ephemeralIcon.setVisibility(isEphemeral ? View.VISIBLE : View.GONE);
-  }
-
-  public void setTitle(@NonNull GlideRequests glideRequests, @NonNull DcContact contact) {
-    // This function is only called for contacts without a corresponding 1:1 chat.
-    // If there is a 1:1 chat, then the overloaded function
-    // setTitle(GlideRequests, DcChat, boolean) is called.
-    avatar.setAvatar(glideRequests, new Recipient(getContext(), contact), false);
-    avatar.setSeenRecently(contact.wasSeenRecently());
-
-    title.setText(contact.getDisplayName());
-    if (!contact.isKeyContact()) {
-      subtitle.setText(contact.getAddr());
-    }
-    subtitle.setVisibility(View.VISIBLE);
   }
 
   public void setSeenRecently(boolean seenRecently) {
