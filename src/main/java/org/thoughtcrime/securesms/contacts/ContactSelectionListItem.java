@@ -68,8 +68,6 @@ public class ContactSelectionListItem extends LinearLayout {
             Util.runOnMain(
                 () -> {
                   avatar.setAvatar(glideRequests, recipient, false);
-                  DcContact dcContact = recipient.getDcContact();
-                  avatar.setSeenRecently(dcContact != null && dcContact.wasSeenRecently());
                   nameView.setText(recipient.toShortString());
                 });
           }
@@ -80,20 +78,9 @@ public class ContactSelectionListItem extends LinearLayout {
     }
 
     this.avatar.setAvatar(glideRequests, recipient, false);
-    this.avatar.setSeenRecently(contact.wasSeenRecently());
-
-    String subtitle = null;
-    if (!contact.isKeyContact()) {
-      subtitle = contact.getAddr();
-    } else if (contact.isBot()) {
-      subtitle = getContext().getString(R.string.bot);
-    } else if (contact.wasSeenRecently()) {
-      subtitle = getContext().getString(R.string.online);
-    } else {
-      subtitle = DateUtils.getFormattedLastSeen(getContext(), contact.getLastSeen());
-    }
 
     this.nameView.setTypeface(null, Typeface.NORMAL);
+    String subtitle = DateUtils.getStatusLine(getContext(), contact, true);
     setText(name, subtitle);
 
     if (multiSelect) this.checkBox.setVisibility(View.VISIBLE);
@@ -113,7 +100,6 @@ public class ContactSelectionListItem extends LinearLayout {
     } else {
       this.avatar.setAvatar(glideRequests, null, false);
     }
-    this.avatar.setSeenRecently(false);
 
     this.nameView.setTypeface(null, Typeface.BOLD);
     setText(title, null);
@@ -134,7 +120,6 @@ public class ContactSelectionListItem extends LinearLayout {
     }
     this.recipientListener = null;
     this.avatar.setAvatar(glideRequests, recipient, false);
-    this.avatar.setSeenRecently(false);
 
     this.nameView.setTypeface(null, Typeface.NORMAL);
     setText(inviteData.getDisplayTitle(), inviteData.getDisplaySubtitle());

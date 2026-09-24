@@ -19,6 +19,8 @@ package org.thoughtcrime.securesms.util;
 import android.content.Context;
 import android.text.format.DateFormat;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.b44t.messenger.DcContact;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -152,7 +154,24 @@ public class DateUtils extends android.text.format.DateUtils {
     return context.getResources().getQuantityString(R.plurals.seen_n_years_ago, years, years);
   }
 
-  public static String getFormattedLastSeen(final Context context, final long timestamp) {
+  public static @Nullable String getStatusLine(final Context context, final DcContact contact, boolean simple) {
+    if (contact.getId() == DcContact.DC_CONTACT_ID_SELF) {
+      return null;
+    } else if (contact.isBlocked()) {
+      return context.getString(R.string.contact_blocked);
+    } else if (!contact.isKeyContact()) {
+      return contact.getAddr();
+    } else if (contact.isBot()) {
+      return context.getString(R.string.bot);
+    } else if (contact.wasSeenRecently()) {
+      return context.getString(R.string.last_seen_recently);
+    } else if (simple && contact.getFreshness() != DcContact.DC_FRESHNESS_OLD) {
+      // return null;
+    }
+    return getFormattedLastSeen(context, contact.getLastSeen());
+  }
+
+  private static @NonNull String getFormattedLastSeen(final Context context, final long timestamp) {
     if (timestamp == 0) {
       return context.getString(R.string.never_seen);
     }
@@ -164,17 +183,19 @@ public class DateUtils extends android.text.format.DateUtils {
     final int oneYear = 365 * oneDay;
 
     if (age < oneDay) {
-        return context.getString(R.string.last_seen_recently);
+      return context.getString(R.string.last_seen_today);
     }
     if (age < oneWeek) {
-        return context.getString(R.string.last_seen_within_week);
+      return context.getString(R.string.last_seen_within_week);
     }
     if (age <= oneMonth) {
-        return context.getString(R.string.last_seen_within_month);
+      return context.getString(R.string.last_seen_within_month);
     }
     if (age < oneYear) {
       final int months = (int) (age / oneMonth);
-      return context.getResources().getQuantityString(R.plurals.last_seen_n_months_ago, months, months);
+      return context
+          .getResources()
+          .getQuantityString(R.plurals.last_seen_n_months_ago, months, months);
     }
 
     return context.getString(R.string.last_seen_long_ago);

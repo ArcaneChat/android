@@ -61,7 +61,6 @@ public class ConversationTitleView extends RelativeLayout {
     title.setText(dcChat.getName());
     String subtitleStr = null;
 
-    boolean isOnline = false;
     int[] chatContacts = dcContext.getChatContacts(chatId);
     if (dcChat.isMailingList()) {
       subtitleStr = context.getString(R.string.mailing_list);
@@ -88,21 +87,14 @@ public class ConversationTitleView extends RelativeLayout {
         subtitleStr = context.getString(R.string.device_talk_subtitle);
       } else {
         DcContact dcContact = dcContext.getContact(chatContacts[0]);
-        isOnline = dcContact.wasSeenRecently();
-        if (!dcContact.isKeyContact()) {
-          subtitleStr = dcContact.getAddr();
-        } else if (dcContact.isBot()) {
-          subtitleStr = context.getString(R.string.bot);
-        } else if (isOnline) {
-          subtitleStr = context.getString(R.string.online);
-        } else {
-          subtitleStr = DateUtils.getFormattedLastSeen(getContext(), dcContact.getLastSeen());
+        boolean pendingInvite = !dcChat.canSend() && !dcChat.isContactRequest();
+        if (!pendingInvite) {
+          subtitleStr = DateUtils.getStatusLine(getContext(), dcContact, true);
         }
       }
     }
 
     avatar.setAvatar(glideRequests, new Recipient(getContext(), dcChat), false);
-    avatar.setSeenRecently(isOnline);
     int imgLeft = dcChat.isMuted() ? R.drawable.ic_volume_off_white_18dp : 0;
     int imgRight = dcChat.isSelfTalk() || dcChat.isDeviceTalk() ? R.drawable.ic_verified : 0;
     title.setCompoundDrawablesWithIntrinsicBounds(imgLeft, 0, imgRight, 0);
@@ -114,10 +106,6 @@ public class ConversationTitleView extends RelativeLayout {
     }
     boolean isEphemeral = dcContext.getChatEphemeralTimer(chatId) != 0;
     ephemeralIcon.setVisibility(isEphemeral ? View.VISIBLE : View.GONE);
-  }
-
-  public void setSeenRecently(boolean seenRecently) {
-    avatar.setSeenRecently(seenRecently);
   }
 
   @Override

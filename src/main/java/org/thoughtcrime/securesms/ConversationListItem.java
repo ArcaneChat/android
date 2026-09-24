@@ -154,9 +154,6 @@ public class ConversationListItem extends RelativeLayout
 
     this.avatar.setAvatar(glideRequests, recipient, false);
 
-    DcContact contact = recipient.getDcContact();
-    avatar.setSeenRecently(contact != null && contact.wasSeenRecently());
-
     DcChat dcChat = DcHelper.getContext(getContext()).getChat((int) chatId);
     setMutedState(thread.isMuted(), dcChat.isDeviceTalk() || dcChat.isSelfTalk());
   }
@@ -180,7 +177,6 @@ public class ConversationListItem extends RelativeLayout
 
     setBatchState(false);
     avatar.setAvatar(glideRequests, recipient, false);
-    avatar.setSeenRecently(contact.wasSeenRecently());
   }
 
   public void bind(
@@ -212,7 +208,6 @@ public class ConversationListItem extends RelativeLayout
 
     setBatchState(false);
     avatar.setAvatar(glideRequests, recipient, false);
-    avatar.setSeenRecently(false);
   }
 
   public void bind(@NonNull QrInviteData inviteData, @NonNull GlideRequests glideRequests) {
@@ -240,12 +235,10 @@ public class ConversationListItem extends RelativeLayout
       DcContact contact = dcContext.getContact(inviteData.getContactId());
       Recipient recipient = new Recipient(getContext(), contact);
       avatar.setAvatar(glideRequests, recipient, false);
-      avatar.setSeenRecently(contact.wasSeenRecently());
     } else {
       avatar.setImageDrawable(
           new GeneratedContactPhoto("+")
               .asDrawable(getContext(), ThemeUtil.getDummyContactColor(getContext())));
-      avatar.setSeenRecently(false);
     }
   }
 

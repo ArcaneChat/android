@@ -73,36 +73,16 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
                   .getQuantityString(R.plurals.n_members, memberCount, memberCount);
         }
       } else if (dcContact != null && !dcChat.isSelfTalk() && !dcChat.isDeviceTalk()) {
-        long timestamp = dcContact.getLastSeen();
-        if (timestamp == 0) {
-          subtitle = getContext().getString(R.string.last_seen_unknown);
-        } else {
-          subtitle =
-              getContext()
-                  .getString(
-                      R.string.last_seen_at,
-                      DateUtils.getExtendedTimeSpanString(getContext(), timestamp));
-        }
+        subtitle = DateUtils.getStatusLine(getContext(), dcContact, false);
       }
     } else if (dcContact != null) {
       recipient = new Recipient(getContext(), dcContact);
       name = dcContact.getDisplayName();
-
-      long timestamp = dcContact.getLastSeen();
-      if (timestamp == 0) {
-        subtitle = getContext().getString(R.string.last_seen_unknown);
-      } else {
-        subtitle =
-            getContext()
-                .getString(
-                    R.string.last_seen_at,
-                    DateUtils.getExtendedTimeSpanString(getContext(), timestamp));
-      }
+      subtitle = DateUtils.getStatusLine(getContext(), dcContact, false);
     }
 
     recipient.addListener(this);
     avatarView.setAvatar(glideRequests, recipient, false);
-    avatarView.setSeenRecently(dcContact != null && dcContact.wasSeenRecently());
 
     nameView.setText(name);
 
@@ -134,7 +114,6 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
           () -> {
             avatarView.setAvatar(glideRequests, recipient, false);
             DcContact contact = recipient.getDcContact();
-            avatarView.setSeenRecently(contact != null && contact.wasSeenRecently());
             nameView.setText(recipient.toShortString());
           });
     }
