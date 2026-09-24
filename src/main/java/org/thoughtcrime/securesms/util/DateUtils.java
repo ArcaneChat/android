@@ -154,7 +154,8 @@ public class DateUtils extends android.text.format.DateUtils {
     return context.getResources().getQuantityString(R.plurals.seen_n_years_ago, years, years);
   }
 
-  public static @Nullable String getStatusLine(final Context context, final DcContact contact, boolean simple) {
+  public static @Nullable String getStatusLine(
+      final Context context, final DcContact contact, boolean simple) {
     if (contact.getId() == DcContact.DC_CONTACT_ID_SELF) {
       return null;
     } else if (contact.isBlocked()) {
