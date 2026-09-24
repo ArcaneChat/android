@@ -75,7 +75,7 @@ public class UnifiedPushService extends PushService {
       // We keep the fallback in case something went wrong, or the distributor doesn't
       // implement it correctly
       Log.w(TAG, "Couldn't start foreground service - trying fallback solution");
-      FetchForegroundService.fetchSynchronously();
+      FetchForegroundService.fetchSynchronously(this);
     } catch (Exception e) {
       Log.e(TAG, "An error occurred:", e);
     }
