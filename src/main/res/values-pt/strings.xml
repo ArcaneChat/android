@@ -103,7 +103,7 @@
     <string name="this_month">Este mês</string>
     <string name="last_week">Semana passada</string>
     <string name="last_month">Mês passado</string>
-    <!-- Refers to the time a contact was last seen. Shown below contact name in the profile. The placeholder will be replaced by date or time, resulting in "Last seen at 12:13 AM" or "Last seen Nov 12" -->
+    <!-- deprecated -->
     <string name="last_seen_at">Visto/a pela última vez às/a %1$s</string>
     <!-- Shown beside messages that are "N minutes old". Prefer short strings, or well-known abbreviations. -->
     <plurals name="n_minutes">
@@ -615,9 +615,6 @@
     <string name="pref_background_notifications_rationale">Para manter a ligação e receber mensagens em segundo plano, ignora optimizações de bateria no próximo passo.\n\nO Delta Chat usa poucos recursos e tem cuidado para não gastar muita bateria.</string>
     <!-- disabling "Reliable service" will hide a the maybe annoying permanent-notification with the drawback that new-message-notifications get potentially unreliable -->
     <string name="perm_enable_bg_reminder_title">Toque aqui para receber mensagens mesmo que o Delta Chat esteja em segundo plano.</string>
-
-    <string name="instant_onboarding_agree_default2">Termos e Política de privacidade para %1$s</string>
-
     <string name="perm_enable_bg_already_done">Já deste permissão para que o Delta Chat receba mensagens em segundo plano.\n\nSe continuas a não receber mensagens em segundo plano, confirma as definições de sistema também.</string>
 
     </resources>

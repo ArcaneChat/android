@@ -114,11 +114,13 @@
     <string name="this_month">Ebben a hónapban</string>
     <string name="last_week">Múlt héten</string>
     <string name="last_month">Múlt hónapban</string>
-    <!-- Refers to the time a contact was last seen. Shown below contact name in the profile. The placeholder will be replaced by date or time, resulting in "Last seen at 12:13 AM" or "Last seen Nov 12" -->
+    <!-- deprecated -->
     <string name="last_seen_at">Utoljára látta: %1$s</string>
-    <!-- Refers to the time a contact was last seen. Shown below contact name in the profile. The placeholder will be replaced by a relative point in time as "3 minutes ago" (see https://momentjs.com for more examples and languages) -->
+    <!-- deprecated -->
     <string name="last_seen_relative">Utoljára látta: %1$s</string>
+    <!-- deprecated -->
     <string name="last_seen_unknown">Utoljára látta: - (ismeretlen)</string>
+
     <!-- Shown beside messages that are "N minutes old". Prefer short strings, or well-known abbreviations. -->
     <plurals name="n_minutes">
         <item quantity="one">%d perce</item>
@@ -281,7 +283,7 @@
     <string name="share_invite_link_explain">Ezen a hivatkozáson keresztül bárki megtekintheti az Ön profilját, és csevegést kezdeményezhet Önnel. Csak olyan emberekkel ossza meg, akikben megbízik.</string>
     <string name="invite_friends">Partnerek meghívása</string>
     <!-- %1$s is replaced by the user's invitation link ("https://i.delta.chat/...") -->
-    <string name="invite_friends_text">Lépjen kapcsolatba velem a Delta Chat-en:\n%1$s</string>
+    <string name="invite_friends_text">Lépjen kapcsolatba velem a Delta Chaten:\n%1$s</string>
     <string name="menu_copy_selection_to_clipboard">Kiválasztott(ak) másolása</string>
     <string name="menu_copy_link_to_clipboard">Hívatkozás másolása</string>
     <string name="menu_copy_text_to_clipboard">Szöveg másolása</string>
@@ -1014,7 +1016,7 @@
     <string name="delta_chat_homepage">A Delta Chat weboldala</string>
     <string name="contribute">Közreműködés</string>
     <string name="global_menu_help_report_desktop">Jelentsen egy problémát</string>
-    <string name="global_menu_help_about_desktop">A Delta Chat-ről</string>
+    <string name="global_menu_help_about_desktop">A Delta Chatről</string>
     <string name="global_menu_file_open_desktop">Delta Chat megnyitása</string>
     <string name="global_menu_minimize_to_tray">Kicsinyítés</string>
     <string name="no_chat_selected_suggestion_desktop">Válasszon ki egy csevegést vagy indítson egy újat</string>
