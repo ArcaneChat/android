@@ -126,17 +126,6 @@
     <!-- Refers to the time a contact was last seen. Shown below contact name in the profile. The placeholder will be replaced by a relative point in time as "3 minutes ago" (see https://momentjs.com for more examples and languages) -->
     <string name="last_seen_relative">últ. vez: %1$s</string>
     <string name="last_seen_unknown">últ. vez: Desconocido</string>
-
-    <string name="last_seen_recently">últ. vez recientemente</string>
-    <string name="last_seen_today">últ. vez hoy</string>
-    <string name="last_seen_within_week">últ. vez hace unos días</string>
-    <string name="last_seen_within_month">últ. vez hace unas semanas</string>
-    <plurals name="last_seen_n_months_ago">
-      <item quantity="one">últ. vez hace %d mes</item>
-      <item quantity="other">últ. vez hace %d meses</item>
-    </plurals>
-    <string name="last_seen_long_ago">últ. vez hace mucho tiempo</string>
-
     <!-- Call duration as shown in the call bubbles. There is some risk to mix with the sending time, so the word "Duration" may be helpful. Might also be "Duration: %d minutes", "%d-minute duration", "%d-minute length" or "%d-minute call" -->
     <plurals name="call_duration_minutes">
         <item quantity="one">%d minuto</item>
