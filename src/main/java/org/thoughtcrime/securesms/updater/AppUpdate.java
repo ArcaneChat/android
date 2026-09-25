@@ -85,7 +85,7 @@ public class AppUpdate {
   }
 
   public static boolean isSelfUpdateEnabled(Context context) {
-    if (!SOURCE_ID.equals(BuildConfig.FLAVOR)) return false;
+    if (!"gplay".equals(BuildConfig.FLAVOR)) return true;
     try {
       PackageManager pm = context.getPackageManager();
       String installer;
@@ -97,7 +97,7 @@ public class AppUpdate {
       return !PLAY_STORE_PACKAGE.equals(installer);
     } catch (Exception e) {
       Log.w(TAG, "cannot determine install source", e);
-      return false;
+      return true;
     }
   }
 
@@ -119,6 +119,33 @@ public class AppUpdate {
     }
   }
 
+  private static String getSourceId(Context context) {
+    String flavor = BuildConfig.FLAVOR;
+    if ("foss".equals(flavor)) {
+      int abiCode = BuildConfig.VERSION_CODE % 10;
+      String arch;
+      switch (abiCode) {
+        case 1:
+          arch = "armeabi-v7a";
+          break;
+        case 2:
+          arch = "arm64-v8a";
+          break;
+        case 3:
+          arch = "x86";
+          break;
+        case 4:
+          arch = "x86_64";
+          break;
+        default:
+          arch = "unknown";
+          break;
+      }
+      flavor += ":" + arch;
+    }
+    return flavor;
+  }
+
   public static synchronized void maybeCheckUpdate(Context context) {
     try {
       if (!isSelfUpdateEnabled(context)) return;
@@ -131,7 +158,7 @@ public class AppUpdate {
       if (lastCheck != 0 && now - lastCheck < CHECK_INTERVAL_MS) return;
 
       Rpc rpc = DcHelper.getRpc(context);
-      AppSource source = rpc.getAppVersion(CLIENT_ID, SOURCE_ID);
+      AppSource source = rpc.getAppVersion(CLIENT_ID, getSourceId(context));
       if (source == null || source.versionInteger == null) return;
 
       Prefs.setUpdateLastCheck(context, now);
