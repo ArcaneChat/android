@@ -34,10 +34,12 @@ jobs:
           java-version: 17
           distribution: 'temurin'
       - uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4.0.1
+        with:
+          packages: 'platform-tools'
       - uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779 # v1.6.0
         id: setup-ndk
         with:
-          ndk-version: r27
+          ndk-version: "r29"
 
       - name: Compile core
         env:
@@ -59,7 +61,7 @@ jobs:
           for abi in armeabi-v7a arm64-v8a x86 x86_64; do ./gradlew -PABI_FILTER=$abi assembleFossRelease; mv build/outputs/apk/foss/release/*.apk dist/; done
           mv build/outputs/mapping/fossRelease/mapping.txt dist/mapping-foss.txt
           ./gradlew assembleGplayRelease
-          mv build/outputs/apk/gplay/release/*universal* dist/ArcaneChat-gplay.apk
+          mv build/outputs/apk/gplay/release/*universal*.apk dist/ArcaneChat-gplay.apk
           mv build/outputs/mapping/gplayRelease/mapping.txt dist/mapping-gplay.txt
 
       - name: Release on GitHub
