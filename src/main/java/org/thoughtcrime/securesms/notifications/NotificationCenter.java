@@ -218,7 +218,9 @@ public class NotificationCenter {
   public static final int ID_MSG_SUMMARY = 2;
   public static final int ID_GENERIC = 3;
   public static final int ID_FETCH = 4;
-  public static final int ID_INFO = 5;
+  public static final int ID_SENDING = 5;
+  public static final int ID_SENDING_WORKER = 6;
+  public static final int ID_INFO = 7;
   public static final int ID_MSG_OFFSET =
       0; // msgId is added - as msgId start at 10, there are no conflicts with lower numbers
 
@@ -268,6 +270,7 @@ public class NotificationCenter {
    */
   public static final String CH_INFO = "ch_info";
 
+  public static final String CH_SENDING = "ch_sending";
   public static final String CH_CALLS_PREFIX = "call_chan";
 
   private boolean notificationChannelsSupported() {
@@ -481,7 +484,7 @@ public class NotificationCenter {
           }
           String text =
               privacy.isDisplayMessage()
-                  ? dcMsg.getSummarytext(2000)
+                  ? dcMsg.getSummaryText(true, true, 2000)
                   : context.getString(R.string.notify_new_message);
           String shortLine = text;
           if (dcChat.isMultiUser() && privacy.isDisplayContact()) {
@@ -529,7 +532,7 @@ public class NotificationCenter {
                   R.string.reaction_by_other,
                   contact.getDisplayName(),
                   reaction,
-                  dcMsg.getSummarytext(2000));
+                  dcMsg.getSummaryText(true, true, 2000));
           DcChat dcChat = dcContext.getChat(dcMsg.getChatId());
 
           NotifData notifData =

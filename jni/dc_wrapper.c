@@ -1480,9 +1480,9 @@ JNIEXPORT jlong Java_com_b44t_messenger_DcMsg_getSummaryCPtr(JNIEnv *env, jobjec
 }
 
 
-JNIEXPORT jstring Java_com_b44t_messenger_DcMsg_getSummarytext(JNIEnv *env, jobject obj, jint approx_characters)
+JNIEXPORT jstring Java_com_b44t_messenger_DcMsg_getSummaryText(JNIEnv *env, jobject obj, jboolean add_forwarded, jboolean add_type_emoji, jint approx_chars)
 {
-    char* temp = dc_msg_get_summarytext(get_dc_msg(env, obj), approx_characters);
+    char* temp = dc_msg_get_summary_text(get_dc_msg(env, obj), add_forwarded, add_type_emoji, approx_chars);
         jstring ret = JSTRING_NEW(temp);
     dc_str_unref(temp);
     return ret;
@@ -1588,6 +1588,12 @@ JNIEXPORT void Java_com_b44t_messenger_DcMsg_setSubject(JNIEnv *env, jobject obj
     CHAR_REF(text);
         dc_msg_set_subject(get_dc_msg(env, obj), textPtr);
     CHAR_UNREF(text);
+}
+
+
+JNIEXPORT jboolean Java_com_b44t_messenger_DcMsg_isPinned(JNIEnv *env, jobject obj)
+{
+    return dc_msg_is_pinned(get_dc_msg(env, obj))!=0;
 }
 
 

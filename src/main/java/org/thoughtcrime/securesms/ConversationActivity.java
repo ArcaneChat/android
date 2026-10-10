@@ -332,25 +332,42 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       return;
     }
 
+    ListenableFuture<Integer> future = null;
     if (!Util.isEmpty(composeText) || attachmentManager.isAttachmentPresent()) {
-      processComposeControls(ACTION_SAVE_DRAFT);
+      future = processComposeControls(ACTION_SAVE_DRAFT);
       attachmentManager.clear(glideRequests, false);
       composeText.setText("");
     }
 
     setIntent(intent);
     initializeResources();
-    initializeSecurity(false, isDefaultSms)
-        .addListener(
-            new AssertedSuccessListener<Boolean>() {
-              @Override
-              public void onSuccess(Boolean result) {
-                initializeDraft();
-              }
-            });
+    initializeSecurity(false, isDefaultSms);
+
+    AssertedSuccessListener<Integer> futureListener =
+        new AssertedSuccessListener<Integer>() {
+          @Override
+          public void onSuccess(Integer result) {
+            Util.runOnMain(
+                () -> {
+                  initializeDraft()
+                      .addListener(
+                          new AssertedSuccessListener<Boolean>() {
+                            @Override
+                            public void onSuccess(Boolean result) {
+                              Util.runOnMain(() -> handleRelaying());
+                            }
+                          });
+                });
+          }
+        };
+
+    if (future != null) {
+      future.addListener(futureListener);
+    } else {
+      futureListener.onSuccess(0);
+    }
 
     setDcEventListener(); // reset event listener
-    handleRelaying();
     invalidateOptionsMenu(); // set correct menu visibility in case of chat changes
 
     if (fragment != null) {
@@ -1874,7 +1891,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       slideDeck.addSlide(MediaUtil.getSlideForMsg(this, msg));
     }
 
-    String text = msg.getSummarytext(500);
+    String text = msg.getSummaryText(true, true, 500);
 
     inputPanel.setQuote(
         GlideApp.with(this), msg, msg.getTimestamp(), author, text, slideDeck, false);
@@ -1889,7 +1906,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
         new Recipient(this, DcHelper.getContext(context).getContact(msg.getFromId()));
 
     SlideDeck slideDeck = new SlideDeck();
-    String text = msg.getSummarytext(500);
+    String text = msg.getSummaryText(true, true, 500);
 
     inputPanel.setQuote(
         GlideApp.with(this), msg, msg.getTimestamp(), author, text, slideDeck, true);

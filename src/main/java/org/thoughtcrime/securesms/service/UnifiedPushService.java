@@ -45,7 +45,7 @@ public class UnifiedPushService extends PushService {
     prefixedToken = token;
     getDcAccounts().setPushDeviceToken(token);
     KeepAliveService.maybeStopSelf(this);
-    WorkManager.getInstance(this).cancelUniqueWork(FetchWorker.periodicWorkTag);
+    WorkManager.getInstance(this).cancelUniqueWork(FetchWorker.TAG);
   }
 
   @Override

@@ -61,6 +61,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import org.thoughtcrime.securesms.ConversationAdapter.ItemClickListener;
+import org.thoughtcrime.securesms.components.PinnedMessagesBanner;
 import org.thoughtcrime.securesms.components.audioplay.AudioPlaybackViewModel;
 import org.thoughtcrime.securesms.components.reminder.DozeReminder;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
@@ -102,10 +103,12 @@ public class ConversationFragment extends MessageSelectorFragment {
   private View floatingLocationButton;
   private View bottomDivider;
   private AddReactionView addReactionView;
+  private PinnedMessagesBanner pinnedMessagesBanner;
   private TextView noMessageTextView;
   private Timer reloadTimer;
   private ConversationScrollListener scrollListener;
 
+  public boolean isAdmin;
   public boolean isPaused;
   private Debouncer markseenDebouncer;
   private Rpc rpc;
@@ -124,6 +127,7 @@ public class ConversationFragment extends MessageSelectorFragment {
     eventCenter.addObserver(DcContext.DC_EVENT_MSG_DELIVERED, this);
     eventCenter.addObserver(DcContext.DC_EVENT_MSG_FAILED, this);
     eventCenter.addObserver(DcContext.DC_EVENT_CHAT_MODIFIED, this);
+    eventCenter.addObserver(DcContext.DC_EVENT_PINNED_MESSAGES_CHANGED, this);
 
     markseenDebouncer = new Debouncer(800);
     reloadTimer = new Timer("reloadTimer", false);
@@ -145,10 +149,15 @@ public class ConversationFragment extends MessageSelectorFragment {
     scrollToBottomButton = ViewUtil.findById(view, R.id.scroll_to_bottom_button);
     floatingLocationButton = ViewUtil.findById(view, R.id.floating_location_button);
     addReactionView = ViewUtil.findById(view, R.id.add_reaction_view);
+    pinnedMessagesBanner = ViewUtil.findById(view, R.id.pinned_messages_banner);
     noMessageTextView = ViewUtil.findById(view, R.id.no_messages_text_view);
     bottomDivider = ViewUtil.findById(view, R.id.bottom_divider);
 
-    scrollToBottomButton.setOnClickListener(v -> scrollToBottom());
+    scrollToBottomButton.setOnClickListener(
+        v -> {
+          pinnedMessagesBanner.goToStart(GlideApp.with(this));
+          scrollToBottom();
+        });
 
     final SetStartingPositionLinearLayoutManager layoutManager =
         new SetStartingPositionLinearLayoutManager(
@@ -160,6 +169,22 @@ public class ConversationFragment extends MessageSelectorFragment {
 
     new ConversationItemSwipeCallback(msg -> actionMode == null, this::handleReplyMessage)
         .attachToRecyclerView(list);
+
+    pinnedMessagesBanner.setListener(
+        new PinnedMessagesBanner.PinnedMessagesBannerListener() {
+          @Override
+          public void onAppButtonClicked(int msgId) {
+            DcContext dcContext = DcHelper.getContext(getContext());
+            WebxdcActivity.openWebxdcActivity(getContext(), dcContext.getMsg(msgId));
+          }
+
+          @Override
+          public void onMessageClicked(int msgId) {
+            hideAddReactionView();
+            scrollMaybeSmoothToMsgId(msgId);
+            pinnedMessagesBanner.goToNextMessage(GlideApp.with(ConversationFragment.this));
+          }
+        });
 
     // setLayerType() is needed to allow larger items (long texts in our case)
     // with hardware layers, drawing may result in errors as "OpenGLRenderer: Path too large to be
@@ -189,6 +214,36 @@ public class ConversationFragment extends MessageSelectorFragment {
 
     initializeResources();
     initializeListAdapter();
+    loadPinnedMessages(true);
+  }
+
+  private void loadPinnedMessages(boolean reset) {
+    if (chatId == -1) {
+      pinnedMessagesBanner.dismiss();
+      return;
+    }
+
+    Util.runOnBackground(
+        () -> {
+          try {
+            List<Integer> pinnedIds =
+                rpc.getPinnedMessages(rpc.getSelectedAccountId(), (int) chatId);
+            if (pinnedIds != null) {
+              Collections.reverse(pinnedIds);
+              Util.runOnMain(
+                  () -> {
+                    if (getActivity() != null) {
+                      pinnedMessagesBanner.setMessages(GlideApp.with(this), pinnedIds, reset);
+                    }
+                  });
+            } else {
+              Util.runOnMain(() -> pinnedMessagesBanner.dismiss());
+            }
+          } catch (RpcException e) {
+            Log.e(TAG, "RPC error loading pinned messages", e);
+            Util.runOnMain(() -> pinnedMessagesBanner.dismiss());
+          }
+        });
   }
 
   private void setNoMessageText() {
@@ -289,6 +344,7 @@ public class ConversationFragment extends MessageSelectorFragment {
 
     initializeResources();
     initializeListAdapter();
+    loadPinnedMessages(true);
 
     if (chatId == -1) {
       reloadList();
@@ -332,6 +388,14 @@ public class ConversationFragment extends MessageSelectorFragment {
               ? DcContext.DC_EVENT_MSG_READ_COUNT_CHANGED
               : DcContext.DC_EVENT_MSG_READ,
           this);
+    }
+
+    try {
+      Integer adminId = rpc.getFullChatById(rpc.getSelectedAccountId(), (int) chatId).groupAdminId;
+      isAdmin = adminId == null || adminId == DcContact.DC_CONTACT_ID_SELF;
+    } catch (RpcException e) {
+      Log.e(TAG, "RPC failed", e);
+      isAdmin = true;
     }
 
     this.startingPosition =
@@ -414,7 +478,8 @@ public class ConversationFragment extends MessageSelectorFragment {
       menu.findItem(R.id.menu_context_edit).setVisible(false);
       menu.findItem(R.id.menu_context_reply_privately).setVisible(false);
       menu.findItem(R.id.menu_add_to_home_screen).setVisible(false);
-      // menu.findItem(R.id.menu_toggle_save).setVisible(false);
+      menu.findItem(R.id.menu_toggle_save).setVisible(false);
+      menu.findItem(R.id.menu_toggle_pin).setVisible(false);
     } else {
       DcMsg messageRecord = messageRecords.iterator().next();
       DcChat chat = getListAdapter().getChat();
@@ -436,6 +501,11 @@ public class ConversationFragment extends MessageSelectorFragment {
       toggleSave.setIcon(saved? R.drawable.baseline_bookmark_remove_24 : R.drawable.baseline_bookmark_border_24);
       toggleSave.setTitle(saved? R.string.unsave : R.string.save);
       */
+
+      MenuItem togglePin = menu.findItem(R.id.menu_toggle_pin);
+      togglePin.setVisible(
+          isAdmin && chat.isEncrypted() && chat.canSend() && !messageRecord.isInfo());
+      togglePin.setTitle(messageRecord.isPinned() ? R.string.unpin : R.string.pin);
     }
 
     // if one of the selected items cannot be saved, disable saving.
@@ -446,7 +516,7 @@ public class ConversationFragment extends MessageSelectorFragment {
       if (canSave && !messageRecord.hasFile()) {
         canSave = false;
       }
-      if (canResend && !messageRecord.isOutgoing()) {
+      if (canResend && (!messageRecord.isOutgoing() || messageRecord.isInfo())) {
         canResend = false;
       }
       if (!canSave && !canResend) {
@@ -504,6 +574,7 @@ public class ConversationFragment extends MessageSelectorFragment {
     if (this.chatId != chatId) {
       this.chatId = chatId;
       initializeListAdapter();
+      loadPinnedMessages(true);
     }
   }
 
@@ -564,7 +635,7 @@ public class ConversationFragment extends MessageSelectorFragment {
       if (msg.getType() == DcMsg.DC_MSG_TEXT || (singleMsg && !msg.getText().isEmpty())) {
         result.append(msg.getText());
       } else {
-        result.append(msg.getSummarytext(10000000));
+        result.append(msg.getSummaryText(true, true, 10000000));
       }
 
       prevMsg = msg;
@@ -689,6 +760,14 @@ public class ConversationFragment extends MessageSelectorFragment {
     }
   }
 
+  private void handleTogglePin(final DcMsg msg) {
+    try {
+      rpc.setPinnedMessageState(rpc.getSelectedAccountId(), msg.getId(), !msg.isPinned());
+    } catch (RpcException e) {
+      Log.e(TAG, "RPC error", e);
+    }
+  }
+
   private void reloadList() {
     reloadList(false);
   }
@@ -716,7 +795,7 @@ public class ConversationFragment extends MessageSelectorFragment {
       pixelOffset =
           (firstView == null)
               ? 0
-              : list.getBottom() - firstView.getBottom() - list.getPaddingBottom();
+              : list.getHeight() - firstView.getBottom() - list.getPaddingBottom();
     }
 
     if (getContext() == null) {
@@ -825,9 +904,6 @@ public class ConversationFragment extends MessageSelectorFragment {
     private final Animation scrollButtonInAnimation;
     private final Animation scrollButtonOutAnimation;
 
-    private boolean wasAtBottom = true;
-    private boolean wasAtZoomScrollHeight = false;
-
     // private long    lastPositionId        = -1;
 
     ConversationScrollListener(@NonNull Context context) {
@@ -844,18 +920,16 @@ public class ConversationFragment extends MessageSelectorFragment {
       boolean currentlyAtZoomScrollHeight = isAtZoomScrollHeight();
       //            int     positionId                  = getHeaderPositionId();
 
-      if (currentlyAtZoomScrollHeight && !wasAtZoomScrollHeight) {
-        ViewUtil.animateIn(scrollToBottomButton, scrollButtonInAnimation);
-      } else if (currentlyAtBottom && !wasAtBottom) {
+      if (currentlyAtBottom) {
         ViewUtil.animateOut(scrollToBottomButton, scrollButtonOutAnimation, View.INVISIBLE);
+      } else if (currentlyAtZoomScrollHeight) {
+        ViewUtil.animateIn(scrollToBottomButton, scrollButtonInAnimation);
       }
 
       //      if (positionId != lastPositionId) {
       //        bindScrollHeader(conversationDateHeader, positionId);
       //      }
 
-      wasAtBottom = currentlyAtBottom;
-      wasAtZoomScrollHeight = currentlyAtZoomScrollHeight;
       //            lastPositionId        = positionId;
 
       markseenDebouncer.publish(() -> manageMessageSeenState());
@@ -962,6 +1036,10 @@ public class ConversationFragment extends MessageSelectorFragment {
           // if the parent webxdc message still exists
           WebxdcActivity.openWebxdcActivity(
               getContext(), messageRecord.getParent(), messageRecord.getWebxdcHref());
+        }
+      } else if (messageRecord.getInfoType() == DcMsg.DC_INFO_MESSAGE_PINNED) {
+        if (messageRecord.getParent() != null) {
+          scrollMaybeSmoothToMsgId(messageRecord.getParent().getId());
         }
       } else if (messageRecord.getInfoType() == DcMsg.DC_INFO_LOCATIONSTREAMING_ENABLED) {
         WebxdcActivity.openMaps(getContext(), (int) chatId);
@@ -1188,6 +1266,10 @@ public class ConversationFragment extends MessageSelectorFragment {
         handleToggleSave(getListAdapter().getSelectedItems());
         actionMode.finish();
         return true;
+      } else if (itemId == R.id.menu_toggle_pin) {
+        handleTogglePin(getSelectedMessageRecord(getListAdapter().getSelectedItems()));
+        actionMode.finish();
+        return true;
       }
       return false;
     }
@@ -1200,6 +1282,7 @@ public class ConversationFragment extends MessageSelectorFragment {
         if (event.getData1Int() == 0 // deleted messages or batch insert
             || event.getData1Int() == chatId) {
           reloadList();
+          Util.runOnMain(() -> pinnedMessagesBanner.refresh(GlideApp.with(this)));
         }
         break;
 
@@ -1219,6 +1302,10 @@ public class ConversationFragment extends MessageSelectorFragment {
           updateLocationButton();
           reloadList(true);
         }
+        break;
+
+      case DcContext.DC_EVENT_PINNED_MESSAGES_CHANGED:
+        loadPinnedMessages(false);
         break;
     }
 
