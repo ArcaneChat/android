@@ -28,6 +28,7 @@ import org.thoughtcrime.securesms.mms.DecryptableStreamUriLoader;
 import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.mms.Slide;
 import org.thoughtcrime.securesms.recipients.Recipient;
+import org.thoughtcrime.securesms.util.MarkdownUtil;
 import org.thoughtcrime.securesms.util.MediaUtil;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
@@ -253,7 +254,8 @@ public class PinnedMessagesBanner extends FrameLayout {
 
     boolean addEmoji =
         thumbnailView.getVisibility() == GONE && fileIconView.getVisibility() == GONE;
-    textView.setText(pinnedMsg.getSummaryText(false, addEmoji, 500));
+    String text = pinnedMsg.getSummaryText(false, addEmoji, 500);
+    textView.setText(MarkdownUtil.toMarkdown(getContext(), text, false));
   }
 
   public void dismiss() {
