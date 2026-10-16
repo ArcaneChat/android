@@ -285,7 +285,6 @@ public class ShareActivity extends PassphraseRequiredActionBarActivity
 
     ShareUtil.setSharedTitle(intent, ShareUtil.getSharedTitle(this));
     ShareUtil.setSharedType(intent, ShareUtil.getSharedType(this));
-    ShareUtil.setSharedSubject(intent, ShareUtil.getSharedSubject(this));
     ShareUtil.setSharedHtml(intent, ShareUtil.getSharedHtml(this));
     ShareUtil.setSharedUris(intent, resolvedExtras);
 

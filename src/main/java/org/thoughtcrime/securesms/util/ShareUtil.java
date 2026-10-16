@@ -1,7 +1,6 @@
 package org.thoughtcrime.securesms.util;
 
 import static org.thoughtcrime.securesms.ConversationActivity.MSG_HTML_EXTRA;
-import static org.thoughtcrime.securesms.ConversationActivity.MSG_SUBJECT_EXTRA;
 import static org.thoughtcrime.securesms.ConversationActivity.MSG_TYPE_EXTRA;
 import static org.thoughtcrime.securesms.ConversationActivity.TEXT_EXTRA;
 
@@ -103,14 +102,6 @@ public class ShareUtil {
     }
   }
 
-  public static String getSharedSubject(Activity activity) {
-    try {
-      return activity.getIntent().getStringExtra(MSG_SUBJECT_EXTRA);
-    } catch (NullPointerException npe) {
-      return null;
-    }
-  }
-
   public static String getSharedText(Activity activity) {
     try {
       return activity.getIntent().getStringExtra(TEXT_EXTRA);
@@ -137,7 +128,6 @@ public class ShareUtil {
       activity.getIntent().removeExtra(TEXT_EXTRA);
       activity.getIntent().removeExtra(MSG_TYPE_EXTRA);
       activity.getIntent().removeExtra(MSG_HTML_EXTRA);
-      activity.getIntent().removeExtra(MSG_SUBJECT_EXTRA);
     } catch (NullPointerException npe) {
       npe.printStackTrace();
     }
@@ -158,9 +148,6 @@ public class ShareUtil {
       }
       if (getSharedText(currentActivity) != null) {
         newActivityIntent.putExtra(TEXT_EXTRA, getSharedText(currentActivity));
-      }
-      if (getSharedSubject(currentActivity) != null) {
-        newActivityIntent.putExtra(MSG_SUBJECT_EXTRA, getSharedSubject(currentActivity));
       }
       if (getSharedHtml(currentActivity) != null) {
         newActivityIntent.putExtra(MSG_HTML_EXTRA, getSharedHtml(currentActivity));
@@ -188,11 +175,6 @@ public class ShareUtil {
 
   public static void setSharedText(Intent composeIntent, String text) {
     composeIntent.putExtra(TEXT_EXTRA, text);
-    composeIntent.putExtra(IS_SHARING, true);
-  }
-
-  public static void setSharedSubject(Intent composeIntent, String subject) {
-    composeIntent.putExtra(MSG_SUBJECT_EXTRA, subject);
     composeIntent.putExtra(IS_SHARING, true);
   }
 

@@ -121,9 +121,6 @@ window.webxdc = (() => {
       if (message.text) {
         data.text = message.text;
       }
-      if (message.subject) {
-        data.subject = message.subject;
-      }
       if (message.html) {
         data.html = message.html;
       }

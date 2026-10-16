@@ -333,13 +333,7 @@ public class DcHelper {
   }
 
   public static void sendToChat(
-      Context activity,
-      byte[] data,
-      String type,
-      String fileName,
-      String html,
-      String subject,
-      String text) {
+      Context activity, byte[] data, String type, String fileName, String html, String text) {
     Intent intent = new Intent(activity, ShareActivity.class);
     intent.setAction(Intent.ACTION_SEND);
     ShareUtil.setIsFromWebxdc(intent, true);
@@ -357,10 +351,6 @@ public class DcHelper {
 
     if (text != null) {
       intent.putExtra(Intent.EXTRA_TEXT, text);
-    }
-
-    if (subject != null) {
-      ShareUtil.setSharedSubject(intent, subject);
     }
 
     if (html != null) {

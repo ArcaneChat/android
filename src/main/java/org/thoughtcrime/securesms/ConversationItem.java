@@ -444,11 +444,7 @@ public class ConversationItem extends BaseConversationItem {
     }
     linkActionIds.clear();
 
-    String subject = messageRecord.getSubject();
     String text = messageRecord.getText();
-
-    if (!subject.isEmpty() && messageRecord.isOutgoing() && !messageRecord.isSecure())
-      text = subject + "\n\n" + text;
 
     if (messageRecord.getType() == DcMsg.DC_MSG_CALL || text.isEmpty()) {
       bodyText.setVisibility(View.GONE);

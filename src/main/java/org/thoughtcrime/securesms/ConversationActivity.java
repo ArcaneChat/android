@@ -157,7 +157,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
   public static final String TEXT_EXTRA = "draft_text";
   public static final String MSG_TYPE_EXTRA = "msg_type";
   public static final String MSG_HTML_EXTRA = "msg_html";
-  public static final String MSG_SUBJECT_EXTRA = "msg_subject";
   public static final String STARTING_POSITION_EXTRA = "starting_position";
 
   private static final int PICK_GALLERY = 1;
@@ -920,7 +919,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       askSendingFiles(uriList, () -> SendRelayedMessageUtil.immediatelyRelay(this, chatId));
     } else {
       if (ShareUtil.getSharedHtml(this) != null
-          || ShareUtil.getSharedSubject(this) != null
           || ("sticker".equals(ShareUtil.getSharedType(this)) && !uriList.isEmpty())) {
         SendRelayedMessageUtil.immediatelyRelay(this, chatId);
       } else {
@@ -929,7 +927,7 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
             .setDraft(
                 chatId,
                 SendRelayedMessageUtil.createMessage(
-                    this, uri, ShareUtil.getSharedType(this), null, null, getSharedText(this)));
+                    this, uri, ShareUtil.getSharedType(this), null, getSharedText(this)));
       }
       initializeDraft();
     }
@@ -959,8 +957,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       updateToggleButtonState();
       return future;
     }
-
-    inputPanel.setSubject(draft.getSubject());
 
     final String text = TextUtils.isEmpty(sharedText) ? draft.getText() : sharedText;
     if (!text.isEmpty()) {
@@ -1181,7 +1177,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
     if (dcChat.canSend()) {
       inputPanelVisibility = View.VISIBLE;
       isAttachmentHidden = false;
-      inputPanel.setSubjectVisible(!dcChat.isEncrypted());
       // FIXME: disabled for now to avoid problems with chat scrolling and keyboard covering input
       // bar
       // ViewUtil.forceApplyWindowInsets(findViewById(R.id.root_layout), true, false, true, true);
@@ -1190,7 +1185,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
       inputPanelVisibility = View.GONE;
       isAttachmentHidden = true;
       hideSoftKeyboard();
-      inputPanel.setSubjectVisible(false);
       // FIXME: disabled for now to avoid problems with chat scrolling and keyboard covering input
       // bar
       /*
@@ -1311,14 +1305,12 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
 
     Optional<QuoteModel> quote = inputPanel.getQuote();
     boolean editing = isEditing;
-    final String subject = inputPanel.getSubject();
 
     // for a quick ui feedback, we clear the related controls immediately on sending messages.
     // for drafts, however, we do not change the controls, the activity may be resumed.
     if (action == ACTION_SEND_OUT) {
       composeText.setText("");
       inputPanel.clearQuote();
-      inputPanel.clearSubject();
     }
 
     // Stop draft audio playback
@@ -1395,10 +1387,6 @@ public class ConversationActivity extends PassphraseRequiredActionBarActivity
           if (quote.isPresent()) {
             if (msg == null) msg = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
             msg.setQuote(quote.get().getQuotedMsg());
-          }
-
-          if (!subject.isEmpty() && msg != null) {
-            msg.setSubject(subject);
           }
 
           if (action == ACTION_SEND_OUT) {

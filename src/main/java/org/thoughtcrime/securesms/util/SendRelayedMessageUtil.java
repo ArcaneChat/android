@@ -83,15 +83,13 @@ public class SendRelayedMessageUtil {
     } else if (isSharing(activity)) {
       ArrayList<Uri> sharedUris = getSharedUris(activity);
       String sharedText = getSharedText(activity);
-      String subject = ShareUtil.getSharedSubject(activity);
       String sharedHtml = getHtml(activity, ShareUtil.getSharedHtml(activity));
       String msgType = ShareUtil.getSharedType(activity);
       resetRelayingMessageContent(activity);
       Util.runOnAnyBackgroundThread(
           () -> {
             for (long chatId : chatIds) {
-              sendMultipleMsgs(
-                  activity, (int) chatId, sharedUris, msgType, sharedHtml, subject, sharedText);
+              sendMultipleMsgs(activity, (int) chatId, sharedUris, msgType, sharedHtml, sharedText);
             }
           });
     }
@@ -104,7 +102,7 @@ public class SendRelayedMessageUtil {
 
   public static void sendMultipleMsgs(
       Context context, int chatId, ArrayList<Uri> sharedUris, String sharedText) {
-    sendMultipleMsgs(context, chatId, sharedUris, null, null, null, sharedText);
+    sendMultipleMsgs(context, chatId, sharedUris, null, null, sharedText);
   }
 
   private static void sendMultipleMsgs(
@@ -113,22 +111,19 @@ public class SendRelayedMessageUtil {
       ArrayList<Uri> sharedUris,
       String msgType,
       String sharedHtml,
-      String subject,
       String sharedText) {
     ArrayList<Uri> uris = sharedUris;
     String text = sharedText;
 
     if (uris.size() == 1) {
       sendMsgRecodingVideo(
-          context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, subject, text));
+          context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, text));
     } else {
       if (text != null || sharedHtml != null) {
-        sendMsgRecodingVideo(
-            context, chatId, createMessage(context, null, null, sharedHtml, subject, text));
+        sendMsgRecodingVideo(context, chatId, createMessage(context, null, null, sharedHtml, text));
       }
       for (Uri uri : uris) {
-        sendMsgRecodingVideo(
-            context, chatId, createMessage(context, uri, null, null, subject, null));
+        sendMsgRecodingVideo(context, chatId, createMessage(context, uri, null, null, null));
       }
     }
   }
@@ -141,8 +136,7 @@ public class SendRelayedMessageUtil {
     DcHelper.getContext(context).sendMsg(chatId, msg);
   }
 
-  public static DcMsg createMessage(
-      Context context, Uri uri, String type, String html, String subject, String text)
+  public static DcMsg createMessage(Context context, Uri uri, String type, String html, String text)
       throws NullPointerException {
     DcContext dcContext = DcHelper.getContext(context);
     DcMsg message;
@@ -166,9 +160,6 @@ public class SendRelayedMessageUtil {
     }
     if (html != null) {
       message.setHtml(html);
-    }
-    if (subject != null) {
-      message.setSubject(subject);
     }
     if (text != null) {
       message.setText(text);

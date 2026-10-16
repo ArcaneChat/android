@@ -790,7 +790,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         JSONObject jsonObject = new JSONObject(message);
 
         String text = null;
-        String subject = null;
         String html = null;
         byte[] data = null;
         String name = null;
@@ -805,21 +804,15 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         if (jsonObject.has("text")) {
           text = jsonObject.getString("text");
         }
-        if (jsonObject.has("subject")) {
-          subject = jsonObject.getString("subject");
-        }
         if (jsonObject.has("html")) {
           html = jsonObject.getString("html");
         }
 
-        if (TextUtils.isEmpty(text)
-            && TextUtils.isEmpty(subject)
-            && TextUtils.isEmpty(html)
-            && TextUtils.isEmpty(name)) {
+        if (TextUtils.isEmpty(text) && TextUtils.isEmpty(html) && TextUtils.isEmpty(name)) {
           return "provided file is invalid, you need to set both name and base64 content";
         }
 
-        DcHelper.sendToChat(WebxdcActivity.this, data, type, name, html, subject, text);
+        DcHelper.sendToChat(WebxdcActivity.this, data, type, name, html, text);
         return null;
       } catch (Exception e) {
         e.printStackTrace();
