@@ -15,6 +15,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import androidx.annotation.Nullable;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import com.b44t.messenger.DcContext;
@@ -30,22 +31,30 @@ import org.thoughtcrime.securesms.ConversationListRelayingActivity;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.PartAuthority;
 import org.thoughtcrime.securesms.providers.PersistentBlobProvider;
-import org.thoughtcrime.securesms.video.recode.VideoRecoder;
+import org.thoughtcrime.securesms.video.VideoRecodeManager;
 
 public class SendRelayedMessageUtil {
   private static final String TAG = SendRelayedMessageUtil.class.getSimpleName();
 
-  public static void immediatelyRelay(Activity activity, int chatId) {
-    immediatelyRelay(activity, new Long[] {(long) chatId});
+  public static boolean immediatelyRelay(Activity activity, int chatId) {
+    return immediatelyRelay(activity, new Long[] {(long) chatId});
   }
 
-  public static void immediatelyRelay(Activity activity, final Long[] chatIds) {
+  public static boolean immediatelyRelay(Activity activity, final Long[] chatIds) {
+    if (!isForwarding(activity)
+        && isSharing(activity)
+        && containsVideo(activity, getSharedUris(activity))
+        && VideoRecodeManager.getInstance(activity).isBusy()) {
+      VideoRecodeManager.showBusyDialog(activity);
+      return false;
+    }
+
     ConversationListRelayingActivity.finishActivity();
     if (isForwarding(activity)) {
       int forwardedMsgAccId = getForwardedMessageAccountId(activity);
       int[] forwardedMessageIDs = getForwardedMessageIDs(activity);
       resetRelayingMessageContent(activity);
-      if (forwardedMessageIDs == null || forwardedMsgAccId <= 0) return;
+      if (forwardedMessageIDs == null || forwardedMsgAccId <= 0) return true;
 
       Util.runOnAnyBackgroundThread(
           () -> {
@@ -86,13 +95,48 @@ public class SendRelayedMessageUtil {
       String sharedHtml = getHtml(activity, ShareUtil.getSharedHtml(activity));
       String msgType = ShareUtil.getSharedType(activity);
       resetRelayingMessageContent(activity);
-      Util.runOnAnyBackgroundThread(
-          () -> {
-            for (long chatId : chatIds) {
-              sendMultipleMsgs(activity, (int) chatId, sharedUris, msgType, sharedHtml, sharedText);
-            }
-          });
+      relayFiles(activity, chatIds, sharedUris, sharedText, msgType, sharedHtml);
     }
+    return true;
+  }
+
+  public static void relayFiles(
+      Activity activity, Long[] chatIds, ArrayList<Uri> uris, String text) {
+    relayFiles(activity, chatIds, uris, text, null, null);
+  }
+
+  private static boolean relayFiles(
+      Activity activity,
+      Long[] chatIds,
+      ArrayList<Uri> uris,
+      @Nullable String text,
+      @Nullable String msgType,
+      @Nullable String sharedHtml) {
+    if (containsVideo(activity, uris)) {
+      DcContext dcContext = DcHelper.getContext(activity);
+      if (!VideoRecodeManager.getInstance(activity)
+          .startOperation(dcContext, chatIds, uris, text)) {
+        VideoRecodeManager.showBusyDialog(activity);
+        return false;
+      }
+      return true;
+    }
+    Util.runOnAnyBackgroundThread(
+        () -> {
+          for (long chatId : chatIds) {
+            sendMultipleMsgs(activity, (int) chatId, uris, text, msgType, sharedHtml);
+          }
+        });
+    return true;
+  }
+
+  public static boolean containsVideo(Context context, List<Uri> uris) {
+    for (Uri uri : uris) {
+      if (MediaUtil.isVideoType(MediaUtil.getMimeType(context, uri))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private static void handleForwarding(Context context, int chatId, int[] forwardedMessageIDs) {
@@ -100,49 +144,46 @@ public class SendRelayedMessageUtil {
     dcContext.forwardMsgs(forwardedMessageIDs, chatId);
   }
 
-  public static void sendMultipleMsgs(
-      Context context, int chatId, ArrayList<Uri> sharedUris, String sharedText) {
-    sendMultipleMsgs(context, chatId, sharedUris, null, null, sharedText);
-  }
-
   private static void sendMultipleMsgs(
       Context context,
       int chatId,
-      ArrayList<Uri> sharedUris,
+      ArrayList<Uri> uris,
+      String text,
       String msgType,
-      String sharedHtml,
-      String sharedText) {
-    ArrayList<Uri> uris = sharedUris;
-    String text = sharedText;
+      String sharedHtml) {
+    DcContext dcContext = DcHelper.getContext(context);
 
     if (uris.size() == 1) {
-      sendMsgRecodingVideo(
-          context, chatId, createMessage(context, uris.get(0), msgType, sharedHtml, text));
+      dcContext.sendMsg(chatId, createMessage(context, uris.get(0), text, msgType, sharedHtml));
     } else {
       if (text != null || sharedHtml != null) {
-        sendMsgRecodingVideo(context, chatId, createMessage(context, null, null, sharedHtml, text));
+        dcContext.sendMsg(chatId, createMessage(context, null, text, null, sharedHtml));
       }
       for (Uri uri : uris) {
-        sendMsgRecodingVideo(context, chatId, createMessage(context, uri, null, null, null));
+        dcContext.sendMsg(chatId, createMessage(context, uri, null, null, null));
       }
     }
   }
 
-  private static void sendMsgRecodingVideo(Context context, int chatId, DcMsg msg) {
-    VideoRecoder videoRecoder = new VideoRecoder();
-    if (msg.getType() == DcMsg.DC_MSG_VIDEO && !videoRecoder.prepareVideo(context, chatId, msg)) {
-      return;
-    }
-    DcHelper.getContext(context).sendMsg(chatId, msg);
+  public static DcMsg createMessage(Context context, Uri uri, String text, String type, String html)
+      throws NullPointerException {
+    return createMessage(context, DcHelper.getContext(context), uri, text, type, html);
   }
 
-  public static DcMsg createMessage(Context context, Uri uri, String type, String html, String text)
+  public static DcMsg createMessage(Context context, DcContext dcContext, Uri uri, String text)
       throws NullPointerException {
-    DcContext dcContext = DcHelper.getContext(context);
+    return createMessage(context, dcContext, uri, text, null, null);
+  }
+
+  private static DcMsg createMessage(
+      Context context, DcContext dcContext, Uri uri, String text, String type, String html)
+      throws NullPointerException {
     DcMsg message;
     String mimeType = MediaUtil.getMimeType(context, uri);
     if (uri == null) {
       message = new DcMsg(dcContext, DcMsg.DC_MSG_TEXT);
+    } else if ("file".equals(type)) {
+      message = new DcMsg(dcContext, DcMsg.DC_MSG_FILE);
     } else if ("sticker".equals(type)) {
       message = new DcMsg(dcContext, DcMsg.DC_MSG_STICKER);
     } else if ("image".equals(type) || MediaUtil.isImageType(mimeType)) {
@@ -156,7 +197,7 @@ public class SendRelayedMessageUtil {
     }
 
     if (uri != null) {
-      setFileFromUri(context, uri, message, mimeType);
+      setFileFromUri(context, dcContext, uri, message, mimeType);
     }
     if (html != null) {
       message.setHtml(html);
@@ -167,9 +208,9 @@ public class SendRelayedMessageUtil {
     return message;
   }
 
-  private static void setFileFromUri(Context context, Uri uri, DcMsg message, String mimeType) {
+  private static void setFileFromUri(
+      Context context, DcContext dcContext, Uri uri, DcMsg message, String mimeType) {
     String path;
-    DcContext dcContext = DcHelper.getContext(context);
     String filename =
         "cannot-resolve.jpg"; // best guess, this still leads to most images being workable if OS
     // does weird things
@@ -198,7 +239,7 @@ public class SendRelayedMessageUtil {
       if (path != null) {
         InputStream inputStream = PartAuthority.getAttachmentStream(context, uri);
         OutputStream outputStream = new FileOutputStream(path);
-        Util.copy(inputStream, outputStream);
+        Util.copyCancellable(inputStream, outputStream, path);
       }
     } catch (Exception e) {
       e.printStackTrace();

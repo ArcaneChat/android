@@ -142,6 +142,15 @@ public class AttachmentManager {
     }
   }
 
+  public void detach(@NonNull GlideRequests glideRequests) {
+    if (attachmentView != null) {
+      thumbnail.clear(glideRequests);
+      setAttachmentPresent(false);
+      attachmentListener.onAttachmentChanged();
+      slide = Optional.absent();
+    }
+  }
+
   public void cleanup() {
     cleanup(imageCaptureUri);
     cleanup(videoCaptureUri);

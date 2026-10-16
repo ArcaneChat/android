@@ -229,7 +229,9 @@
     <string name="locations">Locations</string>
     <string name="gallery">Gallery</string>
     <string name="images_and_videos">Images and Videos</string>
+    <!-- A single file or document object (manual.pdf, readme.txt and so on). For referring to the "File" menu in desktop apps, see the strings "global_menu_file_desktop" -->
     <string name="file">File</string>
+    <!-- Title for an unknown number of files or document objects (manual.pdf, readme.txt and so on). Use e.g. as a tab in the gallery. For referring to the "File" menu in desktop apps, see the strings "global_menu_file_desktop" -->
     <string name="files">Files</string>
     <string name="files_attach_hint">Send original files and uncompressed images</string>
     <!-- "Files" here means the "Files Selector App" or "Files Manager App" -->
@@ -743,6 +745,11 @@
     <!-- first placeholder is replaced by the number of files (always 2 or more); second placeholder is replaced by a chat name -->
     <string name="ask_send_files_to_chat">Send %1$d files to \"%2$s\"?</string>
     <string name="ask_send_files_to_selected_chats">Send %1$d file(s) to %2$d chats?</string>
+    <!-- Used in notifications when videos are being prepared before they are recoded -->
+    <string name="video_preparing">Preparing media…</string>
+    <!-- Used in notifications when videos are being recoded for smaller sizes before sending -->
+    <string name="video_compressing">Compressing video…</string>
+    <string name="video_recode_busy">Another video is still being processed, please wait.</string>
     <string name="share_text_multiple_chats">Send this text to %1$d chats?\n\n\"%2$s\"</string>
     <string name="share_abort">Sharing aborted due to missing permissions.</string>
 
@@ -1082,6 +1089,7 @@
 
     <string name="welcome_desktop">Welcome to Delta Chat</string>
     <string name="global_menu_preferences_language_desktop">Language</string>
+    <!-- The "File" menu in desktop apps. For referring to a file or document object (manual.pdf, readme.txt and so on), see the strings "file" or "files" -->
     <string name="global_menu_file_desktop">File</string>
     <string name="global_menu_file_quit_desktop">Quit</string>
     <string name="global_menu_edit_desktop">Edit</string>

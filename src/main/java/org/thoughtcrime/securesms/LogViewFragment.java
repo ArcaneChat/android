@@ -20,6 +20,7 @@ package org.thoughtcrime.securesms;
 import android.Manifest;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -53,6 +54,7 @@ import org.thoughtcrime.securesms.service.UnifiedPushService;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
+import org.thoughtcrime.securesms.util.views.ProgressDialog;
 import org.unifiedpush.android.connector.UnifiedPush;
 
 public class LogViewFragment extends Fragment {
@@ -155,6 +157,7 @@ public class LogViewFragment extends Fragment {
 
   private class PopulateLogcatAsyncTask extends AsyncTask<Void, Void, String> {
     private final WeakReference<LogViewFragment> weakFragment;
+    private ProgressDialog progressDialog;
 
     public PopulateLogcatAsyncTask(LogViewFragment fragment) {
       this.weakFragment = new WeakReference<>(fragment);
@@ -174,12 +177,33 @@ public class LogViewFragment extends Fragment {
     @Override
     protected void onPreExecute() {
       super.onPreExecute();
-      logPreview.setText(R.string.one_moment);
+
+      progressDialog = new ProgressDialog(getActivity());
+      progressDialog.setMessage(getString(R.string.one_moment));
+      progressDialog.setCanceledOnTouchOutside(false);
+      progressDialog.setCancelable(false);
+      progressDialog.setButton(
+          DialogInterface.BUTTON_NEGATIVE,
+          getString(android.R.string.cancel),
+          (dialog, which) -> {
+            if (getActivity() != null) {
+              getActivity().finish();
+            }
+          });
+      progressDialog.show();
     }
 
     @Override
     protected void onPostExecute(String logcat) {
       super.onPostExecute(logcat);
+      if (getActivity() != null && progressDialog != null && progressDialog.isShowing()) {
+        try {
+          progressDialog.dismiss();
+        } catch (IllegalArgumentException e) {
+          // Ignore if the activity was already destroyed
+        }
+      }
+
       if (TextUtils.isEmpty(logcat)) {
         // the log is in english, so it is fine if some of explaining strings are in english as well
         logPreview.setText(
