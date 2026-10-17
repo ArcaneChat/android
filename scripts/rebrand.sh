@@ -1,5 +1,6 @@
 #!/bin/sh
 
+find ./src/main/assets/help/ -type f -name '*.html' | xargs sed -i 's|support.delta.chat/c/webxdc/20|lemmy.ml/c/ArcaneChat|g'
 find ./src/main/assets/help/ -type f -name '*.html' | xargs sed -i 's|delta.chat/privacy|arcanechat.me/privacy|g'
 find ./src/main/assets/help/ -type f -name '*.html' | xargs sed -i 's|get.delta.chat|arcanechat.me/#download|g'
 find ./src/main/assets/help/ -type f -name '*.html' | xargs sed -i 's|Delta Chat|ArcaneChat|g'
