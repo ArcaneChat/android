@@ -94,6 +94,7 @@ public class AdvancedPreferenceFragment extends ListSummaryPreferenceFragment
     updateWebxdcStoreSummary();
 
     selfReportingCheckbox = this.findPreference("pref_stats_sending");
+    selfReportingCheckbox.setVisible(0 != dcContext.getConfigInt(CONFIG_STATS_SENDING));
     if (selfReportingCheckbox != null) {
       selfReportingCheckbox.setOnPreferenceChangeListener(
           (preference, newValue) -> {
