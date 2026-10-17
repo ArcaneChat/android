@@ -214,7 +214,19 @@ public class ProfileAdapter extends RecyclerView.Adapter {
     } else if (holder.itemView instanceof ProfileAvatarItem) {
       ProfileAvatarItem item = (ProfileAvatarItem) holder.itemView;
       item.setAvatarClickListener(view -> clickListener.onAvatarClicked());
-      item.set(glideRequests, dcChat, dcContact, memberList);
+
+      boolean isVerified = dcChat != null && (dcChat.isSelfTalk() || dcChat.isDeviceTalk());
+      if (!isVerified && dcContact != null) {
+        isVerified = DcHelper.isVerified(context, dcContact.getId());
+      }
+      if (!isVerified && dcChat != null && dcChat.isInBroadcast()) {
+        int[] chatContacts = dcContext.getChatContacts(dcChat.getId());
+        if (chatContacts.length > 0) {
+          isVerified = DcHelper.isVerified(context, chatContacts[0]);
+        }
+      }
+
+      item.set(glideRequests, dcChat, dcContact, memberList, isVerified);
     } else if (holder.itemView instanceof ProfileTextItem) {
       ProfileTextItem item = (ProfileTextItem) holder.itemView;
       item.setOnClickListener(view -> clickListener.onSettingsClicked(data.viewType));

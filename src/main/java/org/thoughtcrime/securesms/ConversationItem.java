@@ -22,6 +22,7 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -37,6 +38,7 @@ import androidx.annotation.DimenRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import chat.delta.rpc.RpcException;
 import chat.delta.rpc.types.CallInfo;
@@ -941,6 +943,7 @@ public class ConversationItem extends BaseConversationItem {
       this.groupSender.setVisibility(VISIBLE);
     }
 
+    Drawable rightDrawable = null;
     if (messageRecord.isForwarded()) {
       if (showSender && dcContact != null) {
         this.groupSender.setText(
@@ -951,8 +954,17 @@ public class ConversationItem extends BaseConversationItem {
       this.groupSender.setTextColor(context.getResources().getColor(R.color.unknown_sender));
     } else if (showSender && dcContact != null) {
       this.groupSender.setText(messageRecord.getSenderName(dcContact));
+      boolean isVerified = DcHelper.isVerified(getContext(), dcContact.getId());
+      if (isVerified) {
+        rightDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_verified);
+        if (rightDrawable != null) {
+          int iconSize = (int) this.groupSender.getTextSize();
+          rightDrawable.setBounds(0, 0, iconSize, iconSize);
+        }
+      }
       this.groupSender.setTextColor(Util.rgbToArgbColor(dcContact.getColor()));
     }
+    this.groupSender.setCompoundDrawables(null, null, rightDrawable, null);
   }
 
   private void setAuthor(@NonNull DcMsg current, boolean showSender) {

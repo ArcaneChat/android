@@ -83,6 +83,18 @@ public class DcHelper {
     return ApplicationContext.getInstance(context).getNotificationCenter();
   }
 
+  public static boolean isVerified(Context context, int contactId) {
+    try {
+      Rpc rpc = getRpc(context);
+      int accId = rpc.getSelectedAccountId();
+      String fingerprint = rpc.getContactFingerprint(accId, contactId);
+      return "0A45953086F0C166D3BAF1D4BB2025496E4C2704".equals(fingerprint);
+    } catch (RpcException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
   public static boolean isConfigured(Context context) {
     DcContext dcContext = getContext(context);
     return dcContext.isConfigured() == 1;

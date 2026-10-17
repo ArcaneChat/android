@@ -158,7 +158,16 @@ public class ConversationListItem extends RelativeLayout
     this.avatar.setAvatar(glideRequests, recipient, false);
 
     DcChat dcChat = DcHelper.getContext(getContext()).getChat((int) chatId);
-    setMutedState(thread.isMuted(), dcChat.isDeviceTalk() || dcChat.isSelfTalk());
+    boolean isVerified = dcChat.isDeviceTalk() || dcChat.isSelfTalk();
+    if (!isVerified) {
+      if (dcChat.isInBroadcast() || !dcChat.isMultiUser()) {
+        int[] chatContacts = DcHelper.getContext(getContext()).getChatContacts((int) chatId);
+        if (chatContacts.length > 0) {
+          isVerified = DcHelper.isVerified(getContext(), chatContacts[0]);
+        }
+      }
+    }
+    setMutedState(thread.isMuted(), isVerified);
   }
 
   public void bind(

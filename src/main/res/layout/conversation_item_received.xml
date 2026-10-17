@@ -102,6 +102,7 @@
                         android:fontFamily="sans-serif-medium"
                         android:maxLines="1"
                         android:ellipsize="end"
+                        android:drawablePadding="5dp"
                         tools:visibility="visible"
                         tools:text="Alice" />
 

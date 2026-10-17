@@ -10,6 +10,9 @@ public class FullChat {
   public Integer ephemeralTimer;
   public Integer freshMessageCounter;
   public ContactFreshness freshness;
+  /** Contact ID of the group admin for admin-controlled groups, or `null` for regular groups. */
+  @com.fasterxml.jackson.annotation.JsonSetter(nulls = com.fasterxml.jackson.annotation.Nulls.SET)
+  public Integer groupAdminId;
   public Integer id;
   public Boolean isContactRequest;
   public Boolean isDeviceChat;
@@ -38,5 +41,4 @@ public class FullChat {
   public String profileImage;
   /** Note that this is different from [`ChatListItem::is_self_in_group`](`crate::api::types::chat_list::ChatListItemFetchResult::ChatListItem::is_self_in_group`). This property should only be accessed when [`FullChat::chat_type`] is [`Chattype::Group`]. */
   public Boolean selfInGroup;
-  public Integer groupAdminId;
 }

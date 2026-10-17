@@ -96,7 +96,7 @@ public class ConversationTitleView extends RelativeLayout {
 
     avatar.setAvatar(glideRequests, new Recipient(getContext(), dcChat), false);
     int imgLeft = dcChat.isMuted() ? R.drawable.ic_volume_off_white_18dp : 0;
-    int imgRight = dcChat.isSelfTalk() || dcChat.isDeviceTalk() ? R.drawable.ic_verified : 0;
+    int imgRight = isVerified(dcChat, chatContacts) ? R.drawable.ic_verified : 0;
     title.setCompoundDrawablesWithIntrinsicBounds(imgLeft, 0, imgRight, 0);
     if (!TextUtils.isEmpty(subtitleStr)) {
       subtitle.setText(subtitleStr);
@@ -106,6 +106,13 @@ public class ConversationTitleView extends RelativeLayout {
     }
     boolean isEphemeral = dcContext.getChatEphemeralTimer(chatId) != 0;
     ephemeralIcon.setVisibility(isEphemeral ? View.VISIBLE : View.GONE);
+  }
+
+  private boolean isVerified(DcChat dcChat, int[] chatContacts) {
+    if (dcChat.isSelfTalk() || dcChat.isDeviceTalk()) return true;
+    return (dcChat.isInBroadcast() || !dcChat.isMultiUser())
+        && chatContacts.length > 0
+        && DcHelper.isVerified(getContext(), chatContacts[0]);
   }
 
   @Override

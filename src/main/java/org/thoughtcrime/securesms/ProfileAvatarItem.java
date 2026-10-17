@@ -1,12 +1,14 @@
 package org.thoughtcrime.securesms;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
 import org.thoughtcrime.securesms.components.AvatarView;
@@ -48,7 +50,8 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
       @NonNull GlideRequests glideRequests,
       @Nullable DcChat dcChat,
       @Nullable DcContact dcContact,
-      @Nullable int[] members) {
+      @Nullable int[] members,
+      boolean isVerified) {
     this.glideRequests = glideRequests;
     int memberCount = members != null ? members.length : 0;
 
@@ -85,6 +88,15 @@ public class ProfileAvatarItem extends LinearLayout implements RecipientModified
     avatarView.setAvatar(glideRequests, recipient, false);
 
     nameView.setText(name);
+    Drawable rightDrawable = null;
+    if (isVerified) {
+      rightDrawable = ContextCompat.getDrawable(getContext(), R.drawable.ic_verified);
+      if (rightDrawable != null) {
+        int iconSize = (int) nameView.getTextSize();
+        rightDrawable.setBounds(0, 0, iconSize, iconSize);
+      }
+    }
+    nameView.setCompoundDrawables(null, null, rightDrawable, null);
 
     if (subtitle != null) {
       subtitleView.setVisibility(View.VISIBLE);

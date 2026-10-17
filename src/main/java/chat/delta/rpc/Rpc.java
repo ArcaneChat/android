@@ -23,6 +23,15 @@ public class Rpc {
     this.mapper = transport.getObjectMapper();
   }
 
+  /**
+   * Get the fingerprint of a given contact.
+   * <p>
+   * Returns `None` if the contact does not have a fingerprint.
+   */
+  public String getContactFingerprint(Integer accountId, Integer contactId) throws RpcException {
+    return transport.callForResult(new TypeReference<String>(){}, "get_contact_fingerprint", mapper.valueToTree(accountId), mapper.valueToTree(contactId));
+  }
+
   /** Test function. */
   public void sleep(Float delay) throws RpcException {
     transport.call("sleep", mapper.valueToTree(delay));
@@ -686,6 +695,14 @@ public class Rpc {
     return transport.callForResult(new TypeReference<Integer>(){}, "create_group_chat", mapper.valueToTree(accountId), mapper.valueToTree(name), mapper.valueToTree(protect));
   }
 
+  /**
+   * Create a new encrypted group chat with an admin.
+   * <p>
+   * Similar to [`Self::create_group_chat`], but only the creator (admin) can add/remove
+   * members or change the group name, description, avatar, etc.
+   * Other members can send messages and leave the group.
+   * The `group_admin_id` field in [`FullChat`] will be set to the admin's contact ID.
+   */
   public Integer createGroupWithAdmin(Integer accountId, String name) throws RpcException {
     return transport.callForResult(new TypeReference<Integer>(){}, "create_group_with_admin", mapper.valueToTree(accountId), mapper.valueToTree(name));
   }
