@@ -2,7 +2,15 @@ package org.thoughtcrime.securesms.components;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.RadialGradient;
+import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,6 +19,7 @@ import androidx.annotation.AttrRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.palette.graphics.Palette;
 import com.b44t.messenger.DcMsg;
 import java.io.ByteArrayInputStream;
 import org.json.JSONObject;
@@ -24,6 +33,7 @@ public class WebxdcView extends FrameLayout {
   private final @NonNull AppCompatImageView icon;
   private final @NonNull TextView appName;
   private final @NonNull TextView appSubtitle;
+  private final @Nullable FrameLayout headerBg;
 
   private @Nullable SlideClickListener viewListener;
 
@@ -46,8 +56,10 @@ public class WebxdcView extends FrameLayout {
     }
     if (compact) {
       inflate(context, R.layout.webxdc_compact_view, this);
+      this.headerBg = null;
     } else {
       inflate(context, R.layout.webxdc_view, this);
+      this.headerBg = findViewById(R.id.webxdc_header_bg);
     }
 
     this.icon = findViewById(R.id.webxdc_icon);
@@ -66,9 +78,18 @@ public class WebxdcView extends FrameLayout {
     // icon
     byte[] blob = dcMsg.getWebxdcBlob(JsonUtils.optString(info, "icon"));
     if (blob != null) {
-      ByteArrayInputStream is = new ByteArrayInputStream(blob);
-      Drawable drawable = Drawable.createFromStream(is, "icon");
-      icon.setImageDrawable(drawable);
+      // Decode directly to Bitmap so we can extract colors
+      Bitmap bitmap = BitmapFactory.decodeByteArray(blob, 0, blob.length);
+      if (bitmap != null) {
+        icon.setImageBitmap(bitmap);
+        if (headerBg != null) {
+          applyGradient(headerBg, bitmap);
+        }
+      } else {
+        ByteArrayInputStream is = new ByteArrayInputStream(blob);
+        Drawable drawable = Drawable.createFromStream(is, "icon");
+        icon.setImageDrawable(drawable);
+      }
     }
 
     // name
@@ -87,6 +108,33 @@ public class WebxdcView extends FrameLayout {
       appSubtitle.setVisibility(View.VISIBLE);
       appSubtitle.setText(summary);
     }
+  }
+
+  private void applyGradient(final FrameLayout backgroundView, final Bitmap bitmap) {
+    Palette.from(bitmap)
+        .generate(
+            palette -> {
+              int fallbackColor = getContext().getResources().getColor(R.color.def_primary);
+              int brandColor = palette.getVibrantColor(palette.getDominantColor(fallbackColor));
+
+              PaintDrawable drawable = new PaintDrawable();
+              drawable.setShape(new RectShape());
+              drawable.setShaderFactory(
+                  new ShapeDrawable.ShaderFactory() {
+                    @Override
+                    public Shader resize(int width, int height) {
+                      return new RadialGradient(
+                          width / 2f,
+                          height / 2f,
+                          width / 1.5f,
+                          brandColor,
+                          Color.TRANSPARENT,
+                          Shader.TileMode.CLAMP);
+                    }
+                  });
+
+              backgroundView.setBackground(drawable);
+            });
   }
 
   public String getDescription() {

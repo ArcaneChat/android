@@ -555,6 +555,7 @@ public class ConversationItem extends BaseConversationItem {
       boolean showSender,
       AudioPlaybackViewModel playbackViewModel,
       AudioView.OnActionListener audioPlayPauseListener) {
+    bodyBubble.getLayoutParams().width = ViewGroup.LayoutParams.WRAP_CONTENT;
     if (hasAudio(messageRecord)) {
       audioViewStub.get().setVisibility(View.VISIBLE);
       if (mediaThumbnailStub.resolved()) mediaThumbnailStub.get().setVisibility(View.GONE);
@@ -624,6 +625,8 @@ public class ConversationItem extends BaseConversationItem {
           .get()
           .setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
 
+      bodyBubble.getLayoutParams().width =
+          context.getResources().getDimensionPixelSize(R.dimen.media_bubble_max_width);
       ViewUtil.updateLayoutParams(
           bodyText, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
       ViewUtil.updateLayoutParams(

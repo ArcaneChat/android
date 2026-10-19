@@ -14,16 +14,26 @@
         android:gravity="center_vertical"
         android:orientation="vertical">
 
-        <!-- android:padding="0.1dp" is needed to remove transparent background -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/webxdc_icon"
-            android:padding="0.1dp"
-            android:layout_marginTop="2dp"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
-            android:scaleType="centerCrop"
-            app:strokeColor="@null"
-            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
+        <FrameLayout
+            android:id="@+id/webxdc_header_bg"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:background="@color/core_light_10"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <!-- android:padding="0.1dp" is needed to remove transparent background -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/webxdc_icon"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:layout_gravity="center"
+                android:elevation="8dp"
+                android:padding="0.1dp"
+                android:scaleType="centerCrop"
+                app:strokeColor="@null"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize10Percent" />
+        </FrameLayout>
 
         <TextView
             android:id="@+id/webxdc_app_name"
@@ -47,7 +57,7 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:clickable="false"
-            android:textColor="?conversation_item_incoming_text_primary_color"
+            android:textColor="?conversation_item_incoming_text_secondary_color"
             tools:text="Tap to start" />
 
     </LinearLayout>
