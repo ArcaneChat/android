@@ -75,7 +75,11 @@ public class LongClickMovementMethod extends LinkMovementMethod {
           aSingleSpan.setHighlighted(
               true, ContextCompat.getColor(widget.getContext(), R.color.touch_highlight));
         } else {
-          Selection.removeSelection(buffer);
+          // Only clear selection if the user hasn't enabled text selection mode.
+          // When text selection is enabled, the user's selection must be preserved.
+          if (!Prefs.isTextSelectionEnabled(widget.getContext())) {
+            Selection.removeSelection(buffer);
+          }
           aSingleSpan.setHighlighted(false, Color.TRANSPARENT);
         }
 
@@ -84,16 +88,18 @@ public class LongClickMovementMethod extends LinkMovementMethod {
         return gestureDetector.onTouchEvent(event);
       }
     } else if (action == MotionEvent.ACTION_CANCEL) {
-      // Remove Selections.
-      LongClickCopySpan[] spans =
-          buffer.getSpans(
-              Selection.getSelectionStart(buffer),
-              Selection.getSelectionEnd(buffer),
-              LongClickCopySpan.class);
-      for (LongClickCopySpan aSpan : spans) {
-        aSpan.setHighlighted(false, Color.TRANSPARENT);
+      // Remove Selections only if text selection is not enabled by the user.
+      if (!Prefs.isTextSelectionEnabled(widget.getContext())) {
+        LongClickCopySpan[] spans =
+            buffer.getSpans(
+                Selection.getSelectionStart(buffer),
+                Selection.getSelectionEnd(buffer),
+                LongClickCopySpan.class);
+        for (LongClickCopySpan aSpan : spans) {
+          aSpan.setHighlighted(false, Color.TRANSPARENT);
+        }
+        Selection.removeSelection(buffer);
       }
-      Selection.removeSelection(buffer);
       return gestureDetector.onTouchEvent(event);
     }
     return super.onTouchEvent(widget, buffer, event);
