@@ -22,7 +22,7 @@ Main differences with Delta Chat client:
 * It is possible to disable profiles to completely disconnect them saving data/bandwidth
 * Clicking on a message with a POI location, will open the POI on the map
 * Last-seen status of contacts is shown in your contact list, like in WhatsApp, Telegram, etc.
-* Verified icon is shown in the chat list for the "Device Messages" and "Saved Messages" chat to avoid fishing attempts by someone pretending to be the official chats
+* Verified icon is shown in the chat list for the "Device Messages" and "Saved Messages" chat to avoid phishing attempts by someone pretending to be the official chats
 * Voice messages have more aggressive compression in "worse quality" mode to save data plan
 * Automatic download of messages limited to 640KB by default
 * Profile's display name is always shown in the app's title bar instead of the name of the app
