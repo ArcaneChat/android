@@ -48,7 +48,7 @@ public abstract class MessageSelectorFragment extends Fragment
   }
 
   protected void handleDeleteMessages(int chatId, final Set<DcMsg> messageRecords) {
-    handleDeleteMessages(chatId, DcMsg.msgSetToIds(messageRecords), null, null);
+    handleDeleteMessages(chatId, DcMsg.msgSetToIds(messageRecords), null, null, null);
   }
 
   protected void handleDeleteMessages(
@@ -60,14 +60,16 @@ public abstract class MessageSelectorFragment extends Fragment
         chatId,
         DcMsg.msgSetToIds(messageRecords),
         deleteForMeListenerExtra,
-        deleteForAllListenerExtra);
+        deleteForAllListenerExtra,
+        null);
   }
 
   protected void handleDeleteMessages(
       int chatId,
       final int[] messageIds,
       Consumer<int[]> deleteForMeListenerExtra,
-      Consumer<int[]> deleteForAllListenerExtra) {
+      Consumer<int[]> deleteForAllListenerExtra,
+      final String confirmButton) {
     DcContext dcContext = DcHelper.getContext(getContext());
 
     Rpc rpc = DcHelper.getRpc(getContext());
@@ -97,7 +99,10 @@ public abstract class MessageSelectorFragment extends Fragment
         getActivity()
             .getResources()
             .getQuantityString(R.plurals.ask_delete_messages, messageIds.length, messageIds.length);
-    int positiveBtnLabel = dcChat.isSelfTalk() ? R.string.delete : R.string.delete_for_me;
+    String positiveBtnLabel =
+        confirmButton != null
+            ? confirmButton
+            : (getString(dcChat.isSelfTalk() ? R.string.delete : R.string.delete_for_me));
 
     DialogInterface.OnClickListener deleteForMeListener =
         (d, which) -> {
