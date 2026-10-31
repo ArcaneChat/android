@@ -1,6 +1,8 @@
 ## ArcaneChat Android Client
 
-A [Delta Chat](https://delta.chat/) client for Android. Learn more at: https://arcanechat.me
+ArcaneChat is a private messenger for the [chatmail](https://chatmail.at) network.
+This repository contains the source code of the ArcaneChat client for Android.
+Learn more at: https://arcanechat.me
 
 [<img src="store/get-it-on-gplay.png" alt="Get it on Google Play" height="48">](https://play.google.com/store/apps/details?id=com.github.arcanechat)
 [<img src="store/get-it-on-fdroid.png" alt="Get it on F-Droid" height="48">](https://f-droid.org/packages/chat.delta.lite)
