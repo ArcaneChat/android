@@ -1,7 +1,7 @@
 ## ArcaneChat Android Client
 
-ArcaneChat is a private messenger for the [chatmail](https://chatmail.at) network.
 This repository contains the source code of the ArcaneChat client for Android.
+ArcaneChat is a private messenger for the [chatmail](https://chatmail.at) network.
 Learn more at: https://arcanechat.me
 
 [<img src="store/get-it-on-gplay.png" alt="Get it on Google Play" height="48">](https://play.google.com/store/apps/details?id=com.github.arcanechat)
