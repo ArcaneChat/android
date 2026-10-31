@@ -1,19 +1,27 @@
-ArcaneChat is a decentralized and secure instant messenger that is easy to use for friends and family.
+ArcaneChat is a private messenger and secure chat app for people who want digital privacy and independence. Anonymous sign-up, end-to-end encrypted messaging, zero ads, and no phone number required.
 
-• Private. Instant on-boarding without a phone number or other private data.
+• Secret: No one can know you are using the app or discover your profile, only people you show your QR or share your contact invite link with can contact you. This also means you are free from spam or scam calls from strangers.
 
-• Friends & Family: Only chat with people you know. Unknown users cannot message or follow you without mutual consent.
+• Anonymous: We do not ask for your phone number, email, or any personal data. We know nothing about you.
 
-• Flexible. Supports multiple chat profiles and is easy to setup on multiple devices.
+• Confidential: Every message and call is end-to-end encrypted. Not even we can read your messages or listen to your calls. We also have no access or control over the list of groups and channels you are in.
 
-• Extensible. Use mini-apps in chats like shopping lists, calendars or games.
+• Interactive Mini-Apps: Elevate your group messaging with synchronized, in-chat tools. Play games, create shared shopping lists, split bills, and use a rich text editor with your group in real time. All data inside mini-apps is end-to-end encrypted and they work even while offline.
 
-• Reliable. Works under bad and adversarial network conditions.
+• Secure Audio & Video Calls: High-quality, encrypted voice and video calls keep you close to family, friends, and colleagues, even while traveling.
 
-• Secure. Audited End-to-End encryption safe against network and server attacks.
+• Multi-Profile: Manage different identities effortlessly. Separate work or club activities from private life.
 
-• Sovereign. Can be run with your own e-mail address or server.
+• Resilient: Offline-first and designed to work reliably on slow or poor connectivity (2G/3G/weak Wi-Fi) when other messaging apps fail to connect.
 
-ArcaneChat is a chatmail client fork of Delta Chat app and it was created with a focus on usability, good user experience, and saving data plan. Also the app usually experiments with new features that eventually might get added to the official Delta Chat client.
+• Sovereign: Your profile lives in your pocket, not on a corporate cloud server. You truly own your data.
 
-Main differences with Delta Chat client can be found at: https://github.com/ArcaneChat/android/
+• Open Source & Decentralized: Fully open-source and auditable. Built on decentralized protocols. Interoperable with Delta Chat and other chatmail clients.
+
+Why "Arcane Chat"?
+"Arcane" means secret, hidden, known only to a few. We chose this name to reflect our core mission: providing you with a hidden, secure space for your private conversations, backed by robust, modern cryptography.
+
+
+Follow us on:
+• Mastodon/Fediverse: https://fosstodon.org/@arcanechat
+• Our channel inside ArcaneChat itself! Get the invite link at: https://arcanechat.me/#contact
