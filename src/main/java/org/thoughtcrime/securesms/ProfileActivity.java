@@ -85,7 +85,7 @@ public class ProfileActivity extends PassphraseRequiredActionBarActivity
       } else if (contactIsBot) {
         title = getString(R.string.bot);
       } else if (!chatIsDeviceTalk && !isSelfProfile()) {
-        title = getString(R.string.tab_contact);
+        title = getString(R.string.contact);
       }
 
       supportActionBar.setDisplayHomeAsUpEnabled(true);
