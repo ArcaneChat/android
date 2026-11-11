@@ -4,7 +4,7 @@ ArcaneChat is a private messenger and secure chat app for people who want digita
 
 • Anonymous: We do not ask for your phone number, email, or any personal data. We know nothing about you.
 
-• Confidential: Every message and call is end-to-end encrypted. Not even we can read your messages or listen to your calls. We also have no access or control over the list of groups and channels you are in.
+• Confidential: Every message and call is end-to-end encrypted. Not even we can read your messages or listen to your calls. Unlike most other chat platforms, we also have no access or control over the list of groups and channels you join or create.
 
 • Interactive Mini-Apps: Elevate your group messaging with synchronized, in-chat tools. Play games, create shared shopping lists, split bills, and use a rich text editor with your group in real time. All data inside mini-apps is end-to-end encrypted and they work even while offline.
 
