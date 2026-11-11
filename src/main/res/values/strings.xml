@@ -56,7 +56,7 @@
     <string name="muted">Muted</string>
     <string name="ephemeral_messages">Disappearing Messages</string>
     <string name="ephemeral_messages_hint">Applies to all members of this chat; they can still copy, save, and forward messages.</string>
-    <!-- Apply as setting as "Disappearing Messages" for everyone -->
+    <!-- Apply setting as "Disappearing Messages" for everyone -->
     <string name="set_for_everyone">Set for Everyone</string>
     <string name="save">Save</string>
     <string name="chat">Chat</string>
@@ -608,6 +608,7 @@
     <string name="please_enter_chat_name">Please enter a name.</string>
     <string name="group_add_members">Add Members</string>
     <string name="group_self_not_in_group">You must be a member of the group to perform this action.</string>
+    <!-- deprecated -->
     <string name="profile_encryption">Encryption</string>
     <string name="profile_shared_chats">Chats in Common</string>
     <!-- Separator between the list of actual members and past members -->
@@ -847,9 +848,10 @@
     <string name="pref_backup">Backup</string>
     <string name="pref_backup_explain">Back Up Chats to External Storage</string>
     <string name="pref_backup_export_explain">A backup helps you to set up a new installation on this or on another device.\n\nThe backup will contain all messages, contacts and chats and your end-to-end Autocrypt setup. Keep the backup file in a safe place or delete it as soon as possible.</string>
-    <string name="pref_backup_export_this">Export this profile</string>
+    <string name="pref_backup_export_this">Export This Profile</string>
     <!-- the placeholder will be replaced by the number of profiles to export; the number is always larger than 1 -->
-    <string name="pref_backup_export_all">Export all %1$d profiles</string>
+    <string name="pref_backup_export_all">Export All %1$d Profiles</string>
+    <!-- deprecated, use pref_backup_export_this instead -->
     <string name="pref_backup_export_start_button">Start Backup</string>
     <string name="pref_backup_written_to_x">Backup written successfully to \"%1$s\".</string>
     <!-- No need to translate "Wallpaper" literally. Chose what is common in your language for a "Wallpaper" or a "Background". Avoid adding the term "image" here, as the "Wallpaper" may also be just a single color. -->
@@ -1156,6 +1158,8 @@
     <string name="export_backup_desktop">Export Backup</string>
     <string name="message_detail_sent_desktop">Sent</string>
     <string name="message_detail_received_desktop">Received</string>
+    <!-- Title for the time, a mini-app has received its last update -->
+    <string name="last_updated">Last Updated</string>
     <string name="menu.view.developer.open.log.folder">Open the Log Folder</string>
     <string name="menu.view.developer.open.current.log.file">Open Current Logfile</string>
     <string name="explain_desktop_minimized_disabled_tray_pref" tools:ignore="TypographyDashes">Tray icon cannot be disabled as Delta Chat was started with the --minimized option.</string>

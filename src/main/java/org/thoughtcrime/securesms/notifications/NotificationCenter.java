@@ -494,7 +494,7 @@ public class NotificationCenter {
           NotifData notifData =
               new NotifData(
                   new Person.Builder()
-                      .setName(senderName)
+                      .setName(getSafeName(senderName))
                       .setIcon(getAvatarIcon(sender))
                       .setBot(sender.isBot())
                       .setKey(personId)
@@ -538,7 +538,7 @@ public class NotificationCenter {
           NotifData notifData =
               new NotifData(
                   new Person.Builder()
-                      .setName(contact.getDisplayName())
+                      .setName(getSafeName(contact.getDisplayName()))
                       .setIcon(getAvatarIcon(contact))
                       .setBot(contact.isBot())
                       .setKey(accountId + "-" + contactId)
@@ -589,7 +589,7 @@ public class NotificationCenter {
             notifData =
                 new NotifData(
                     new Person.Builder()
-                        .setName(name)
+                        .setName(getSafeName(name))
                         .setIcon(getAvatarIcon(blob))
                         .setKey(accountId + "-webxdc-" + msgId)
                         .build(),
@@ -600,7 +600,7 @@ public class NotificationCenter {
             notifData =
                 new NotifData(
                     new Person.Builder()
-                        .setName(sender.getDisplayName())
+                        .setName(getSafeName(sender.getDisplayName()))
                         .setIcon(getAvatarIcon(sender))
                         .setBot(sender.isBot())
                         .setKey(accountId + "-" + contactId)
@@ -870,7 +870,7 @@ public class NotificationCenter {
           DcContact selfContact = dcContext.getContact(DcContact.DC_CONTACT_ID_SELF);
           Person self =
               new Person.Builder()
-                  .setName(selfContact.getDisplayName())
+                  .setName(getSafeName(selfContact.getDisplayName()))
                   .setIcon(getAvatarIcon(selfContact))
                   .setKey(accountId + "-" + selfContact.getId())
                   .build();
@@ -978,6 +978,10 @@ public class NotificationCenter {
     } catch (Exception e) {
       Log.e(TAG, "cannot rebuild notification", e);
     }
+  }
+
+  private @NonNull String getSafeName(@Nullable String name) {
+    return TextUtils.isEmpty(name) ? context.getString(R.string.unnamed) : name;
   }
 
   private static @Nullable IconCompat getAvatarIcon(byte[] blob) {
