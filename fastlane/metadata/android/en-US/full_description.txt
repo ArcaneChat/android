@@ -1,4 +1,4 @@
-ArcaneChat is a private messenger and secure chat app for people who want digital privacy and independence. Anonymous sign-up, end-to-end encrypted messaging, zero ads, and no phone number required.
+ArcaneChat is a private messenger and secure chat app for people who want digital privacy and independence. Anonymous sign-up, end-to-end encrypted messaging and, unlike WhatsApp, Telegram and Signal, ArcaneChat requires no phone number to work and it has zero ads.
 
 • Secret: No one can know you are using the app or discover your profile, only people you show your QR or share your contact invite link with can contact you. This also means you are free from spam or scam calls from strangers.
 
@@ -16,10 +16,15 @@ ArcaneChat is a private messenger and secure chat app for people who want digita
 
 • Sovereign: Your profile lives in your pocket, not on a corporate cloud server. You truly own your data.
 
-• Open Source & Decentralized: Fully open-source and auditable. Built on decentralized protocols. Interoperable with Delta Chat and other chatmail clients.
+• Powerful: Unlimited pinned chats, unlimited pinned messages, unlimited profiles, no limits on amount of groups and channels you can join or create.
+
+• Open Source & Decentralized: Fully open-source and auditable. Built on decentralized protocols. Interoperable with Delta Chat and other chatmail clients. To check out our source code, visit https://github.com/ArcaneChat
 
 Why "Arcane Chat"?
 "Arcane" means secret, hidden, known only to a few. We chose this name to reflect our core mission: providing you with a hidden, secure space for your private conversations, backed by robust, modern cryptography.
+
+Take control of your digital footprint.
+Download ArcaneChat and experience private messaging as it should be.
 
 
 Follow us on:
