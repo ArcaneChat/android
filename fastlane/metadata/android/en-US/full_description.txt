@@ -1,18 +1,20 @@
-ArcaneChat is a private messenger and secure chat app for people who want digital privacy and independence. Anonymous sign-up, end-to-end encrypted messaging and, unlike WhatsApp, Telegram and Signal, ArcaneChat requires no phone number to work and it has zero ads.
+ArcaneChat is a private messenger that works without phone numbers. Enjoy interactive mini-apps in chats, end-to-end encrypted voice & video calls, multi-profile support and more.
 
-• Secret: No one can know you are using the app or discover your profile, only people you show your QR or share your contact invite link with can contact you. This also means you are free from spam or scam calls from strangers.
+• Secret: No one can know you are using the app or discover your profile, only people you show your QR or give your contact invite link can contact you. This also means you are free from spam or scam calls from strangers.
 
 • Anonymous: We do not ask for your phone number, email, or any personal data. We know nothing about you.
 
-• Confidential: Every message and call is end-to-end encrypted. Not even we can read your messages or listen to your calls. Unlike most other chat platforms, we also have no access or control over the list of groups and channels you join or create.
+• Confidential: Every message and call is end-to-end encrypted. Not even we can read your messages or listen to your calls. We also have no access or control over the list of groups and channels you join or create.
 
 • Interactive Mini-Apps: Elevate your group messaging with synchronized, in-chat tools. Play games, create shared shopping lists, split bills, and use a rich text editor with your group in real time. All data inside mini-apps is end-to-end encrypted and they work even while offline.
 
 • Secure Audio & Video Calls: High-quality, encrypted voice and video calls keep you close to family, friends, and colleagues, even while traveling.
 
+• Live Location: Share your real-time location with contacts or groups and drop points of interest on a shared map.
+
 • Multi-Profile: Manage different identities effortlessly. Separate work or club activities from private life.
 
-• Resilient: Offline-first and designed to work reliably on slow or poor connectivity (2G/3G/weak Wi-Fi) when other messaging apps fail to connect.
+• Resilient: Offline-first and designed to work reliably on slow or poor connectivity (2G/3G/weak Wi-Fi)
 
 • Sovereign: Your profile lives in your pocket, not on a corporate cloud server. You truly own your data.
 
