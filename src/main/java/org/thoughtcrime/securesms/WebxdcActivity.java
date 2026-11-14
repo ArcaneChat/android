@@ -200,11 +200,21 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
 
   @Override
   protected void onCreate(Bundle state, boolean ready) {
-    Bundle b = getIntent().getExtras();
-    if (b == null) finish();
-    hideActionBar = b.getBoolean(EXTRA_HIDE_ACTION_BAR, false);
+    WebxdcTarget target = resolveTarget(state);
+    if (target == null) {
+      Log.w(TAG, "Cannot resolve WebXDC target from intent/state: " + getIntent());
+      super.onCreate(state, ready);
+      finishAndRemoveTask();
+      return;
+    }
 
+    // WebViewActivity.onCreate() queries immersiveMode(),
+    // so hideActionBar must be set before calling super.onCreate()
+    hideActionBar = target.hideActionBar;
     super.onCreate(state, ready);
+
+    int appMessageId = target.msgId;
+    accountId = target.accountId;
     rpc = DcHelper.getRpc(this);
     initTTS();
 
@@ -260,8 +270,6 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
           }
         });
 
-    int appMessageId = b.getInt(EXTRA_APP_MSG_ID);
-    accountId = b.getInt(EXTRA_ACCOUNT_ID);
     this.dcContext = DcHelper.getContext(getApplicationContext());
     if (accountId != dcContext.getAccountId()) {
       this.dcContext = DcHelper.getAccounts(getApplicationContext()).getAccount(accountId);
@@ -273,7 +281,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       finish();
       return;
     }
-    chatId = b.getInt(EXTRA_CHAT_ID, dcAppMsg.getChatId());
+    chatId = target.chatId > 0 ? target.chatId : dcAppMsg.getChatId();
 
     DcEventCenter eventCenter =
         DcHelper.getEventCenter(WebxdcActivity.this.getApplicationContext());
@@ -328,8 +336,7 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
         internetAccess); // this does not block network but sets `window.navigator.isOnline` in js
     // land
     webView.addJavascriptInterface(new InternalJSApi(), "InternalJSApi");
-
-    String extraHref = b.getString(EXTRA_HREF, "");
+    String extraHref = target.href;
     if (TextUtils.isEmpty(extraHref)) {
       extraHref = "index.html";
     }
@@ -376,6 +383,22 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
               });
           WebxdcPermissions.pruneStaleOnce(getApplicationContext(), rpc);
         });
+  }
+
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    setIntent(intent);
+
+    WebxdcTarget target = resolveTarget(null);
+    if (target == null) {
+      finishAndRemoveTask();
+      return;
+    }
+
+    if (!TextUtils.isEmpty(target.href)) {
+      webView.loadUrl(baseURL + "/" + target.href);
+    }
   }
 
   @Override
@@ -1131,6 +1154,79 @@ public class WebxdcActivity extends WebViewActivity implements DcEventCenter.DcE
       int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     Permissions.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+  }
+
+  private WebxdcTarget resolveTarget(Bundle state) {
+    Intent intent = getIntent();
+    Bundle extras = intent != null ? intent.getExtras() : null;
+
+    final int INVALID_ID = -1;
+    int accountId = INVALID_ID;
+    int chatId = INVALID_ID;
+    int msgId = INVALID_ID;
+
+    if (state != null) {
+      accountId = state.getInt(EXTRA_ACCOUNT_ID, INVALID_ID);
+      chatId = state.getInt(EXTRA_CHAT_ID, INVALID_ID);
+      msgId = state.getInt(EXTRA_APP_MSG_ID, INVALID_ID);
+    }
+
+    if (extras != null) {
+      accountId = extras.getInt(EXTRA_ACCOUNT_ID, accountId);
+      chatId = extras.getInt(EXTRA_CHAT_ID, chatId);
+      msgId = extras.getInt(EXTRA_APP_MSG_ID, msgId);
+    }
+
+    // URI format: webxdc://accountId/msgId.
+    Uri data = intent != null ? intent.getData() : null;
+    if (data != null && "webxdc".equals(data.getScheme())) {
+      try {
+        if (accountId == INVALID_ID) {
+          accountId = Integer.parseInt(data.getAuthority());
+        }
+
+        List<String> segments = data.getPathSegments();
+        if (msgId == INVALID_ID && !segments.isEmpty()) {
+          msgId = Integer.parseInt(segments.get(0));
+        }
+      } catch (NumberFormatException ignored) {
+      }
+    }
+
+    if (accountId <= 0 || msgId <= 0) {
+      return null;
+    }
+
+    boolean hide = false;
+    String href = "";
+
+    if (state != null) {
+      hide = state.getBoolean(EXTRA_HIDE_ACTION_BAR, hide);
+      href = state.getString(EXTRA_HREF, href);
+    }
+
+    if (extras != null) {
+      hide = extras.getBoolean(EXTRA_HIDE_ACTION_BAR, hide);
+      href = extras.getString(EXTRA_HREF, href);
+    }
+
+    return new WebxdcTarget(accountId, chatId, msgId, hide, href);
+  }
+
+  private static class WebxdcTarget {
+    final int accountId;
+    final int chatId;
+    final int msgId;
+    final boolean hideActionBar;
+    final String href;
+
+    WebxdcTarget(int accountId, int chatId, int msgId, boolean hideActionBar, String href) {
+      this.accountId = accountId;
+      this.chatId = chatId;
+      this.msgId = msgId;
+      this.hideActionBar = hideActionBar;
+      this.href = href;
+    }
   }
 
   class InternalJSApi {
