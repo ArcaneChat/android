@@ -751,9 +751,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
   private void deleteProfile(int profileId) {
     DcAccounts accounts = DcHelper.getAccounts(this);
     boolean selected = profileId == accounts.getSelectedAccount().getAccountId();
-    DcHelper.getNotificationCenter(this).removeAllNotifications(profileId);
-    VideoRecodeManager.getInstance(this).cancelForAccount(profileId);
-    accounts.removeAccount(profileId);
+    AccountManager.getInstance().removeAccountData(this, profileId);
     if (selected) {
       DcContext selAcc = accounts.getSelectedAccount();
       if (selAcc.isOk()) {

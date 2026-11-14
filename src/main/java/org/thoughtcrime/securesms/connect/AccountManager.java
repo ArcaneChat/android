@@ -15,6 +15,7 @@ import org.thoughtcrime.securesms.ApplicationContext;
 import org.thoughtcrime.securesms.ConversationListActivity;
 import org.thoughtcrime.securesms.WelcomeActivity;
 import org.thoughtcrime.securesms.accounts.AccountSelectionListFragment;
+import org.thoughtcrime.securesms.video.VideoRecodeManager;
 
 public class AccountManager {
 
@@ -76,6 +77,16 @@ public class AccountManager {
   public void switchAccount(Context context, int accountId) {
     DcHelper.getAccounts(context).selectAccount(accountId);
     resetDcContext(context);
+  }
+
+  public boolean removeAccountData(Context context, int accountId) {
+    DcHelper.getNotificationCenter(context).removeAllNotifications(accountId);
+    VideoRecodeManager.getInstance(context).cancelForAccount(accountId);
+    boolean removed = DcHelper.getAccounts(context).removeAccount(accountId);
+    if (!removed) {
+      Log.e(TAG, "Failed to remove account " + accountId);
+    }
+    return removed;
   }
 
   // add accounts

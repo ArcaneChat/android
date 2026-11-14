@@ -29,8 +29,10 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.io.File;
 import java.io.IOException;
 import java.security.SecureRandom;
+import org.thoughtcrime.securesms.accounts.DeleteProfileDialog;
 import org.thoughtcrime.securesms.components.AvatarSelector;
 import org.thoughtcrime.securesms.components.InputAwareLayout;
+import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.contacts.avatars.ResourceContactPhoto;
 import org.thoughtcrime.securesms.mms.AttachmentManager;
@@ -39,6 +41,7 @@ import org.thoughtcrime.securesms.permissions.Permissions;
 import org.thoughtcrime.securesms.profiles.AvatarHelper;
 import org.thoughtcrime.securesms.scribbles.ScribbleActivity;
 import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.ScreenLockUtil;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
 @SuppressLint("StaticFieldLeak")
@@ -55,6 +58,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
 
   private boolean avatarChanged;
   private boolean imageLoaded;
+  private ScreenLockUtil.AuthorizedRunner authorizedRunner;
 
   private Bitmap avatarBmp;
   private AttachmentManager attachmentManager;
@@ -62,6 +66,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
+    authorizedRunner = new ScreenLockUtil.AuthorizedRunner(this);
 
     setContentView(R.layout.profile_create_activity);
 
@@ -184,6 +189,10 @@ public class CreateProfileActivity extends BaseActionBarActivity {
     this.name = ViewUtil.findById(this, R.id.name_text);
     this.container = ViewUtil.findById(this, R.id.container);
     this.statusView = ViewUtil.findById(this, R.id.status_text);
+    View deleteProfileButton = ViewUtil.findById(this, R.id.delete_profile);
+    deleteProfileButton.setVisibility(
+        DcHelper.getContext(this).isConfigured() == 1 ? View.VISIBLE : View.GONE);
+    deleteProfileButton.setOnClickListener(view -> showDeleteProfileDialog());
 
     // add padding to avoid content hidden behind system bars
     ViewUtil.applyWindowInsets(container);
@@ -273,6 +282,29 @@ public class CreateProfileActivity extends BaseActionBarActivity {
   private void setStatusText() {
     String newStatus = statusView.getText().toString().trim();
     DcHelper.set(this, DcHelper.CONFIG_SELF_STATUS, newStatus);
+  }
+
+  private void showDeleteProfileDialog() {
+    final int profileId = DcHelper.getContext(this).getAccountId();
+    Runnable deleteWithAuth =
+        () ->
+            authorizedRunner.run(
+                getString(R.string.delete_account),
+                getString(R.string.enter_system_secret_to_continue),
+                () -> deleteProfile(profileId));
+    DeleteProfileDialog.show(this, profileId, deleteWithAuth, null);
+  }
+
+  private void deleteProfile(int profileId) {
+    AccountManager accountManager = AccountManager.getInstance();
+    if (!accountManager.removeAccountData(this, profileId)) {
+      Toast.makeText(this, R.string.error, Toast.LENGTH_LONG).show();
+      return;
+    }
+
+    DcContext selectedAccount = DcHelper.getAccounts(this).getSelectedAccount();
+    int nextAccountId = selectedAccount.isOk() ? selectedAccount.getAccountId() : 0;
+    accountManager.switchAccountAndStartActivity(this, nextAccountId);
   }
 
   private class AvatarSelectedListener implements AvatarSelector.AttachmentClickedListener {

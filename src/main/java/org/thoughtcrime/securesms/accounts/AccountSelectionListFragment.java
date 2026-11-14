@@ -6,14 +6,12 @@ import static org.thoughtcrime.securesms.connect.DcHelper.CONFIG_PRIVATE_TAG;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
@@ -22,18 +20,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import chat.delta.rpc.Rpc;
 import chat.delta.rpc.RpcException;
 import com.b44t.messenger.DcAccounts;
-import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import java.util.Arrays;
 import org.thoughtcrime.securesms.ConversationListActivity;
 import org.thoughtcrime.securesms.R;
-import org.thoughtcrime.securesms.components.AvatarView;
 import org.thoughtcrime.securesms.connect.AccountManager;
 import org.thoughtcrime.securesms.connect.DcEventCenter;
 import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.GlideApp;
-import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
@@ -211,48 +206,11 @@ public class AccountSelectionListFragment extends DialogFragment
   private void onDeleteProfile(int accountId) {
     AccountSelectionListFragment.this.dismiss();
     ConversationListActivity activity = (ConversationListActivity) requireActivity();
-    DcAccounts accounts = DcHelper.getAccounts(activity);
-    Rpc rpc = DcHelper.getRpc(activity);
-
-    View dialogView = View.inflate(activity, R.layout.dialog_delete_profile, null);
-    AvatarView avatar = dialogView.findViewById(R.id.avatar);
-    TextView nameView = dialogView.findViewById(R.id.name);
-    TextView sizeView = dialogView.findViewById(R.id.size_label);
-    TextView description = dialogView.findViewById(R.id.description);
-    DcContext dcContext = accounts.getAccount(accountId);
-    DcContact contact = dcContext.getContact(DcContact.DC_CONTACT_ID_SELF);
-    String name = dcContext.getConfig(DcHelper.CONFIG_DISPLAY_NAME);
-    if (TextUtils.isEmpty(name)) {
-      name = activity.getString(R.string.unnamed);
-    }
-    Recipient recipient = new Recipient(requireContext(), contact, name);
-    avatar.setAvatar(GlideApp.with(activity), recipient, false);
-    nameView.setText(name);
-    Util.runOnAnyBackgroundThread(
-        () -> {
-          try {
-            final int sizeBytes = rpc.getAccountFileSize(accountId);
-            Util.runOnMain(
-                () -> {
-                  sizeView.setText(Util.getPrettyFileSize(sizeBytes));
-                });
-          } catch (RpcException e) {
-            Log.e(TAG, "Error calling rpc.getAccountFileSize()", e);
-          }
-        });
-    description.setText(activity.getString(R.string.delete_account_explain_with_name, name));
-
-    AlertDialog dialog =
-        new AlertDialog.Builder(activity)
-            .setTitle(R.string.delete_account)
-            .setView(dialogView)
-            .setNegativeButton(
-                R.string.cancel,
-                (d, which) ->
-                    AccountManager.getInstance().showSwitchAccountMenu(activity, selectOnly))
-            .setPositiveButton(R.string.delete, (d2, w2) -> activity.onDeleteProfile(accountId))
-            .show();
-    Util.redPositiveButton(dialog);
+    DeleteProfileDialog.show(
+        activity,
+        accountId,
+        () -> activity.onDeleteProfile(accountId),
+        () -> AccountManager.getInstance().showSwitchAccountMenu(activity, selectOnly));
   }
 
   private void onToggleMute(int accountId) {
