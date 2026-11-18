@@ -8,6 +8,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AppCompatDelegate;
+import com.google.android.material.color.DynamicColors;
 import org.thoughtcrime.securesms.R;
 
 public class DynamicTheme {
@@ -15,6 +16,7 @@ public class DynamicTheme {
   public static final String DARK = "dark";
   public static final String LIGHT = "light";
   public static final String SYSTEM = "system";
+  public static final String MATERIAL_YOU = "material_you";
   public static final String PURPLE = "purple";
   public static final String GREEN = "green";
   public static final String BLUE = "blue";
@@ -31,6 +33,9 @@ public class DynamicTheme {
     // isDarkTheme  = isDarkTheme(activity);
 
     activity.setTheme(currentTheme);
+    if (MATERIAL_YOU.equals(Prefs.getTheme(activity)) && DynamicColors.isDynamicColorAvailable()) {
+      DynamicColors.applyToActivityIfAvailable(activity);
+    }
 
     // In case you introduce a CachedInflater and there are problems with the dark mode, uncomment
     // this line and the line in onResume():
@@ -74,6 +79,9 @@ public class DynamicTheme {
   }
 
   protected @StyleRes int getLightThemeStyle(@NonNull String theme) {
+    if (theme.equals(MATERIAL_YOU) && DynamicColors.isDynamicColorAvailable()) {
+      return R.style.TextSecure_MaterialYouLightTheme;
+    }
     if (theme.equals(PURPLE)) return R.style.TextSecure_PurpleTheme;
     if (theme.equals(GREEN)) return R.style.TextSecure_GreenTheme;
     if (theme.equals(BLUE)) return R.style.TextSecure_BlueTheme;
@@ -84,6 +92,9 @@ public class DynamicTheme {
   }
 
   protected @StyleRes int getDarkThemeStyle(@NonNull String theme) {
+    if (theme.equals(MATERIAL_YOU) && DynamicColors.isDynamicColorAvailable()) {
+      return R.style.TextSecure_MaterialYouDarkTheme;
+    }
     if (theme.equals(PURPLE)) return R.style.TextSecure_PurpleDarkTheme;
     if (theme.equals(GREEN)) return R.style.TextSecure_GreenDarkTheme;
     if (theme.equals(BLUE)) return R.style.TextSecure_BlueDarkTheme;

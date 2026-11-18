@@ -23,6 +23,13 @@
     </style>
 
     <!-- ActionBar styles -->
+    <style name="TextSecure.MaterialYouActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="background">?attr/toolbar_color</item>
+        <item name="elevation">4dp</item>
+        <item name="titleTextStyle">@style/TextSecure.TitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/TextSecure.SubtitleTextStyle</item>
+    </style>
+
     <style
         name="TextSecure.DarkActionBar"
         parent="@style/Widget.AppCompat.ActionBar">
@@ -103,9 +110,9 @@
     </style>
 
     <style name="ButtonPrimary">
-        <item name="drawableTint">@color/white</item>
+        <item name="drawableTint">?attr/fab_foreground_color</item>
         <item name="backgroundTint">@null</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">?attr/fab_foreground_color</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
         <item name="android:background">@drawable/button_bg</item>

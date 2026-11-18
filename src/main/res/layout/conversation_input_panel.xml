@@ -149,6 +149,7 @@
             android:layout_gravity="center"
             android:background="@drawable/circle_touch_highlight_background"
             android:src="@drawable/ic_attach_white_24dp"
+            android:tint="?attr/fab_foreground_color"
             android:contentDescription="@string/menu_add_attachment"
             android:nextFocusLeft="@+id/embedded_text_editor" />
 
@@ -161,6 +162,7 @@
             android:paddingBottom="6dp"
             android:paddingLeft="11dp"
             android:scaleType="fitCenter"
+            android:tint="?attr/fab_foreground_color"
             android:contentDescription="@string/menu_send"
             android:nextFocusLeft="@+id/embedded_text_editor"
             android:background="@drawable/circle_touch_highlight_background" />

@@ -826,6 +826,7 @@
     <!-- Translators: as in "opposite of dark" -->
     <string name="pref_light_theme">Light</string>
     <string name="pref_dark_theme">Dark</string>
+    <string name="pref_material_you">Material You (when supported)</string>
     <string name="pref_appearance">Appearance</string>
     <string name="pref_theme">Theme</string>
     <string name="pref_language">Language</string>

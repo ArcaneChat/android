@@ -50,6 +50,9 @@
         name="fab_color"
         format="reference|color" />
     <attr
+        name="fab_foreground_color"
+        format="reference|color" />
+    <attr
         name="input_panel_bg_color"
         format="reference|color" />
     <attr

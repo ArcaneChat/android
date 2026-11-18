@@ -2,10 +2,14 @@ package org.thoughtcrime.securesms.util;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+import com.google.android.material.color.DynamicColors;
 import org.thoughtcrime.securesms.R;
 
 public class DynamicNoActionBarTheme extends DynamicTheme {
   protected @StyleRes int getLightThemeStyle(@NonNull String theme) {
+    if (theme.equals(MATERIAL_YOU) && DynamicColors.isDynamicColorAvailable()) {
+      return R.style.TextSecure_MaterialYouLightNoActionBar;
+    }
     if (theme.equals(PURPLE)) return R.style.TextSecure_PurpleNoActionBar;
     if (theme.equals(GREEN)) return R.style.TextSecure_GreenNoActionBar;
     if (theme.equals(BLUE)) return R.style.TextSecure_BlueNoActionBar;
@@ -16,6 +20,9 @@ public class DynamicNoActionBarTheme extends DynamicTheme {
   }
 
   protected @StyleRes int getDarkThemeStyle(@NonNull String theme) {
+    if (theme.equals(MATERIAL_YOU) && DynamicColors.isDynamicColorAvailable()) {
+      return R.style.TextSecure_MaterialYouDarkNoActionBar;
+    }
     if (theme.equals(PURPLE)) return R.style.TextSecure_PurpleDarkNoActionBar;
     if (theme.equals(GREEN)) return R.style.TextSecure_GreenDarkNoActionBar;
     if (theme.equals(BLUE)) return R.style.TextSecure_BlueDarkNoActionBar;

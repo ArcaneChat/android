@@ -5,9 +5,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,16 +17,25 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
 import androidx.core.graphics.ColorUtils;
+import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceViewHolder;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.color.DynamicColors;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.thoughtcrime.securesms.LogViewActivity;
 import org.thoughtcrime.securesms.R;
 import org.thoughtcrime.securesms.components.SwitchPreferenceCompat;
+import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
+import org.thoughtcrime.securesms.util.DynamicTheme;
+import org.thoughtcrime.securesms.util.Prefs;
 
 @RunWith(AndroidJUnit4.class)
 public class MaterialThemeTest {
@@ -167,14 +178,129 @@ public class MaterialThemeTest {
               for (int theme : THEMES) {
                 Context context = themedContext(theme);
                 for (int layout : layouts) {
-                  View appBar =
-                      LayoutInflater.from(context).inflate(layout, null).getChildAt(0);
+                  View screen = LayoutInflater.from(context).inflate(layout, null);
+                  AppBarLayout appBar =
+                      (AppBarLayout) screen.findViewById(R.id.toolbar).getParent();
                   assertEquals(
                       MaterialColors.getColor(context, R.attr.toolbar_color, 0),
-                      ((ColorDrawable) appBar.getBackground()).getColor());
+                      appBar.getMaterialShapeBackground().getFillColor().getDefaultColor());
                 }
               }
             });
+  }
+
+  @Test
+  public void materialYouSelectionUsesDynamicThemesOnlyWhenSupported() {
+    boolean available = DynamicColors.isDynamicColorAvailable();
+    assertEquals(
+        available ? R.style.TextSecure_MaterialYouLightTheme : R.style.TextSecure_LightTheme,
+        new TestTheme().light(DynamicTheme.MATERIAL_YOU));
+    assertEquals(
+        available ? R.style.TextSecure_MaterialYouDarkTheme : R.style.TextSecure_DarkTheme,
+        new TestTheme().dark(DynamicTheme.MATERIAL_YOU));
+    assertEquals(
+        available
+            ? R.style.TextSecure_MaterialYouLightNoActionBar
+            : R.style.TextSecure_LightNoActionBar,
+        new TestNoActionBarTheme().light(DynamicTheme.MATERIAL_YOU));
+    assertEquals(
+        available
+            ? R.style.TextSecure_MaterialYouDarkNoActionBar
+            : R.style.TextSecure_DarkNoActionBar,
+        new TestNoActionBarTheme().dark(DynamicTheme.MATERIAL_YOU));
+    assertEquals(R.style.TextSecure_PurpleTheme, new TestTheme().light(DynamicTheme.PURPLE));
+  }
+
+  @Test
+  public void materialYouUsesDynamicColorsForControlsInBothModes() {
+    Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
+    int[] themes = {
+      R.style.TextSecure_MaterialYouLightNoActionBar,
+      R.style.TextSecure_MaterialYouDarkNoActionBar
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int theme : themes) {
+                Context context = DynamicColors.wrapContextIfAvailable(themedContext(theme));
+                TypedValue applied = new TypedValue();
+                assertTrue(
+                    context
+                        .getTheme()
+                        .resolveAttribute(R.attr.isMaterial3DynamicColorApplied, applied, true));
+                assertTrue(applied.data != 0);
+                int primary = MaterialColors.getColor(context, R.attr.colorPrimary, 0);
+                int onPrimary = MaterialColors.getColor(context, R.attr.colorOnPrimary, 0);
+                assertEquals(primary, MaterialColors.getColor(context, R.attr.fab_color, 0));
+                assertEquals(
+                    onPrimary, MaterialColors.getColor(context, R.attr.fab_foreground_color, 0));
+                assertTrue(ColorUtils.calculateContrast(onPrimary, primary) >= 4.5);
+                assertTrue(
+                    ColorUtils.calculateContrast(
+                            MaterialColors.getColor(
+                                context, R.attr.conversation_item_outgoing_text_primary_color, 0),
+                            MaterialColors.getColor(
+                                context, R.attr.conversation_item_outgoing_bubble_color, 0))
+                        >= 4.5);
+
+                FloatingActionButton fab =
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.conversation_list_fragment, null)
+                        .findViewById(R.id.fab);
+                assertEquals(primary, fab.getBackgroundTintList().getDefaultColor());
+                assertEquals(onPrimary, fab.getImageTintList().getDefaultColor());
+
+                MaterialSwitch toggle =
+                    (MaterialSwitch)
+                        LayoutInflater.from(context)
+                            .inflate(R.layout.switch_compat_preference, null);
+                assertEquals(
+                    primary,
+                    toggle
+                        .getTrackTintList()
+                        .getColorForState(
+                            new int[] {android.R.attr.state_enabled, android.R.attr.state_checked},
+                            Color.TRANSPARENT));
+                assertEquals(
+                    primary,
+                    MaterialColors.getColor(
+                        new AlertDialog.Builder(context).getContext(), R.attr.colorPrimary, 0));
+              }
+            });
+  }
+
+  @Test
+  public void materialYouIsAppliedDuringActivityCreationAndCanBeDisabled() {
+    Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
+    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String previous = preferences.getString(Prefs.THEME_PREF, null);
+    try {
+      preferences.edit().putString(Prefs.THEME_PREF, DynamicTheme.MATERIAL_YOU).commit();
+      try (ActivityScenario<LogViewActivity> scenario =
+          ActivityScenario.launch(LogViewActivity.class)) {
+        scenario.onActivity(activity -> assertDynamicColorsApplied(activity, true));
+        preferences.edit().putString(Prefs.THEME_PREF, DynamicTheme.SYSTEM).commit();
+        scenario.recreate();
+        scenario.onActivity(activity -> assertDynamicColorsApplied(activity, false));
+      }
+    } finally {
+      SharedPreferences.Editor editor = preferences.edit();
+      if (previous == null) {
+        editor.remove(Prefs.THEME_PREF);
+      } else {
+        editor.putString(Prefs.THEME_PREF, previous);
+      }
+      editor.commit();
+    }
+  }
+
+  private static void assertDynamicColorsApplied(Context context, boolean expected) {
+    TypedValue value = new TypedValue();
+    boolean applied =
+        context.getTheme().resolveAttribute(R.attr.isMaterial3DynamicColorApplied, value, true)
+            && value.data != 0;
+    assertEquals(expected, applied);
   }
 
   @Test
@@ -215,5 +341,25 @@ public class MaterialThemeTest {
   private static Context themedContext(int theme) {
     Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
     return new ContextThemeWrapper(target, theme);
+  }
+
+  private static class TestTheme extends DynamicTheme {
+    int light(String theme) {
+      return getLightThemeStyle(theme);
+    }
+
+    int dark(String theme) {
+      return getDarkThemeStyle(theme);
+    }
+  }
+
+  private static class TestNoActionBarTheme extends DynamicNoActionBarTheme {
+    int light(String theme) {
+      return getLightThemeStyle(theme);
+    }
+
+    int dark(String theme) {
+      return getDarkThemeStyle(theme);
+    }
   }
 }

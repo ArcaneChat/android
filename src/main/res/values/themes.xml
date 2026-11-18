@@ -73,6 +73,7 @@
         <item name="floating_mini_bg">@drawable/floating_mini_bg_light</item>
 
         <item name="fab_color">@color/def_primary_lite</item>
+        <item name="fab_foreground_color">@color/white</item>
         <item name="input_panel_bg_color">@color/white</item>
         <item name="close_icon_color">#A4A6A9</item>
 
@@ -221,6 +222,7 @@
         <item name="dialog_background_color">@color/background_material_dark</item>
 
         <item name="fab_color">@color/def_primary_lite</item>
+        <item name="fab_foreground_color">@color/white</item>
         <item name="input_panel_bg_color">@color/gray95</item>
         <item name="close_icon_color">@color/gray70</item>
 
@@ -297,6 +299,60 @@
 
 
 
+
+    <style name="TextSecure.MaterialYouLightTheme" parent="TextSecure.LightTheme">
+        <item name="actionBarStyle">@style/TextSecure.MaterialYouActionBar</item>
+        <item name="actionModeBackground">?attr/colorPrimary</item>
+        <item name="colorPrimaryDark">?attr/toolbar_color</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorControlHighlight">?attr/colorPrimary</item>
+        <item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
+        <item name="fab_color">?attr/colorPrimary</item>
+        <item name="fab_foreground_color">?attr/colorOnPrimary</item>
+        <item name="pref_icon_tint">?attr/colorPrimary</item>
+        <item name="conversation_item_outgoing_bubble_color">?attr/colorPrimaryContainer</item>
+        <item name="conversation_item_outgoing_text_primary_color">?attr/colorOnPrimaryContainer</item>
+        <item name="conversation_item_outgoing_text_secondary_color">?attr/colorOnPrimaryContainer</item>
+        <item name="conversation_list_item_unreadcount_color">?attr/colorPrimary</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
+
+    <style name="TextSecure.MaterialYouDarkTheme" parent="TextSecure.DarkTheme">
+        <item name="actionBarStyle">@style/TextSecure.MaterialYouActionBar</item>
+        <item name="actionModeBackground">?attr/colorSurface</item>
+        <item name="colorPrimaryDark">?attr/toolbar_color</item>
+        <item name="colorAccent">?attr/colorPrimary</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+        <item name="colorControlHighlight">?attr/colorPrimary</item>
+        <item name="materialSwitchStyle">@style/Widget.Material3.CompoundButton.MaterialSwitch</item>
+        <item name="fab_color">?attr/colorPrimary</item>
+        <item name="fab_foreground_color">?attr/colorOnPrimary</item>
+        <item name="pref_icon_tint">?attr/colorPrimary</item>
+        <item name="conversation_item_outgoing_bubble_color">?attr/colorPrimaryContainer</item>
+        <item name="conversation_item_outgoing_text_primary_color">?attr/colorOnPrimaryContainer</item>
+        <item name="conversation_item_outgoing_text_secondary_color">?attr/colorOnPrimaryContainer</item>
+        <item name="conversation_list_item_unreadcount_color">?attr/colorPrimaryInverse</item>
+        <item name="android:windowBackground">?attr/colorSurface</item>
+    </style>
+
+    <style name="TextSecure.MaterialYouLightNoActionBar" parent="TextSecure.MaterialYouLightTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="profile_toolbar_background">@color/white</item>
+        <item name="profile_toolbar_foreground">@color/gray70</item>
+        <item name="profile_document_foreground">@color/gray70</item>
+    </style>
+
+    <style name="TextSecure.MaterialYouDarkNoActionBar" parent="TextSecure.MaterialYouDarkTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="profile_toolbar_background">@color/black</item>
+        <item name="profile_toolbar_foreground">@color/white</item>
+        <item name="profile_document_foreground">@color/white</item>
+    </style>
 
     <!-- PURPLE -->
     <style

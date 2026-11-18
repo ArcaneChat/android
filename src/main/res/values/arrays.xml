@@ -8,6 +8,7 @@
         tools:ignore="InconsistentArrays">
         <item>@string/pref_light_theme</item>
         <item>@string/pref_dark_theme</item>
+        <item>@string/pref_material_you</item>
         <item>@string/blue</item>
         <item>@string/gray</item>
         <item>@string/green</item>
@@ -22,6 +23,7 @@
         tools:ignore="InconsistentArrays">
         <item>light</item>
         <item>dark</item>
+        <item>material_you</item>
         <item>blue</item>
         <item>gray</item>
         <item>green</item>

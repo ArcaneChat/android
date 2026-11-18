@@ -7,6 +7,7 @@
         <item>@string/pref_system_default</item>
         <item>@string/pref_light_theme</item>
         <item>@string/pref_dark_theme</item>
+        <item>@string/pref_material_you</item>
         <item>@string/blue</item>
         <item>@string/gray</item>
         <item>@string/green</item>
@@ -22,6 +23,7 @@
         <item>system</item>
         <item>light</item>
         <item>dark</item>
+        <item>material_you</item>
         <item>blue</item>
         <item>gray</item>
         <item>green</item>
