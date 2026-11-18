@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
@@ -151,6 +152,27 @@ public class MaterialThemeTest {
                 assertEquals(
                     MaterialColors.getColor(context, R.attr.colorSurface, 0),
                     MaterialColors.getColor(dialogContext, R.attr.colorSurface, 0));
+              }
+            });
+  }
+
+  @Test
+  public void screenAppBarsExtendToolbarColorBehindStatusBar() {
+    int[] layouts = {
+      R.layout.activity_qr, R.layout.profile_activity, R.layout.all_media_activity
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int theme : THEMES) {
+                Context context = themedContext(theme);
+                for (int layout : layouts) {
+                  View appBar =
+                      LayoutInflater.from(context).inflate(layout, null).getChildAt(0);
+                  assertEquals(
+                      MaterialColors.getColor(context, R.attr.toolbar_color, 0),
+                      ((ColorDrawable) appBar.getBackground()).getColor());
+                }
               }
             });
   }
