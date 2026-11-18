@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
 import androidx.core.graphics.ColorUtils;
 import androidx.preference.PreferenceViewHolder;
@@ -128,6 +129,28 @@ public class MaterialThemeTest {
                       MaterialColors.getColor(context, R.attr.fab_color, 0),
                       fab.getBackgroundTintList().getDefaultColor());
                 }
+              }
+            });
+  }
+
+  @Test
+  public void alertDialogRetainsSelectedThemeColors() {
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int theme : THEMES) {
+                Context context = themedContext(theme);
+                Context dialogContext = new AlertDialog.Builder(context).getContext();
+                assertEquals(
+                    MaterialColors.getColor(context, R.attr.colorPrimary, 0),
+                    MaterialColors.getColor(dialogContext, R.attr.colorPrimary, 0));
+                assertEquals(
+                    MaterialColors.getColor(context, androidx.appcompat.R.attr.colorAccent, 0),
+                    MaterialColors.getColor(
+                        dialogContext, androidx.appcompat.R.attr.colorAccent, 0));
+                assertEquals(
+                    MaterialColors.getColor(context, R.attr.colorSurface, 0),
+                    MaterialColors.getColor(dialogContext, R.attr.colorSurface, 0));
               }
             });
   }

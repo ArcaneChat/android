@@ -1,38 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style
-        name="Material3AlertDialogStyleLight"
-        parent="Theme.Material3.Light.Dialog.Alert">
-        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
-        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
-    </style>
-
-    <style
-        name="Material3AlertDialogStyleDark"
-        parent="Theme.Material3.Dark.Dialog.Alert">
-        <item name="buttonBarPositiveButtonStyle">@style/AlertDialogButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/AlertDialogButton</item>
-        <item name="buttonBarNeutralButtonStyle">@style/AlertDialogButton</item>
-    </style>
-
-    <style
-        name="AlertDialogButton"
-        parent="Widget.Material3.Button.TextButton.Dialog">
-        <item name="android:textColor">?attr/colorAccent</item>
-    </style>
-
-    <style
-        name="Material3DialogStyleLight"
-        parent="Theme.Material3.Light.Dialog">
-    </style>
-
-    <style
-        name="Material3DialogStyleDark"
-        parent="Theme.Material3.Dark.Dialog">
-    </style>
-
-    <style
         name="TextSecure.MaterialSwitch"
         parent="Widget.Material3.CompoundButton.MaterialSwitch">
         <item name="materialThemeOverlay">@style/ThemeOverlay.TextSecure.MaterialSwitch</item>

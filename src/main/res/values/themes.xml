@@ -57,8 +57,6 @@
         <item name="materialSwitchStyle">@style/TextSecure.MaterialSwitch</item>
 
         <item name="android:windowBackground">@color/white</item>
-        <item name="alertDialogTheme">@style/Material3AlertDialogStyleLight</item>
-        <item name="android:alertDialogTheme">@style/Material3DialogStyleLight</item>
         <!--<item name="android:windowContentOverlay">@drawable/compat_actionbar_shadow_background</item> -->
 
         <item name="attachment_type_selector_background">@color/white</item>
@@ -180,8 +178,6 @@
         <item name="materialSwitchStyle">@style/TextSecure.MaterialSwitch</item>
 
         <item name="android:windowBackground">@color/black</item>
-        <item name="alertDialogTheme">@style/Material3AlertDialogStyleDark</item>
-        <item name="android:alertDialogTheme">@style/Material3DialogStyleDark</item>
 
         <item name="attachment_type_selector_background">@color/gray95</item>
 
