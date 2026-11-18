@@ -7,8 +7,12 @@ import static org.junit.Assert.assertTrue;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -296,6 +300,68 @@ public class MaterialThemeTest {
       }
       editor.commit();
     }
+  }
+
+  @Test
+  public void materialYouSelectionAndMessageHighlightsUseWallpaperColors() {
+    Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
+    int[] themes = {
+      R.style.TextSecure_MaterialYouLightNoActionBar,
+      R.style.TextSecure_MaterialYouDarkNoActionBar
+    };
+    int[] backgrounds = {
+      R.attr.conversation_list_item_background,
+      R.attr.pinned_list_item_background,
+      R.attr.conversation_item_background,
+      R.attr.conversation_item_background_animated
+    };
+    int[] rows = {
+      R.layout.account_selection_list_item,
+      R.layout.contact_selection_list_item,
+      R.layout.profile_document_item
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int theme : themes) {
+                Context context = DynamicColors.wrapContextIfAvailable(themedContext(theme));
+                int selected = MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0);
+                for (int background : backgrounds) {
+                  try (TypedArray attributes =
+                      context.obtainStyledAttributes(new int[] {background})) {
+                    Drawable drawable = attributes.getDrawable(0);
+                    drawable.setState(new int[] {android.R.attr.state_selected});
+                    drawable.jumpToCurrentState();
+                    assertEquals(selected, drawableColor(drawable));
+                  }
+                }
+                for (int rowLayout : rows) {
+                  View row = LayoutInflater.from(context).inflate(rowLayout, null);
+                  row.setSelected(true);
+                  row.getBackground().jumpToCurrentState();
+                  assertEquals(selected, drawableColor(row.getBackground()));
+                }
+
+                View gallery =
+                    LayoutInflater.from(context).inflate(R.layout.profile_gallery_item, null);
+                View indicator = gallery.findViewById(R.id.selected_indicator);
+                int overlay = drawableColor(indicator.getBackground());
+                int primary = MaterialColors.getColor(context, R.attr.colorPrimary, 0);
+                ColorDrawable expectedOverlay =
+                    new ColorDrawable(ColorUtils.setAlphaComponent(primary, Math.round(255 * 0.55f)));
+                assertEquals(drawableColor(expectedOverlay), overlay);
+                assertTrue(Color.alpha(overlay) > 0 && Color.alpha(overlay) < 255);
+              }
+            });
+  }
+
+  private static int drawableColor(Drawable drawable) {
+    Bitmap bitmap = Bitmap.createBitmap(10, 10, Bitmap.Config.ARGB_8888);
+    drawable.setBounds(0, 0, 10, 10);
+    drawable.draw(new Canvas(bitmap));
+    int color = bitmap.getPixel(5, 5);
+    bitmap.recycle();
+    return color;
   }
 
   private static void assertDynamicColorsApplied(Context context, boolean expected) {

@@ -52,6 +52,10 @@
     <attr
         name="fab_foreground_color"
         format="reference|color" />
+    <attr name="gallery_selection_overlay" format="reference|color" />
+    <attr name="gallery_selection_icon_background" format="reference" />
+    <attr name="gallery_selection_icon_tint" format="reference|color" />
+    <attr name="gallery_selection_icon_padding" format="dimension" />
     <attr
         name="input_panel_bg_color"
         format="reference|color" />

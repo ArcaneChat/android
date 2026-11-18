@@ -74,6 +74,10 @@
 
         <item name="fab_color">@color/def_primary_lite</item>
         <item name="fab_foreground_color">@color/white</item>
+        <item name="gallery_selection_overlay">@color/MediaOverview_Media_selected_overlay</item>
+        <item name="gallery_selection_icon_background">@null</item>
+        <item name="gallery_selection_icon_tint">@color/white</item>
+        <item name="gallery_selection_icon_padding">0dp</item>
         <item name="input_panel_bg_color">@color/white</item>
         <item name="close_icon_color">#A4A6A9</item>
 
@@ -223,6 +227,10 @@
 
         <item name="fab_color">@color/def_primary_lite</item>
         <item name="fab_foreground_color">@color/white</item>
+        <item name="gallery_selection_overlay">@color/MediaOverview_Media_selected_overlay</item>
+        <item name="gallery_selection_icon_background">@null</item>
+        <item name="gallery_selection_icon_tint">@color/white</item>
+        <item name="gallery_selection_icon_padding">0dp</item>
         <item name="input_panel_bg_color">@color/gray95</item>
         <item name="close_icon_color">@color/gray70</item>
 
@@ -315,6 +323,14 @@
         <item name="conversation_item_outgoing_text_primary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_item_outgoing_text_secondary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_list_item_unreadcount_color">?attr/colorPrimary</item>
+        <item name="conversation_list_item_background">@drawable/material_you_list_item_background</item>
+        <item name="pinned_list_item_background">@drawable/material_you_pinned_list_item_background</item>
+        <item name="conversation_item_background">@drawable/material_you_message_background</item>
+        <item name="conversation_item_background_animated">@drawable/material_you_message_background_animated</item>
+        <item name="gallery_selection_overlay">@color/material_you_gallery_selection_overlay</item>
+        <item name="gallery_selection_icon_background">@drawable/material_you_gallery_selection_icon_background</item>
+        <item name="gallery_selection_icon_tint">?attr/colorOnPrimary</item>
+        <item name="gallery_selection_icon_padding">4dp</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
@@ -333,6 +349,14 @@
         <item name="conversation_item_outgoing_text_primary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_item_outgoing_text_secondary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_list_item_unreadcount_color">?attr/colorPrimaryInverse</item>
+        <item name="conversation_list_item_background">@drawable/material_you_list_item_background</item>
+        <item name="pinned_list_item_background">@drawable/material_you_pinned_list_item_background</item>
+        <item name="conversation_item_background">@drawable/material_you_message_background</item>
+        <item name="conversation_item_background_animated">@drawable/material_you_message_background_animated</item>
+        <item name="gallery_selection_overlay">@color/material_you_gallery_selection_overlay</item>
+        <item name="gallery_selection_icon_background">@drawable/material_you_gallery_selection_icon_background</item>
+        <item name="gallery_selection_icon_tint">?attr/colorOnPrimary</item>
+        <item name="gallery_selection_icon_padding">4dp</item>
         <item name="android:windowBackground">?attr/colorSurface</item>
     </style>
 
