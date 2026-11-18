@@ -13,6 +13,7 @@ import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
@@ -82,7 +83,9 @@ public class MaterialThemeTest {
                     (MaterialSwitch)
                         LayoutInflater.from(context)
                             .inflate(preference.getWidgetLayoutResource(), null);
-                PreferenceViewHolder holder = PreferenceViewHolder.createInstanceForTests(toggle);
+                FrameLayout row = new FrameLayout(context);
+                row.addView(toggle);
+                PreferenceViewHolder holder = PreferenceViewHolder.createInstanceForTests(row);
 
                 preference.setChecked(true);
                 preference.onBindViewHolder(holder);
