@@ -35,8 +35,8 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.thoughtcrime.securesms.LogViewActivity;
 import org.thoughtcrime.securesms.R;
+import org.thoughtcrime.securesms.WelcomeActivity;
 import org.thoughtcrime.securesms.components.SwitchPreferenceCompat;
 import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
 import org.thoughtcrime.securesms.util.DynamicTheme;
@@ -284,8 +284,8 @@ public class MaterialThemeTest {
     String previous = preferences.getString(Prefs.THEME_PREF, null);
     try {
       preferences.edit().putString(Prefs.THEME_PREF, DynamicTheme.MATERIAL_YOU).commit();
-      try (ActivityScenario<LogViewActivity> scenario =
-          ActivityScenario.launch(LogViewActivity.class)) {
+      try (ActivityScenario<WelcomeActivity> scenario =
+          ActivityScenario.launch(WelcomeActivity.class)) {
         scenario.onActivity(activity -> assertDynamicColorsApplied(activity, true));
         preferences.edit().putString(Prefs.THEME_PREF, DynamicTheme.SYSTEM).commit();
         scenario.recreate();
