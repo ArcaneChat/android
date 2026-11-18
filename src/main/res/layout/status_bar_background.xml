@@ -6,5 +6,5 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_alignParentTop="true"
-    android:background="?attr/colorPrimary"
+    android:background="?attr/toolbar_color"
     android:elevation="5dp" />

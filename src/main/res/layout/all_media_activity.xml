@@ -14,11 +14,12 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/toolbar_color"
             app:contentInsetStart="14dp"
             app:contentInsetLeft="14dp"
             android:elevation="4dp"
-            android:theme="?attr/actionBarStyle" />
+            android:theme="?attr/actionBarTheme"
+            app:popupTheme="?attr/actionBarPopupTheme" />
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
@@ -26,11 +27,11 @@
             android:layout_height="wrap_content"
             android:elevation="4dp"
             android:layout_gravity="top"
-            android:background="?attr/colorPrimary"
+            android:background="?attr/toolbar_color"
             app:tabMode="scrollable"
             app:tabPaddingStart="8dp"
             app:tabPaddingEnd="8dp"
-            app:tabBackground="?attr/colorPrimary"
+            app:tabBackground="?attr/toolbar_color"
             app:tabIndicatorColor="@color/white"
             app:tabTextColor="@color/gray10"
             app:tabSelectedTextColor="@color/white" />
@@ -50,6 +51,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         app:backgroundTint="?attr/fab_color"
+        app:tint="@color/white"
         android:src="@drawable/ic_add_white_24dp"
         android:visibility="gone"
         android:focusable="true"

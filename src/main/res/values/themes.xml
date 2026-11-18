@@ -27,7 +27,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
         <item name="colorPrimaryDark">@color/gray95</item>
 
         <item name="profile_toolbar_background">@color/black</item>
@@ -41,14 +40,21 @@
         <item name="theme_type">light</item>
         <item name="actionBarStyle">@style/TextSecure.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.LightActionBar.TabBar</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionModeTheme">?attr/actionBarTheme</item>
+        <item name="actionModeStyle">@style/TextSecure.ActionMode</item>
         <item name="actionModeBackground">@color/def_primary</item>
+        <item name="toolbar_color">?attr/actionModeBackground</item>
         <item name="colorPrimary">@color/def_primary</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/def_primary</item>
 
         <item name="colorAccent">@color/def_accent</item>
         <item name="colorSecondary">?attr/colorAccent</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="colorControlActivated">@color/def_accent</item>
         <item name="colorControlHighlight">@color/def_accent</item>
+        <item name="materialSwitchStyle">@style/TextSecure.MaterialSwitch</item>
 
         <item name="android:windowBackground">@color/white</item>
         <item name="alertDialogTheme">@style/Material3AlertDialogStyleLight</item>
@@ -154,17 +160,24 @@
         <item name="android:navigationBarColor">@color/black</item>
         <item name="actionBarStyle">@style/TextSecure.DarkActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.DarkActionBar.TabBar</item>
-        <item name="colorPrimary">@color/gray95</item>
+        <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionModeTheme">?attr/actionBarTheme</item>
+        <item name="actionModeStyle">@style/TextSecure.ActionMode</item>
+        <item name="colorPrimary">?attr/colorAccent</item>
+        <item name="colorOnPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/gray95</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
         <item name="actionModeBackground">@color/gray95</item>
+        <item name="toolbar_color">?attr/actionModeBackground</item>
         <item name="android:textColor">@color/text_color_dark_theme</item>
         <item name="android:textColorSecondary">@color/text_color_secondary_dark_theme</item>
 
         <item name="colorAccent">@color/def_accent</item>
         <item name="colorSecondary">?attr/colorAccent</item>
+        <item name="colorOnSecondary">@color/white</item>
         <item name="colorControlActivated">@color/def_accent</item>
         <item name="colorControlHighlight">@color/def_accent</item>
+        <item name="materialSwitchStyle">@style/TextSecure.MaterialSwitch</item>
 
         <item name="android:windowBackground">@color/black</item>
         <item name="alertDialogTheme">@style/Material3AlertDialogStyleDark</item>
@@ -351,8 +364,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>
@@ -367,9 +378,11 @@
         <item name="actionBarTabBarStyle">@style/TextSecure.GreenActionBar.TabBar</item>
         <item name="actionModeBackground">@color/green_primary</item>
         <item name="colorPrimary">@color/green_primary</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/green_primary</item>
 
         <item name="colorAccent">@color/green_accent</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorControlActivated">@color/green_accent</item>
         <item name="colorControlHighlight">@color/green_accent</item>
 
@@ -401,6 +414,8 @@
         name="TextSecure.GreenDarkTheme"
         parent="@style/TextSecure.DarkTheme">
         <item name="colorAccent">@color/green_accent</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorOnSecondary">@color/black</item>
         <item name="colorControlActivated">@color/green_accent</item>
         <item name="colorControlHighlight">@color/green_accent</item>
 
@@ -421,8 +436,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>
@@ -438,6 +451,7 @@
         <item name="actionBarTabBarStyle">@style/TextSecure.BlueActionBar.TabBar</item>
         <item name="actionModeBackground">@color/blue_primary</item>
         <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/blue_primary</item>
 
         <item name="colorAccent">@color/blue_accent</item>
@@ -492,8 +506,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>
@@ -562,8 +574,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>
@@ -578,6 +588,7 @@
         <item name="actionBarTabBarStyle">@style/TextSecure.PinkActionBar.TabBar</item>
         <item name="actionModeBackground">@color/pink_primary</item>
         <item name="colorPrimary">@color/pink_primary</item>
+        <item name="colorOnPrimary">@color/black</item>
         <item name="colorPrimaryDark">@color/pink_primary</item>
 
         <item name="colorAccent">@color/pink_accent</item>
@@ -632,8 +643,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>
@@ -702,8 +711,6 @@
 
         <item name="theme_type">dark</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
-        <item name="colorPrimary">@color/gray95</item>
-
         <item name="profile_toolbar_background">@color/black</item>
         <item name="profile_toolbar_foreground">@color/white</item>
         <item name="profile_document_foreground">@color/white</item>

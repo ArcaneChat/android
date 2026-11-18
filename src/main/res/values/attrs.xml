@@ -4,6 +4,9 @@
         name="theme_type"
         format="string" />
     <attr
+        name="toolbar_color"
+        format="reference|color" />
+    <attr
         name="icon_tint"
         format="color" />
     <attr

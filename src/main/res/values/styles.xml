@@ -32,6 +32,28 @@
         parent="Theme.Material3.Dark.Dialog">
     </style>
 
+    <style
+        name="TextSecure.MaterialSwitch"
+        parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.TextSecure.MaterialSwitch</item>
+    </style>
+
+    <style
+        name="ThemeOverlay.TextSecure.MaterialSwitch"
+        parent="">
+        <item name="colorPrimary">?attr/colorAccent</item>
+        <item name="colorOnPrimary">?attr/colorOnSecondary</item>
+    </style>
+
+    <style
+        name="TextSecure.ActionMode"
+        parent="Widget.Material3.ActionMode">
+        <item name="background">?attr/actionModeBackground</item>
+        <item name="backgroundSplit">?attr/actionModeBackground</item>
+        <item name="titleTextStyle">@style/TextSecure.TitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/TextSecure.SubtitleTextStyle</item>
+    </style>
+
     <!-- ActionBar styles -->
     <style
         name="TextSecure.DarkActionBar"
@@ -114,6 +136,7 @@
 
     <style name="ButtonPrimary">
         <item name="drawableTint">@color/white</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
@@ -122,6 +145,7 @@
 
     <style name="ButtonSecondary">
         <item name="drawableTint">?attr/fab_color</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:textColor">?attr/fab_color</item>
         <item name="android:paddingLeft">8dp</item>
@@ -131,6 +155,7 @@
 
     <style name="WhiteButtonPrimary">
         <item name="drawableTint">@color/def_primary</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:textColor">@color/def_primary</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
@@ -139,6 +164,7 @@
 
     <style name="WhiteButtonSecondary">
         <item name="drawableTint">@color/white</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:paddingLeft">8dp</item>

@@ -2,6 +2,7 @@
 <resources>
     <style name="ButtonSecondary">
         <item name="drawableTint">@color/gray10</item>
+        <item name="backgroundTint">@null</item>
         <item name="android:drawablePadding">5dp</item>
         <item name="android:textColor">@color/gray10</item>
         <item name="android:paddingLeft">8dp</item>
