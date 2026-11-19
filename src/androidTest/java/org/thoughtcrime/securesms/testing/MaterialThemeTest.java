@@ -552,6 +552,24 @@ public class MaterialThemeTest {
           activity -> {
             int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
             assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
+            pages[1].removeAllViews();
+            pages[1].addView(new View(activity), new ScrollView.LayoutParams(-1, 10));
+            pages[1].setVisibility(View.GONE);
+            pages[0].setVisibility(View.VISIBLE);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int surface = MaterialColors.getColor(activity, R.attr.colorSurfaceContainer, 0);
+            assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
+            pages[0].setVisibility(View.GONE);
+            pages[1].setVisibility(View.VISIBLE);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
+            assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
             container[0].removeAllViews();
           });
     }
