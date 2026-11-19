@@ -82,6 +82,7 @@ import org.thoughtcrime.securesms.util.LongClickCopySpan;
 import org.thoughtcrime.securesms.util.LongClickMovementMethod;
 import org.thoughtcrime.securesms.util.MarkdownUtil;
 import org.thoughtcrime.securesms.util.MediaUtil;
+import org.thoughtcrime.securesms.util.ResUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 import org.thoughtcrime.securesms.util.views.Stub;
@@ -954,7 +955,7 @@ public class ConversationItem extends BaseConversationItem {
       } else {
         this.groupSender.setText(context.getString(R.string.forwarded_message));
       }
-      this.groupSender.setTextColor(context.getResources().getColor(R.color.unknown_sender));
+      this.groupSender.setTextColor(ResUtil.getColor(context, R.attr.forwarded_message_color));
     } else if (showSender && dcContact != null) {
       this.groupSender.setText(messageRecord.getSenderName(dcContact));
       boolean isVerified = DcHelper.isVerified(getContext(), dcContact.getId());

@@ -284,7 +284,9 @@ public class QuoteView extends FrameLayout implements RecipientForeverObserver {
   }
 
   private int getForwardedColor() {
-    return getResources().getColor(hasSticker ? R.color.core_dark_05 : R.color.unknown_sender);
+    return hasSticker
+        ? getResources().getColor(R.color.core_dark_05)
+        : ResUtil.getColor(getContext(), R.attr.forwarded_message_color);
   }
 
   private int getEditColor() {

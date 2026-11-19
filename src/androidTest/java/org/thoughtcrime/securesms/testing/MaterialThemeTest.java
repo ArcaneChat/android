@@ -303,6 +303,49 @@ public class MaterialThemeTest {
   }
 
   @Test
+  public void materialYouKeepsNeutralWindowsAndReadableLightMessages() {
+    Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
+    int[] themes = {
+      R.style.TextSecure_MaterialYouLightNoActionBar,
+      R.style.TextSecure_MaterialYouDarkNoActionBar
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int i = 0; i < themes.length; i++) {
+                Context context = DynamicColors.wrapContextIfAvailable(themedContext(themes[i]));
+                try (TypedArray attributes =
+                    context.obtainStyledAttributes(new int[] {android.R.attr.windowBackground})) {
+                  assertEquals(
+                      i == 0 ? Color.WHITE : Color.BLACK, drawableColor(attributes.getDrawable(0)));
+                }
+                View row =
+                    LayoutInflater.from(context).inflate(R.layout.conversation_list_item_view, null);
+                assertEquals(Color.TRANSPARENT, drawableColor(row.getBackground()));
+                row.setSelected(true);
+                row.getBackground().jumpToCurrentState();
+                assertEquals(
+                    MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0),
+                    drawableColor(row.getBackground()));
+              }
+
+              Context context = DynamicColors.wrapContextIfAvailable(themedContext(themes[0]));
+              int bubble =
+                  MaterialColors.getColor(
+                      context, R.attr.conversation_item_outgoing_bubble_color, 0);
+              int container = MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0);
+              assertTrue(
+                  ColorUtils.calculateLuminance(bubble) > ColorUtils.calculateLuminance(container));
+              int forwarded = MaterialColors.getColor(context, R.attr.forwarded_message_color, 0);
+              assertTrue(ColorUtils.calculateContrast(forwarded, bubble) >= 4.5);
+              FrameLayout parent = new FrameLayout(context);
+              LayoutInflater.from(context).inflate(R.layout.quote_view, parent);
+              TextView quote = parent.findViewById(R.id.quote_text);
+              assertTrue(ColorUtils.calculateContrast(quote.getCurrentTextColor(), bubble) >= 4.5);
+            });
+  }
+
+  @Test
   public void materialYouSelectionAndMessageHighlightsUseWallpaperColors() {
     Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
     int[] themes = {

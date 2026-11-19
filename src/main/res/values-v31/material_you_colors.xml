@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="material_you_light_outgoing_bubble">@android:color/system_accent1_50</color>
+</resources>

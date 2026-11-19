@@ -120,6 +120,7 @@
     <attr
         name="conversation_item_background_animated"
         format="reference" />
+    <attr name="forwarded_message_color" format="reference|color" />
     <attr
         name="conversation_item_incoming_bubble_color"
         format="reference|color" />
