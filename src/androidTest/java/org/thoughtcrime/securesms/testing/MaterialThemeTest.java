@@ -441,11 +441,21 @@ public class MaterialThemeTest {
                 }
                 int background = MaterialColors.getColor(context, R.attr.toolbar_color, 0);
                 int foreground = MaterialColors.getColor(context, R.attr.toolbar_foreground, 0);
-                assertEquals(Color.WHITE, background);
+                assertEquals(
+                    MaterialColors.getColor(context, R.attr.colorSurfaceContainer, 0), background);
+                assertTrue(ColorUtils.calculateContrast(Color.WHITE, background) >= 1.05);
                 assertTrue(ColorUtils.calculateContrast(foreground, background) >= 4.5);
 
                 View list =
                     LayoutInflater.from(context).inflate(R.layout.conversation_list_activity, null);
+                assertEquals(
+                    background, drawableColor(list.findViewById(R.id.toolbar).getBackground()));
+                if (android.os.Build.VERSION.SDK_INT >= 23) {
+                  assertEquals(
+                      background,
+                      MaterialColors.getColor(
+                          context, androidx.appcompat.R.attr.colorPrimaryDark, 0));
+                }
                 TextView title = list.findViewById(R.id.toolbar_title);
                 ImageView search = list.findViewById(R.id.search_action);
                 assertEquals(foreground, title.getCurrentTextColor());
@@ -464,6 +474,10 @@ public class MaterialThemeTest {
                 View media =
                     LayoutInflater.from(context).inflate(R.layout.all_media_activity, null);
                 TabLayout tabs = media.findViewById(R.id.tab_layout);
+                assertEquals(background, drawableColor(tabs.getBackground()));
+                AppBarLayout appBar = (AppBarLayout) media.findViewById(R.id.toolbar).getParent();
+                assertEquals(
+                    background, appBar.getMaterialShapeBackground().getFillColor().getDefaultColor());
                 assertEquals(
                     foreground,
                     tabs.getTabTextColors()
