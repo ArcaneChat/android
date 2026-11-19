@@ -18,6 +18,7 @@
 
     <!-- clipToPadding is needed so ViewUtil.applyWindowInsets() works properly -->
     <ListView
+        android:tag="toolbar_scroll_target"
         android:id="@+id/proxy_list"
         android:paddingTop="10dp"
         android:clipToPadding="false"

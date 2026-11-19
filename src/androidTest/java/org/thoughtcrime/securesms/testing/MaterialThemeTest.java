@@ -19,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
@@ -45,6 +46,7 @@ import org.thoughtcrime.securesms.components.SwitchPreferenceCompat;
 import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.ToolbarScrollColors;
 
 @RunWith(AndroidJUnit4.class)
 public class MaterialThemeTest {
@@ -447,7 +449,7 @@ public class MaterialThemeTest {
                 View list =
                     LayoutInflater.from(context).inflate(R.layout.conversation_list_activity, null);
                 assertEquals(
-                    4 * context.getResources().getDisplayMetrics().density,
+                    0,
                     list.findViewById(R.id.toolbar).getElevation(),
                     0.01f);
                 TextView title = list.findViewById(R.id.toolbar_title);
@@ -485,6 +487,74 @@ public class MaterialThemeTest {
                         .getDefaultColor());
               }
             });
+  }
+
+  @Test
+  public void toolbarTracksVisibleScrollContentAndStatusBar() {
+    try (ActivityScenario<WelcomeActivity> scenario = ActivityScenario.launch(WelcomeActivity.class)) {
+      ScrollView[] pages = new ScrollView[2];
+      FrameLayout[] container = new FrameLayout[1];
+      View[] bars = new View[2];
+      scenario.onActivity(
+          activity -> {
+            FrameLayout root = new FrameLayout(activity);
+            container[0] = root;
+            for (int i = 0; i < pages.length; i++) {
+              ScrollView page = new ScrollView(activity);
+              page.setTag(ToolbarScrollColors.SCROLL_TARGET);
+              View content = new View(activity);
+              page.addView(content, new ScrollView.LayoutParams(-1, 4000));
+              root.addView(page, new FrameLayout.LayoutParams(-1, 300));
+              pages[i] = page;
+            }
+            pages[1].setVisibility(View.GONE);
+            bars[0] = new View(activity);
+            bars[0].setId(R.id.toolbar);
+            root.addView(bars[0], new FrameLayout.LayoutParams(1, 1));
+            bars[1] = new View(activity);
+            bars[1].setId(R.id.status_bar_background);
+            root.addView(bars[1], new FrameLayout.LayoutParams(1, 1));
+            activity.addContentView(root, new FrameLayout.LayoutParams(-1, -1));
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
+            assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
+            assertEquals(top, ((ColorDrawable) bars[1].getBackground()).getColor());
+            pages[0].scrollTo(0, 100);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int surface = MaterialColors.getColor(activity, R.attr.colorSurfaceContainer, 0);
+            assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
+            assertEquals(surface, ((ColorDrawable) bars[1].getBackground()).getColor());
+            pages[0].setVisibility(View.GONE);
+            pages[1].setVisibility(View.VISIBLE);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
+            assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
+            pages[1].scrollTo(0, 100);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int surface = MaterialColors.getColor(activity, R.attr.colorSurfaceContainer, 0);
+            assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
+            pages[1].scrollTo(0, 0);
+          });
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
+            assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
+            container[0].removeAllViews();
+          });
+    }
   }
 
   @Test

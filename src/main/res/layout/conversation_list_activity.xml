@@ -17,7 +17,7 @@
         android:background="?attr/toolbar_color"
         app:contentInsetStart="0dp"
         app:contentInsetLeft="0dp"
-        android:elevation="4dp"
+        android:elevation="0dp"
         android:theme="?attr/actionBarTheme"
         app:popupTheme="?attr/actionBarPopupTheme">
 
@@ -106,7 +106,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:elevation="4dp"
+        android:elevation="0dp"
         android:visibility="invisible"
         tools:visibility="visible" />
 

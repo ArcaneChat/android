@@ -9,6 +9,7 @@
     <include layout="@layout/status_bar_background" />
 
     <ScrollView
+        android:tag="toolbar_scroll_target"
         android:id="@+id/relay_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

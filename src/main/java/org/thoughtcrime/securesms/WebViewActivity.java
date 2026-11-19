@@ -51,6 +51,11 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     return false;
   }
 
+  @Override
+  protected boolean useToolbarScrollColors() {
+    return !immersiveMode();
+  }
+
   protected boolean shouldAskToOpenLink() {
     return false;
   }

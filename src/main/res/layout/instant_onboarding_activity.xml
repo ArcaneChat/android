@@ -7,6 +7,7 @@
     <include layout="@layout/status_bar_background" />
 
     <ScrollView
+        android:tag="toolbar_scroll_target"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">

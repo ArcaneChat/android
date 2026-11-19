@@ -20,6 +20,7 @@
         android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:tag="toolbar_scroll_target"
             android:id="@android:id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

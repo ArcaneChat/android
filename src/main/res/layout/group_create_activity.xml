@@ -71,6 +71,7 @@
 
     <!-- clipToPadding is needed so ViewUtil.applyWindowInsets() works properly -->
     <ListView
+        android:tag="toolbar_scroll_target"
         android:id="@+id/selected_contacts_list"
         android:clipToPadding="false"
         android:layout_marginTop="16dp"

@@ -8,6 +8,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:elevation="0dp"
         android:background="?attr/toolbar_color">
 
         <androidx.appcompat.widget.Toolbar
@@ -32,7 +33,6 @@
             app:tabMode="fixed"
             app:tabPaddingStart="3dp"
             app:tabPaddingEnd="3dp"
-            app:tabBackground="?attr/toolbar_color"
             app:tabIndicatorColor="?attr/toolbar_foreground"
             app:tabTextColor="?attr/toolbar_secondary_foreground"
             app:tabSelectedTextColor="?attr/toolbar_foreground" />

@@ -178,7 +178,7 @@
         <item name="toolbar_color">?attr/actionModeBackground</item>
         <item name="toolbar_foreground">@color/white</item>
         <item name="toolbar_secondary_foreground">#BFffffff</item>
-        <item name="toolbar_elevation">4dp</item>
+        <item name="toolbar_elevation">0dp</item>
         <item name="android:textColor">@color/text_color_dark_theme</item>
         <item name="android:textColorSecondary">@color/text_color_secondary_dark_theme</item>
 

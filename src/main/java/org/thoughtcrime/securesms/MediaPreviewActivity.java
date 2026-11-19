@@ -103,6 +103,11 @@ public class MediaPreviewActivity extends PassphraseRequiredActionBarActivity
   private int editAvatarChatId = 0;
 
   @Override
+  protected boolean useToolbarScrollColors() {
+    return false;
+  }
+
+  @Override
   protected void onPreCreate() {
     dynamicTheme =
         new DynamicTheme() {
