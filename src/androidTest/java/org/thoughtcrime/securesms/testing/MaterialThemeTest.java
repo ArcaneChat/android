@@ -446,6 +446,10 @@ public class MaterialThemeTest {
 
                 View list =
                     LayoutInflater.from(context).inflate(R.layout.conversation_list_activity, null);
+                assertEquals(
+                    4 * context.getResources().getDisplayMetrics().density,
+                    list.findViewById(R.id.toolbar).getElevation(),
+                    0.01f);
                 TextView title = list.findViewById(R.id.toolbar_title);
                 ImageView search = list.findViewById(R.id.search_action);
                 assertEquals(foreground, title.getCurrentTextColor());

@@ -17,7 +17,7 @@
         android:background="?attr/toolbar_color"
         app:contentInsetStart="0dp"
         app:contentInsetLeft="0dp"
-        android:elevation="?attr/toolbar_elevation"
+        android:elevation="4dp"
         android:theme="?attr/actionBarTheme"
         app:popupTheme="?attr/actionBarPopupTheme">
 
