@@ -7,5 +7,4 @@
     android:layout_height="0dp"
     android:layout_alignParentTop="true"
     android:background="?attr/toolbar_color"
-    android:outlineProvider="none"
     android:elevation="5dp" />
