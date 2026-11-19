@@ -569,6 +569,11 @@ public class MaterialThemeTest {
       scenario.onActivity(
           activity -> {
             int surface = MaterialColors.getColor(activity, R.attr.colorSurfaceContainer, 0);
+            assertTrue(pages[0].canScrollVertically(-1));
+            ToolbarScrollColors tracker = new ToolbarScrollColors(activity.getWindow().getDecorView(), () -> {});
+            Boolean scrolled = tracker.isScrolled();
+            tracker.detach();
+            assertEquals(Boolean.TRUE, scrolled);
             assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
             assertEquals(surface, ((ColorDrawable) bars[1].getBackground()).getColor());
             pages[0].setVisibility(View.GONE);
