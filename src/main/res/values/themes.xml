@@ -40,7 +40,7 @@
         <item name="actionBarStyle">@style/TextSecure.LightActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.LightActionBar.TabBar</item>
         <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="actionModeTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="actionModeTheme">@style/ThemeOverlay.TextSecure.ActionMode</item>
         <item name="actionModeStyle">@style/TextSecure.ActionMode</item>
         <item name="actionModeBackground">@color/def_primary</item>
         <item name="toolbar_color">@color/white</item>
@@ -168,7 +168,7 @@
         <item name="actionBarStyle">@style/TextSecure.DarkActionBar</item>
         <item name="actionBarTabBarStyle">@style/TextSecure.DarkActionBar.TabBar</item>
         <item name="actionBarTheme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
-        <item name="actionModeTheme">?attr/actionBarTheme</item>
+        <item name="actionModeTheme">@style/ThemeOverlay.TextSecure.ActionMode</item>
         <item name="actionModeStyle">@style/TextSecure.ActionMode</item>
         <item name="colorPrimary">?attr/colorAccent</item>
         <item name="colorOnPrimary">@color/white</item>

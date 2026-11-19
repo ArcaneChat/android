@@ -6,18 +6,21 @@
         android:id="@+id/details"
         android:title="@string/menu_message_details"
         android:icon="?menu_info_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/delete"
         android:title="@string/delete"
         android:icon="@drawable/ic_delete_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/share"
         android:title="@string/menu_share"
         android:icon="@drawable/ic_share_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item

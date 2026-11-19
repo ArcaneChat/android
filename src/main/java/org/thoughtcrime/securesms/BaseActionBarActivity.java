@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.WindowCompat;
@@ -37,6 +38,7 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   protected DynamicTheme dynamicTheme = new DynamicTheme();
   private ToolbarScrollColors toolbarScrollColors;
   private Integer toolbarBackground;
+  private boolean actionModeActive;
 
   protected void onPreCreate() {
     dynamicTheme.onCreate(this);
@@ -84,11 +86,13 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
   private void updateToolbarColor() {
     if (toolbarScrollColors == null) return;
     Boolean scrolled = toolbarScrollColors.isScrolled();
-    if (scrolled == null && toolbarBackground == null) return;
+    if (scrolled == null && toolbarBackground == null && !actionModeActive) return;
     int color =
         ResUtil.getColor(
             this,
-            Boolean.TRUE.equals(scrolled) ? R.attr.colorSurfaceContainer : R.attr.toolbar_color);
+            actionModeActive || Boolean.TRUE.equals(scrolled)
+                ? R.attr.colorSurfaceContainer
+                : R.attr.toolbar_color);
     if (toolbarBackground != null && toolbarBackground == color) return;
     toolbarBackground = color;
 
@@ -115,6 +119,20 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !ViewUtil.isEdgeToEdgeSupported()) {
       getWindow().setStatusBarColor(color);
     }
+  }
+
+  @Override
+  public void onSupportActionModeStarted(@NonNull ActionMode mode) {
+    super.onSupportActionModeStarted(mode);
+    actionModeActive = true;
+    updateToolbarColor();
+  }
+
+  @Override
+  public void onSupportActionModeFinished(@NonNull ActionMode mode) {
+    super.onSupportActionModeFinished(mode);
+    actionModeActive = false;
+    updateToolbarColor();
   }
 
   @Override

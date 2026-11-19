@@ -7,18 +7,21 @@
         android:title="@string/pin_chat"
         android:id="@+id/menu_pin_selected"
         android:icon="@drawable/ic_pin_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item
         android:title="@string/menu_archive_chat"
         android:id="@+id/menu_archive_selected"
         android:icon="@drawable/ic_archive_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item
         android:title="@string/menu_delete_chat"
         android:id="@+id/menu_delete_selected"
         android:icon="?menu_trash_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item

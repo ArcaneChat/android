@@ -16,12 +16,15 @@ import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.ActionBarContextView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.graphics.ColorUtils;
@@ -495,6 +498,7 @@ public class MaterialThemeTest {
       ScrollView[] pages = new ScrollView[2];
       FrameLayout[] container = new FrameLayout[1];
       View[] bars = new View[2];
+      ActionMode[] mode = new ActionMode[1];
       scenario.onActivity(
           activity -> {
             FrameLayout root = new FrameLayout(activity);
@@ -520,6 +524,35 @@ public class MaterialThemeTest {
       scenario.onActivity(
           activity -> {
             int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
+            assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
+            assertEquals(top, ((ColorDrawable) bars[1].getBackground()).getColor());
+            mode[0] =
+                activity.startSupportActionMode(
+                    new ActionMode.Callback() {
+                      @Override
+                      public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                        actionMode.setTitle("1");
+                        return true;
+                      }
+
+                      @Override
+                      public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                        return false;
+                      }
+
+                      @Override
+                      public boolean onActionItemClicked(ActionMode actionMode, MenuItem item) {
+                        return false;
+                      }
+
+                      @Override
+                      public void onDestroyActionMode(ActionMode actionMode) {}
+                    });
+            assertTrue(mode[0] != null);
+            int surface = MaterialColors.getColor(activity, R.attr.colorSurfaceContainer, 0);
+            assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
+            assertEquals(surface, ((ColorDrawable) bars[1].getBackground()).getColor());
+            mode[0].finish();
             assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
             assertEquals(top, ((ColorDrawable) bars[1].getBackground()).getColor());
             pages[0].scrollTo(0, 100);
@@ -576,34 +609,71 @@ public class MaterialThemeTest {
   }
 
   @Test
-  public void contextualActionBarUsesBrandedBackgroundAndWhiteText() {
+  public void contextualActionBarUsesSurfaceAndToolbarForeground() {
+    int[] menus = {
+      R.menu.conversation_context,
+      R.menu.conversation_list,
+      R.menu.contact_list,
+      R.menu.profile_context
+    };
+    int[] themes = {
+      R.style.TextSecure_LightTheme,
+      R.style.TextSecure_LightNoActionBar,
+      R.style.TextSecure_DarkTheme,
+      R.style.TextSecure_DarkNoActionBar,
+      R.style.TextSecure_PurpleTheme,
+      R.style.TextSecure_GreenTheme,
+      R.style.TextSecure_BlueTheme,
+      R.style.TextSecure_RedTheme,
+      R.style.TextSecure_PinkTheme,
+      R.style.TextSecure_GrayTheme,
+      R.style.TextSecure_MaterialYouLightTheme,
+      R.style.TextSecure_MaterialYouDarkTheme
+    };
     InstrumentationRegistry.getInstrumentation()
         .runOnMainSync(
             () -> {
-              for (int theme : THEMES) {
+              for (int theme : themes) {
                 Context context = themedContext(theme);
+                if (theme == R.style.TextSecure_MaterialYouLightTheme
+                    || theme == R.style.TextSecure_MaterialYouDarkTheme) {
+                  context = DynamicColors.wrapContextIfAvailable(context);
+                }
+                TypedValue actionModeTheme = new TypedValue();
                 assertTrue(
-                    ColorUtils.calculateContrast(
-                            MaterialColors.getColor(context, R.attr.colorOnPrimary, 0),
-                            MaterialColors.getColor(context, R.attr.colorPrimary, 0))
-                        >= 4.5);
-                Context actionModeContext =
-                    new ContextThemeWrapper(context, R.style.ThemeOverlay_AppCompat_Dark_ActionBar);
+                    context
+                        .getTheme()
+                        .resolveAttribute(
+                            androidx.appcompat.R.attr.actionModeTheme, actionModeTheme, true));
+                Context actionModeContext = new ContextThemeWrapper(context, actionModeTheme.resourceId);
                 ActionBarContextView actionMode =
                     (ActionBarContextView)
                         LayoutInflater.from(actionModeContext)
                             .inflate(androidx.appcompat.R.layout.abc_action_mode_bar, null);
+                int surface = MaterialColors.getColor(context, R.attr.colorSurfaceContainer, 0);
+                int foreground = MaterialColors.getColor(context, R.attr.toolbar_foreground, 0);
                 assertEquals(
-                    MaterialColors.getColor(
-                        context, androidx.appcompat.R.attr.actionModeBackground, 0),
+                    surface,
                     ((ColorDrawable) actionMode.getBackground()).getColor());
                 actionMode.setTitle("1");
                 TextView title = actionMode.findViewById(androidx.appcompat.R.id.action_bar_title);
-                assertEquals(Color.WHITE, title.getCurrentTextColor());
+                assertEquals(foreground, title.getCurrentTextColor());
                 assertEquals(
-                    Color.WHITE,
+                    foreground,
                     MaterialColors.getColor(
                         actionMode.getContext(), androidx.appcompat.R.attr.colorControlNormal, 0));
+                assertTrue(ColorUtils.calculateContrast(foreground, surface) >= 4.5);
+                for (int menuId : menus) {
+                  PopupMenu popup = new PopupMenu(actionModeContext, new View(actionModeContext));
+                  popup.inflate(menuId);
+                  Menu menu = popup.getMenu();
+                  for (int i = 0; i < menu.size(); i++) {
+                    MenuItem item = menu.getItem(i);
+                    if (item.getIcon() != null) {
+                      assertEquals(foreground, MenuItemCompat.getIconTintList(item).getDefaultColor());
+                    }
+                  }
+                }
               }
             });
   }

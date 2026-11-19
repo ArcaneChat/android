@@ -16,10 +16,16 @@
     <style
         name="TextSecure.ActionMode"
         parent="Widget.Material3.ActionMode">
-        <item name="background">?attr/actionModeBackground</item>
-        <item name="backgroundSplit">?attr/actionModeBackground</item>
-        <item name="titleTextStyle">@style/TextSecure.ActionModeTitleTextStyle</item>
-        <item name="subtitleTextStyle">@style/TextSecure.ActionModeSubtitleTextStyle</item>
+        <item name="background">?attr/colorSurfaceContainer</item>
+        <item name="backgroundSplit">?attr/colorSurfaceContainer</item>
+        <item name="titleTextStyle">@style/TextSecure.TitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/TextSecure.SubtitleTextStyle</item>
+    </style>
+
+    <style name="ThemeOverlay.TextSecure.ActionMode" parent="">
+        <item name="colorControlNormal">?attr/toolbar_foreground</item>
+        <item name="android:textColorPrimary">?attr/toolbar_foreground</item>
+        <item name="android:textColorSecondary">?attr/toolbar_secondary_foreground</item>
     </style>
 
     <!-- ActionBar styles -->
@@ -84,15 +90,6 @@
         parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
         <item name="android:textColor">?attr/toolbar_secondary_foreground</item>
     </style>
-
-    <style name="TextSecure.ActionModeTitleTextStyle" parent="TextSecure.TitleTextStyle">
-        <item name="android:textColor">@color/white</item>
-    </style>
-
-    <style name="TextSecure.ActionModeSubtitleTextStyle" parent="TextSecure.SubtitleTextStyle">
-        <item name="android:textColor">#BFffffff</item>
-    </style>
-
 
     <!-- For Holo Light Dialog Activity Styling Emulation -->
 

@@ -6,36 +6,42 @@
         android:title="@string/save"
         android:id="@+id/menu_toggle_save"
         android:icon="@drawable/baseline_bookmark_border_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
         android:title="@string/edit_message"
         android:id="@+id/menu_context_edit"
         android:icon="@drawable/ic_create_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
         android:title="@string/menu_copy_text_to_clipboard"
         android:id="@+id/menu_context_copy"
         android:icon="?menu_copy_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
         android:title="@string/menu_share"
         android:id="@+id/menu_context_share"
         android:icon="@drawable/ic_share_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
         android:title="@string/menu_forward"
         android:id="@+id/menu_context_forward"
         android:icon="?menu_forward_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
         android:title="@string/delete"
         android:id="@+id/menu_context_delete_message"
         android:icon="?menu_trash_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
