@@ -564,6 +564,7 @@ public class MaterialThemeTest {
             assertEquals(top, ((ColorDrawable) bars[1].getBackground()).getColor());
             pages[0].scrollTo(0, 100);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
@@ -573,6 +574,7 @@ public class MaterialThemeTest {
             pages[0].setVisibility(View.GONE);
             pages[1].setVisibility(View.VISIBLE);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
@@ -580,6 +582,7 @@ public class MaterialThemeTest {
             assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
             pages[1].scrollTo(0, 100);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
@@ -587,6 +590,7 @@ public class MaterialThemeTest {
             assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
             pages[1].scrollTo(0, 0);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
@@ -597,6 +601,7 @@ public class MaterialThemeTest {
             pages[1].setVisibility(View.GONE);
             pages[0].setVisibility(View.VISIBLE);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
@@ -605,6 +610,7 @@ public class MaterialThemeTest {
             pages[0].setVisibility(View.GONE);
             pages[1].setVisibility(View.VISIBLE);
           });
+      SystemClock.sleep(250);
       InstrumentationRegistry.getInstrumentation().waitForIdleSync();
       scenario.onActivity(
           activity -> {
