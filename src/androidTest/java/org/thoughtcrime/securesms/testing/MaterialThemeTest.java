@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.SystemClock;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -553,6 +554,12 @@ public class MaterialThemeTest {
             assertEquals(surface, ((ColorDrawable) bars[0].getBackground()).getColor());
             assertEquals(surface, ((ColorDrawable) bars[1].getBackground()).getColor());
             mode[0].finish();
+          });
+      SystemClock.sleep(1000);
+      InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+      scenario.onActivity(
+          activity -> {
+            int top = MaterialColors.getColor(activity, R.attr.toolbar_color, 0);
             assertEquals(top, ((ColorDrawable) bars[0].getBackground()).getColor());
             assertEquals(top, ((ColorDrawable) bars[1].getBackground()).getColor());
             pages[0].scrollTo(0, 100);
