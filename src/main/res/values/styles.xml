@@ -18,8 +18,8 @@
         parent="Widget.Material3.ActionMode">
         <item name="background">?attr/actionModeBackground</item>
         <item name="backgroundSplit">?attr/actionModeBackground</item>
-        <item name="titleTextStyle">@style/TextSecure.TitleTextStyle</item>
-        <item name="subtitleTextStyle">@style/TextSecure.SubtitleTextStyle</item>
+        <item name="titleTextStyle">@style/TextSecure.ActionModeTitleTextStyle</item>
+        <item name="subtitleTextStyle">@style/TextSecure.ActionModeSubtitleTextStyle</item>
     </style>
 
     <!-- ActionBar styles -->
@@ -44,13 +44,13 @@
     <style
         name="TextSecure.LightActionBar"
         parent="@style/Widget.AppCompat.ActionBar">
-        <item name="background">@color/def_primary</item>
-        <item name="elevation">4dp</item>
+        <item name="background">?attr/toolbar_color</item>
+        <item name="elevation">?attr/toolbar_elevation</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
         <item name="titleTextStyle">@style/TextSecure.TitleTextStyle</item>
         <item name="subtitleTextStyle">@style/TextSecure.SubtitleTextStyle</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textColorPrimary">?attr/toolbar_foreground</item>
+        <item name="android:textColorSecondary">?attr/toolbar_secondary_foreground</item>
     </style>
 
     <style
@@ -64,24 +64,32 @@
     <style
         name="TextSecure.LightActionBar.TabBar"
         parent="@style/Widget.AppCompat.ActionBar.TabBar">
-        <item name="android:background">@color/def_primary</item>
-        <item name="background">@color/def_primary</item>
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textColorSecondary">#BFffffff</item>
-        <item name="elevation">4dp</item>
+        <item name="android:background">?attr/toolbar_color</item>
+        <item name="background">?attr/toolbar_color</item>
+        <item name="android:textColorPrimary">?attr/toolbar_foreground</item>
+        <item name="android:textColorSecondary">?attr/toolbar_secondary_foreground</item>
+        <item name="elevation">?attr/toolbar_elevation</item>
     </style>
 
     <style
         name="TextSecure.TitleTextStyle"
         parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textColorHint">#BFffffff</item>
+        <item name="android:textColor">?attr/toolbar_foreground</item>
+        <item name="android:textColorHint">?attr/toolbar_secondary_foreground</item>
         <item name="android:textSize">20dp</item>
     </style>
 
     <style
         name="TextSecure.SubtitleTextStyle"
         parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+        <item name="android:textColor">?attr/toolbar_secondary_foreground</item>
+    </style>
+
+    <style name="TextSecure.ActionModeTitleTextStyle" parent="TextSecure.TitleTextStyle">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="TextSecure.ActionModeSubtitleTextStyle" parent="TextSecure.SubtitleTextStyle">
         <item name="android:textColor">#BFffffff</item>
     </style>
 

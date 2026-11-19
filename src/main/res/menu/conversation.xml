@@ -19,6 +19,7 @@
         android:title="@string/back"
         android:id="@+id/menu_search_up"
         android:icon="@drawable/ic_search_up"
+        app:iconTint="?attr/toolbar_foreground"
         android:visible="false"
         app:showAsAction="always" />
 
@@ -26,6 +27,7 @@
         android:title="@string/next"
         android:id="@+id/menu_search_down"
         android:icon="@drawable/ic_search_down"
+        app:iconTint="?attr/toolbar_foreground"
         android:visible="false"
         app:showAsAction="always" />
 
@@ -33,7 +35,8 @@
         android:id="@+id/menu_start_call"
         android:title="@string/start_call"
         app:showAsAction="always"
-        android:icon="@drawable/baseline_call_24">
+        android:icon="@drawable/baseline_call_24"
+        app:iconTint="?attr/toolbar_foreground">
         <menu>
             <item
                 android:id="@+id/menu_start_audio_call"
@@ -52,6 +55,7 @@
         android:id="@+id/menu_all_media"
         android:title="@string/apps_and_media"
         android:icon="@drawable/ic_apps_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item
@@ -66,6 +70,7 @@
         android:id="@+id/menu_show_map"
         android:title="@string/tab_map"
         android:icon="@drawable/ic_map_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="never" />
 
     <item

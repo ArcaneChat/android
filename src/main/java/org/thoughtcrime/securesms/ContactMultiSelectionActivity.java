@@ -38,7 +38,7 @@ public class ContactMultiSelectionActivity extends ContactSelectionActivity {
   protected void onCreate(Bundle icicle, boolean ready) {
     getIntent().putExtra(ContactSelectionListFragment.MULTI_SELECT, true);
     super.onCreate(icicle, ready);
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+    getSupportActionBar().setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
 
     // it's a bit confusing having one "X" button on the left and one on the right -
     // and the "clear search" button is not that important.

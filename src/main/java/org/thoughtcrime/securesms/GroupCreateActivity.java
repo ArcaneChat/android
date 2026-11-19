@@ -77,7 +77,7 @@ public class GroupCreateActivity extends PassphraseRequiredActionBarActivity
     broadcast = getIntent().getBooleanExtra(CREATE_BROADCAST, false);
     unencrypted = getIntent().getBooleanExtra(UNENCRYPTED, false);
     Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+    getSupportActionBar().setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
 
     groupChatId = getIntent().getIntExtra(EDIT_GROUP_CHAT_ID, 0);
     attachmentManager = new AttachmentManager(this, () -> {});

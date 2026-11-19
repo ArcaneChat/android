@@ -18,7 +18,7 @@
             android:background="?attr/toolbar_color"
             app:contentInsetStart="14dp"
             app:contentInsetLeft="14dp"
-            android:elevation="4dp"
+            android:elevation="?attr/toolbar_elevation"
             android:theme="?attr/actionBarTheme"
             app:popupTheme="?attr/actionBarPopupTheme" />
     </com.google.android.material.appbar.AppBarLayout>

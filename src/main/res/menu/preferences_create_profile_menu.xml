@@ -6,5 +6,6 @@
         android:id="@+id/menu_create_profile"
         android:title="@string/ok"
         app:showAsAction="always"
-        android:icon="?menu_accept_icon" />
+        android:icon="?menu_accept_icon"
+        app:iconTint="?attr/toolbar_foreground" />
 </menu>

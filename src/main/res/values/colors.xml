@@ -81,6 +81,7 @@
 
     <color name="white">#ffffffff</color>
     <color name="black">#ff000000</color>
+    <color name="light_toolbar_status_bar">@color/gray70</color>
     <color name="gray5">#ffeeeeee</color>
     <color name="gray10">#ffdddddd</color>
     <color name="gray12">#ffe0e0e0</color>

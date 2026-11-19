@@ -7,6 +7,7 @@
         android:title="@string/qr_code"
         android:id="@+id/menu_qr"
         android:icon="@drawable/ic_qr_code_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="ifRoom" />
 
     <item
@@ -26,6 +27,7 @@
         android:title="@string/proxy_settings"
         android:id="@+id/menu_proxy_settings"
         android:icon="@drawable/ic_proxy_disabled_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always"
         android:visible="false" />
 

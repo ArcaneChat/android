@@ -17,7 +17,7 @@
         android:background="?attr/toolbar_color"
         app:contentInsetStart="0dp"
         app:contentInsetLeft="0dp"
-        android:elevation="4dp"
+        android:elevation="?attr/toolbar_elevation"
         android:theme="?attr/actionBarTheme"
         app:popupTheme="?attr/actionBarPopupTheme">
 
@@ -81,6 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_search_white_24dp"
+                android:tint="?attr/toolbar_foreground"
                 android:paddingRight="12dp"
                 android:paddingEnd="12dp"
                 android:paddingLeft="12dp"

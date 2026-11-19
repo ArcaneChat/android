@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/toolbar_color"
-        android:elevation="4dp"
+        android:elevation="?attr/toolbar_elevation"
         android:theme="?attr/actionBarTheme"
         app:popupTheme="?attr/actionBarPopupTheme"
         app:contentInsetStartWithNavigation="0dp" />

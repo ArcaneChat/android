@@ -6,6 +6,9 @@
     <attr
         name="toolbar_color"
         format="reference|color" />
+    <attr name="toolbar_foreground" format="reference|color" />
+    <attr name="toolbar_secondary_foreground" format="reference|color" />
+    <attr name="toolbar_elevation" format="dimension" />
     <attr
         name="icon_tint"
         format="color" />

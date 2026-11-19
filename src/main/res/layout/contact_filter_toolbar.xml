@@ -49,7 +49,8 @@
                     android:focusable="true"
                     android:background="@drawable/circle_touch_highlight_background"
                     android:contentDescription="@string/clear_search"
-                    android:src="@drawable/ic_clear_white_24dp" />
+                    android:src="@drawable/ic_clear_white_24dp"
+                    android:tint="?attr/toolbar_foreground" />
 
             </org.thoughtcrime.securesms.components.AnimatingToggle>
 

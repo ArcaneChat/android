@@ -18,7 +18,7 @@
             android:background="?attr/toolbar_color"
             app:contentInsetStart="14dp"
             app:contentInsetLeft="14dp"
-            android:elevation="4dp"
+            android:elevation="?attr/toolbar_elevation"
             android:theme="?attr/actionBarTheme"
             app:popupTheme="?attr/actionBarPopupTheme" />
 
@@ -26,16 +26,16 @@
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
+            android:elevation="?attr/toolbar_elevation"
             android:layout_gravity="top"
             android:background="?attr/toolbar_color"
             app:tabMode="scrollable"
             app:tabPaddingStart="8dp"
             app:tabPaddingEnd="8dp"
             app:tabBackground="?attr/toolbar_color"
-            app:tabIndicatorColor="@color/white"
-            app:tabTextColor="@color/gray10"
-            app:tabSelectedTextColor="@color/white" />
+            app:tabIndicatorColor="?attr/toolbar_foreground"
+            app:tabTextColor="?attr/toolbar_secondary_foreground"
+            app:tabSelectedTextColor="?attr/toolbar_foreground" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

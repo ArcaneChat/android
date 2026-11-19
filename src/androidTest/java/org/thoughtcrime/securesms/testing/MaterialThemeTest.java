@@ -18,10 +18,13 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.ActionBarContextView;
 import androidx.core.graphics.ColorUtils;
+import androidx.core.view.MenuItemCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceViewHolder;
 import androidx.test.core.app.ActivityScenario;
@@ -32,6 +35,7 @@ import com.google.android.material.color.DynamicColors;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.tabs.TabLayout;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -416,24 +420,86 @@ public class MaterialThemeTest {
   }
 
   @Test
+  public void lightToolbarsUseNeutralBackgroundAndReadableForeground() {
+    int[] lightThemes = {
+      R.style.TextSecure_LightTheme,
+      R.style.TextSecure_PurpleTheme,
+      R.style.TextSecure_GreenTheme,
+      R.style.TextSecure_BlueTheme,
+      R.style.TextSecure_RedTheme,
+      R.style.TextSecure_PinkTheme,
+      R.style.TextSecure_GrayTheme,
+      R.style.TextSecure_MaterialYouLightTheme
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int theme : lightThemes) {
+                Context context = themedContext(theme);
+                if (theme == R.style.TextSecure_MaterialYouLightTheme) {
+                  context = DynamicColors.wrapContextIfAvailable(context);
+                }
+                int background = MaterialColors.getColor(context, R.attr.toolbar_color, 0);
+                int foreground = MaterialColors.getColor(context, R.attr.toolbar_foreground, 0);
+                assertEquals(Color.WHITE, background);
+                assertTrue(ColorUtils.calculateContrast(foreground, background) >= 4.5);
+
+                View list =
+                    LayoutInflater.from(context).inflate(R.layout.conversation_list_activity, null);
+                TextView title = list.findViewById(R.id.toolbar_title);
+                ImageView search = list.findViewById(R.id.search_action);
+                assertEquals(foreground, title.getCurrentTextColor());
+                assertEquals(foreground, search.getImageTintList().getDefaultColor());
+
+                View chat =
+                    LayoutInflater.from(context).inflate(R.layout.conversation_title_view, null);
+                assertEquals(
+                    foreground, ((TextView) chat.findViewById(R.id.title)).getCurrentTextColor());
+                assertEquals(
+                    foreground,
+                    ((ImageView) chat.findViewById(R.id.up_button))
+                        .getImageTintList()
+                        .getDefaultColor());
+
+                View media =
+                    LayoutInflater.from(context).inflate(R.layout.all_media_activity, null);
+                TabLayout tabs = media.findViewById(R.id.tab_layout);
+                assertEquals(
+                    foreground,
+                    tabs.getTabTextColors()
+                        .getColorForState(new int[] {android.R.attr.state_selected}, 0));
+                assertTrue(
+                    ColorUtils.calculateContrast(
+                            tabs.getTabTextColors().getDefaultColor(), background)
+                        >= 4.5);
+
+                PopupMenu menu = new PopupMenu(context, new View(context));
+                menu.inflate(R.menu.conversation);
+                assertEquals(
+                    foreground,
+                    MenuItemCompat.getIconTintList(menu.getMenu().findItem(R.id.menu_all_media))
+                        .getDefaultColor());
+              }
+            });
+  }
+
+  @Test
   public void contextualActionBarUsesBrandedBackgroundAndWhiteText() {
     InstrumentationRegistry.getInstrumentation()
         .runOnMainSync(
             () -> {
               for (int theme : THEMES) {
                 Context context = themedContext(theme);
-                assertEquals(
-                    MaterialColors.getColor(
-                        context, androidx.appcompat.R.attr.actionModeBackground, 0),
-                    MaterialColors.getColor(context, R.attr.toolbar_color, 0));
                 assertTrue(
                     ColorUtils.calculateContrast(
                             MaterialColors.getColor(context, R.attr.colorOnPrimary, 0),
                             MaterialColors.getColor(context, R.attr.colorPrimary, 0))
                         >= 4.5);
+                Context actionModeContext =
+                    new ContextThemeWrapper(context, R.style.ThemeOverlay_AppCompat_Dark_ActionBar);
                 ActionBarContextView actionMode =
                     (ActionBarContextView)
-                        LayoutInflater.from(context)
+                        LayoutInflater.from(actionModeContext)
                             .inflate(androidx.appcompat.R.layout.abc_action_mode_bar, null);
                 assertEquals(
                     MaterialColors.getColor(

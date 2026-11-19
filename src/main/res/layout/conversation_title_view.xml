@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/ic_arrow_back_white_24dp"
+        android:tint="?attr/toolbar_foreground"
         android:clickable="true"
         android:paddingRight="12dp"
         android:paddingEnd="12dp"

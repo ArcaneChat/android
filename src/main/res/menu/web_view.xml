@@ -20,6 +20,7 @@
         android:title="@string/back"
         android:id="@+id/menu_search_up"
         android:icon="@drawable/ic_search_up"
+        app:iconTint="?attr/toolbar_foreground"
         android:visible="false"
         app:showAsAction="always" />
 
@@ -27,6 +28,7 @@
         android:title="@string/next"
         android:id="@+id/menu_search_down"
         android:icon="@drawable/ic_search_down"
+        app:iconTint="?attr/toolbar_foreground"
         android:visible="false"
         app:showAsAction="always" />
 

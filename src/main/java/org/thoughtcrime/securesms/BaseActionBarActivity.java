@@ -1,5 +1,6 @@
 package org.thoughtcrime.securesms;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -7,15 +8,20 @@ import android.view.MenuItem;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.WindowCompat;
 import androidx.fragment.app.Fragment;
 import java.lang.reflect.Field;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
+import org.thoughtcrime.securesms.util.ResUtil;
+import org.thoughtcrime.securesms.util.ThemeUtil;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
 public abstract class BaseActionBarActivity extends AppCompatActivity {
@@ -39,10 +45,15 @@ public abstract class BaseActionBarActivity extends AppCompatActivity {
       // bar background
       EdgeToEdge.enable(this);
 
-      // force white text in status bar so it visible over background color
       WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
-          .setAppearanceLightStatusBars(false);
+          .setAppearanceLightStatusBars(!ThemeUtil.isDarkTheme(this));
     }
+  }
+
+  protected Drawable toolbarIcon(@DrawableRes int resource) {
+    Drawable icon = DrawableCompat.wrap(ContextCompat.getDrawable(this, resource).mutate());
+    DrawableCompat.setTint(icon, ResUtil.getColor(this, R.attr.toolbar_foreground));
+    return icon;
   }
 
   @Override

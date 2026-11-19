@@ -13,6 +13,7 @@
         android:title="@string/global_menu_edit_desktop"
         android:id="@+id/edit_name"
         android:icon="@drawable/ic_create_white_24dp"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always" />
 
     <item

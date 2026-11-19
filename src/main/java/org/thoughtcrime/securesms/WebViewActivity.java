@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.view.WindowCompat;
 import androidx.webkit.ProxyConfig;
 import androidx.webkit.ProxyController;
 import androidx.webkit.WebSettingsCompat;
@@ -88,6 +89,8 @@ public class WebViewActivity extends PassphraseRequiredActionBarActivity
     WebRtcHolder.getInstance(this).start();
 
     if (immersiveMode()) {
+      WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+          .setAppearanceLightStatusBars(false);
       // set a shadow in the status bar to make it more readable
       findViewById(R.id.status_bar_background)
           .setBackgroundResource(R.drawable.search_toolbar_shadow);

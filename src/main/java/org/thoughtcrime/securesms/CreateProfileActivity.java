@@ -77,7 +77,7 @@ public class CreateProfileActivity extends BaseActionBarActivity {
                 ? R.string.team_profile
                 : R.string.pref_profile_info_headline);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+    getSupportActionBar().setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
 
     attachmentManager = new AttachmentManager(this, () -> {});
     avatarChanged = false;

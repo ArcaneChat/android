@@ -8,6 +8,7 @@
         android:title="@string/ok"
         android:id="@+id/do_register"
         android:icon="?menu_accept_icon"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="always|withText" />
 
 </menu>

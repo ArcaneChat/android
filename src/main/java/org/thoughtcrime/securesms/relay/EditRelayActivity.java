@@ -126,7 +126,7 @@ public class EditRelayActivity extends BaseActionBarActivity
       actionBar.setTitle(
           config != null ? R.string.edit_transport : R.string.manual_account_setup_option);
       actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+      actionBar.setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
     }
 
     if (config != null) emailInput.setEnabled(false);

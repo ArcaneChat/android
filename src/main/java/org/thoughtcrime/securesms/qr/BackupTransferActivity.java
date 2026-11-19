@@ -99,7 +99,7 @@ public class BackupTransferActivity extends BaseActionBarActivity {
 
     ActionBar supportActionBar = getSupportActionBar();
     supportActionBar.setDisplayHomeAsUpEnabled(true);
-    supportActionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+    supportActionBar.setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
     supportActionBar.setTitle(title);
 
     // add padding to avoid content hidden behind system bars

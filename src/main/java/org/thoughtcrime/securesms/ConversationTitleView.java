@@ -1,6 +1,7 @@
 package org.thoughtcrime.securesms;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import com.b44t.messenger.DcChat;
 import com.b44t.messenger.DcContact;
 import com.b44t.messenger.DcContext;
@@ -17,6 +20,7 @@ import org.thoughtcrime.securesms.connect.DcHelper;
 import org.thoughtcrime.securesms.mms.GlideRequests;
 import org.thoughtcrime.securesms.recipients.Recipient;
 import org.thoughtcrime.securesms.util.DateUtils;
+import org.thoughtcrime.securesms.util.ResUtil;
 import org.thoughtcrime.securesms.util.Util;
 import org.thoughtcrime.securesms.util.ViewUtil;
 
@@ -95,8 +99,18 @@ public class ConversationTitleView extends RelativeLayout {
     }
 
     avatar.setAvatar(glideRequests, new Recipient(getContext(), dcChat), false);
-    int imgLeft = dcChat.isMuted() ? R.drawable.ic_volume_off_white_18dp : 0;
-    int imgRight = isVerified(dcChat, chatContacts) ? R.drawable.ic_verified : 0;
+    Drawable imgLeft =
+        dcChat.isMuted()
+            ? ContextCompat.getDrawable(context, R.drawable.ic_volume_off_white_18dp)
+            : null;
+    if (imgLeft != null) {
+      imgLeft = DrawableCompat.wrap(imgLeft.mutate());
+      DrawableCompat.setTint(imgLeft, ResUtil.getColor(context, R.attr.toolbar_foreground));
+    }
+    Drawable imgRight =
+        isVerified(dcChat, chatContacts)
+            ? ContextCompat.getDrawable(context, R.drawable.ic_verified)
+            : null;
     title.setCompoundDrawablesWithIntrinsicBounds(imgLeft, 0, imgRight, 0);
     if (!TextUtils.isEmpty(subtitleStr)) {
       subtitle.setText(subtitleStr);

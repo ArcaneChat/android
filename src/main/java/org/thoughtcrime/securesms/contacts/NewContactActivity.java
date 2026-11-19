@@ -39,7 +39,7 @@ public class NewContactActivity extends PassphraseRequiredActionBarActivity {
     if (actionBar != null) {
       actionBar.setTitle(R.string.menu_new_classic_contact);
       actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+      actionBar.setHomeAsUpIndicator(toolbarIcon(R.drawable.ic_close_white_24dp));
     }
 
     // add padding to avoid content hidden behind system bars

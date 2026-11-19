@@ -8,6 +8,7 @@
         android:title="@string/proxy_use_proxy"
         android:id="@+id/menu_proxy_settings"
         android:icon="@drawable/ic_proxy_disabled_24"
+        app:iconTint="?attr/toolbar_foreground"
         app:showAsAction="never" />
 
     <item
