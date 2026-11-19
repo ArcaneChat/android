@@ -111,7 +111,7 @@ public class ConversationTitleView extends RelativeLayout {
         isVerified(dcChat, chatContacts)
             ? ContextCompat.getDrawable(context, R.drawable.ic_verified)
             : null;
-    title.setCompoundDrawablesWithIntrinsicBounds(imgLeft, 0, imgRight, 0);
+    title.setCompoundDrawablesWithIntrinsicBounds(imgLeft, null, imgRight, null);
     if (!TextUtils.isEmpty(subtitleStr)) {
       subtitle.setText(subtitleStr);
       subtitle.setVisibility(View.VISIBLE);
