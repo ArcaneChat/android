@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="?attr/colorPrimary">
+    <item android:id="@android:id/mask" android:drawable="@android:color/black" />
+    <item>
+        <selector>
+            <item android:state_selected="true">
+                <shape>
+                    <solid android:color="@color/material_you_dark_list_selection" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+</ripple>

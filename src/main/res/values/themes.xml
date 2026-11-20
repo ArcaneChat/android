@@ -355,7 +355,7 @@
         <item name="conversation_item_outgoing_text_primary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_item_outgoing_text_secondary_color">?attr/colorOnPrimaryContainer</item>
         <item name="conversation_list_item_unreadcount_color">?attr/colorPrimaryInverse</item>
-        <item name="conversation_list_item_background">@drawable/material_you_list_item_background</item>
+        <item name="conversation_list_item_background">@drawable/material_you_dark_list_item_background</item>
         <item name="pinned_list_item_background">@drawable/material_you_pinned_list_item_background</item>
         <item name="conversation_item_background">@drawable/material_you_message_background</item>
         <item name="conversation_item_background_animated">@drawable/material_you_message_background_animated</item>

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -323,7 +324,8 @@ public class MaterialThemeTest {
         .runOnMainSync(
             () -> {
               for (int i = 0; i < themes.length; i++) {
-                Context context = DynamicColors.wrapContextIfAvailable(themedContext(themes[i]));
+                Context context =
+                    DynamicColors.wrapContextIfAvailable(themedContext(themes[i], i == 1));
                 try (TypedArray attributes =
                     context.obtainStyledAttributes(new int[] {android.R.attr.windowBackground})) {
                   assertEquals(
@@ -334,9 +336,13 @@ public class MaterialThemeTest {
                 assertEquals(Color.TRANSPARENT, drawableColor(row.getBackground()));
                 row.setSelected(true);
                 row.getBackground().jumpToCurrentState();
-                assertEquals(
-                    MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0),
-                    drawableColor(row.getBackground()));
+                if (i == 0) {
+                  assertEquals(
+                      MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0),
+                      drawableColor(row.getBackground()));
+                } else {
+                  assertDarkListSelectionReadable(drawableColor(row.getBackground()));
+                }
               }
 
               Context context = DynamicColors.wrapContextIfAvailable(themedContext(themes[0]));
@@ -363,12 +369,12 @@ public class MaterialThemeTest {
       R.style.TextSecure_MaterialYouDarkNoActionBar
     };
     int[] backgrounds = {
-      R.attr.conversation_list_item_background,
       R.attr.pinned_list_item_background,
       R.attr.conversation_item_background,
       R.attr.conversation_item_background_animated
     };
     int[] rows = {
+      R.layout.conversation_list_item_view,
       R.layout.account_selection_list_item,
       R.layout.contact_selection_list_item,
       R.layout.profile_document_item
@@ -376,8 +382,9 @@ public class MaterialThemeTest {
     InstrumentationRegistry.getInstrumentation()
         .runOnMainSync(
             () -> {
-              for (int theme : themes) {
-                Context context = DynamicColors.wrapContextIfAvailable(themedContext(theme));
+              for (int i = 0; i < themes.length; i++) {
+                Context context =
+                    DynamicColors.wrapContextIfAvailable(themedContext(themes[i], i == 1));
                 int selected = MaterialColors.getColor(context, R.attr.colorPrimaryContainer, 0);
                 for (int background : backgrounds) {
                   try (TypedArray attributes =
@@ -388,11 +395,30 @@ public class MaterialThemeTest {
                     assertEquals(selected, drawableColor(drawable));
                   }
                 }
+                int listSelection;
+                try (TypedArray attributes =
+                    context.obtainStyledAttributes(
+                        new int[] {R.attr.conversation_list_item_background})) {
+                  Drawable drawable = attributes.getDrawable(0);
+                  drawable.setState(new int[] {android.R.attr.state_selected});
+                  drawable.jumpToCurrentState();
+                  listSelection = drawableColor(drawable);
+                }
+                if (i == 0) {
+                  assertEquals(selected, listSelection);
+                } else {
+                  assertDarkListSelectionReadable(listSelection);
+                  int primary = MaterialColors.getColor(context, R.attr.colorPrimary, 0);
+                  ColorDrawable expected =
+                      new ColorDrawable(
+                          ColorUtils.setAlphaComponent(primary, Math.round(255 * 0.25f)));
+                  assertEquals(drawableColor(expected), listSelection);
+                }
                 for (int rowLayout : rows) {
                   View row = LayoutInflater.from(context).inflate(rowLayout, null);
                   row.setSelected(true);
                   row.getBackground().jumpToCurrentState();
-                  assertEquals(selected, drawableColor(row.getBackground()));
+                  assertEquals(listSelection, drawableColor(row.getBackground()));
                 }
 
                 View gallery =
@@ -406,6 +432,12 @@ public class MaterialThemeTest {
                 assertTrue(Color.alpha(overlay) > 0 && Color.alpha(overlay) < 255);
               }
             });
+  }
+
+  private static void assertDarkListSelectionReadable(int selection) {
+    assertTrue(Color.alpha(selection) > 0 && Color.alpha(selection) < 255);
+    int background = ColorUtils.compositeColors(selection, Color.BLACK);
+    assertTrue(ColorUtils.calculateContrast(Color.WHITE, background) >= 4.5);
   }
 
   private static int drawableColor(Drawable drawable) {
@@ -724,6 +756,15 @@ public class MaterialThemeTest {
   private static Context themedContext(int theme) {
     Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
     return new ContextThemeWrapper(target, theme);
+  }
+
+  private static Context themedContext(int theme, boolean dark) {
+    Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    Configuration configuration = new Configuration(target.getResources().getConfiguration());
+    configuration.uiMode =
+        (configuration.uiMode & ~Configuration.UI_MODE_NIGHT_MASK)
+            | (dark ? Configuration.UI_MODE_NIGHT_YES : Configuration.UI_MODE_NIGHT_NO);
+    return new ContextThemeWrapper(target.createConfigurationContext(configuration), theme);
   }
 
   private static class TestTheme extends DynamicTheme {
