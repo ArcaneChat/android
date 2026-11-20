@@ -34,6 +34,7 @@ import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.MenuItemCompat;
+import androidx.core.view.WindowCompat;
 import androidx.preference.PreferenceManager;
 import androidx.preference.PreferenceViewHolder;
 import androidx.test.core.app.ActivityScenario;
@@ -55,6 +56,7 @@ import org.thoughtcrime.securesms.util.DynamicNoActionBarTheme;
 import org.thoughtcrime.securesms.util.DynamicTheme;
 import org.thoughtcrime.securesms.util.Prefs;
 import org.thoughtcrime.securesms.util.ToolbarScrollColors;
+import org.thoughtcrime.securesms.util.ViewUtil;
 
 @RunWith(AndroidJUnit4.class)
 public class MaterialThemeTest {
@@ -337,6 +339,12 @@ public class MaterialThemeTest {
               ActivityScenario.launch(WelcomeActivity.class)) {
             scenario.onActivity(
                 activity -> {
+                  if (ViewUtil.isEdgeToEdgeSupported()) {
+                    assertFalse(
+                        WindowCompat.getInsetsController(
+                                activity.getWindow(), activity.getWindow().getDecorView())
+                            .isAppearanceLightStatusBars());
+                  }
                   assertNotNull(activity.getSupportActionBar());
                   activity.getSupportActionBar().show();
                   activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);

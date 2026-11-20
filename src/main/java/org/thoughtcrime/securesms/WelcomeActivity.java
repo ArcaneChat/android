@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.WindowCompat;
 import com.b44t.messenger.DcContext;
 import com.b44t.messenger.DcEvent;
 import com.google.zxing.integration.android.IntentIntegrator;
@@ -69,6 +70,10 @@ public class WelcomeActivity extends BaseActionBarActivity
   @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
+    if (ViewUtil.isEdgeToEdgeSupported()) {
+      WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView())
+          .setAppearanceLightStatusBars(false);
+    }
     setContentView(R.layout.welcome_activity);
 
     // add padding to avoid content hidden behind system bars
