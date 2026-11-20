@@ -16,8 +16,10 @@
     <color name="purple_primary_lite">#ff7b00c8</color>
     <color name="purple_primary_alpha33">#557b00c8</color>
     <color name="purple_accent">#9646c8</color>
-    <color name="purple_outgoing_bubble">#fffff9d9</color>
-    <color name="purple_outgoing_label">#ff7b00c8</color>
+    <!-- Outgoing bubble colors are HCT tones 95 (light) and 30 (dark) of each theme's primary color. -->
+    <color name="purple_outgoing_bubble">#faecff</color>
+    <color name="purple_outgoing_bubble_dark">#6b00af</color>
+    <color name="purple_outgoing_label">#6b00af</color>
     <color name="purple_unreadcount">#7b00c8</color>
     <!-- ========== -->
 
@@ -26,8 +28,9 @@
     <color name="green_primary_lite">#ff009788</color>
     <color name="green_primary_alpha33">#55009788</color>
     <color name="green_accent">#00b7a5</color>
-    <color name="green_outgoing_bubble">#fffff9d9</color>
-    <color name="green_outgoing_label">#ff009788</color>
+    <color name="green_outgoing_bubble">#b4fff1</color>
+    <color name="green_outgoing_bubble_dark">#005048</color>
+    <color name="green_outgoing_label">#005048</color>
     <color name="green_unreadcount">#00b7a5</color>
     <!-- ========== -->
 
@@ -36,8 +39,9 @@
     <color name="blue_primary_lite">#ff517da2</color>
     <color name="blue_primary_alpha33">#55517da2</color>
     <color name="blue_accent">#486d8f</color>
-    <color name="blue_outgoing_bubble">#fffff9d9</color>
-    <color name="blue_outgoing_label">#ff2f97d6</color>
+    <color name="blue_outgoing_bubble">#e7f2ff</color>
+    <color name="blue_outgoing_bubble_dark">#184a6d</color>
+    <color name="blue_outgoing_label">#184a6d</color>
     <color name="blue_unreadcount">#1ab7c8</color>
     <!-- ========== -->
 
@@ -46,8 +50,9 @@
     <color name="red_primary_lite">#ffb61c1c</color>
     <color name="red_primary_alpha33">#55b61c1c</color>
     <color name="red_accent">#a41a1a</color>
-    <color name="red_outgoing_bubble">#fffff9d9</color>
-    <color name="red_outgoing_label">#ffce303e</color>
+    <color name="red_outgoing_bubble">#ffedea</color>
+    <color name="red_outgoing_bubble_dark">#93000b</color>
+    <color name="red_outgoing_label">#93000b</color>
     <color name="red_unreadcount">#d51431</color>
     <!-- ========== -->
 
@@ -56,8 +61,9 @@
     <color name="pink_primary_lite">#ffc84595</color>
     <color name="pink_primary_alpha33">#55c84595</color>
     <color name="pink_accent">#a03779</color>
-    <color name="pink_outgoing_bubble">#fffff9d9</color>
-    <color name="pink_outgoing_label">#ffa03779</color>
+    <color name="pink_outgoing_bubble">#ffecf2</color>
+    <color name="pink_outgoing_bubble_dark">#890561</color>
+    <color name="pink_outgoing_label">#890561</color>
     <color name="pink_unreadcount">#ff25b7</color>
     <!-- ========== -->
 
@@ -66,8 +72,9 @@
     <color name="gray_primary_lite">#4c6e7d</color>
     <color name="gray_primary_alpha33">#55415e6b</color>
     <color name="gray_accent">#3b5561</color>
-    <color name="gray_outgoing_bubble">#fffff9d9</color>
-    <color name="gray_outgoing_label">#ff415e6b</color>
+    <color name="gray_outgoing_bubble">#dff4ff</color>
+    <color name="gray_outgoing_bubble_dark">#2d4b57</color>
+    <color name="gray_outgoing_label">#2d4b57</color>
     <color name="gray_unreadcount">#415e6b</color>
     <!-- ========== -->
 

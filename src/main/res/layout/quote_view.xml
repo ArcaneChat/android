@@ -48,6 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/Signal.Text.Quote"
+                android:textColor="?attr/conversation_item_quote_text_color"
                 android:ellipsize="end"
                 tools:text="With great power comes great responsibility."
                 tools:visibility="visible" />

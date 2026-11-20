@@ -314,6 +314,71 @@ public class MaterialThemeTest {
   }
 
   @Test
+  public void staticThemesUseSeededReadableOutgoingBubbles() {
+    int[][] themes = {
+      {R.style.TextSecure_LightTheme, R.style.TextSecure_DarkTheme},
+      {R.style.TextSecure_LightNoActionBar, R.style.TextSecure_DarkNoActionBar},
+      {R.style.TextSecure_PurpleTheme, R.style.TextSecure_PurpleDarkTheme},
+      {R.style.TextSecure_PurpleNoActionBar, R.style.TextSecure_PurpleDarkNoActionBar},
+      {R.style.TextSecure_GreenTheme, R.style.TextSecure_GreenDarkTheme},
+      {R.style.TextSecure_GreenNoActionBar, R.style.TextSecure_GreenDarkNoActionBar},
+      {R.style.TextSecure_BlueTheme, R.style.TextSecure_BlueDarkTheme},
+      {R.style.TextSecure_BlueNoActionBar, R.style.TextSecure_BlueDarkNoActionBar},
+      {R.style.TextSecure_RedTheme, R.style.TextSecure_RedDarkTheme},
+      {R.style.TextSecure_RedNoActionBar, R.style.TextSecure_RedDarkNoActionBar},
+      {R.style.TextSecure_PinkTheme, R.style.TextSecure_PinkDarkTheme},
+      {R.style.TextSecure_PinkNoActionBar, R.style.TextSecure_PinkDarkNoActionBar},
+      {R.style.TextSecure_GrayTheme, R.style.TextSecure_GrayDarkTheme},
+      {R.style.TextSecure_GrayNoActionBar, R.style.TextSecure_GrayDarkNoActionBar}
+    };
+    InstrumentationRegistry.getInstrumentation()
+        .runOnMainSync(
+            () -> {
+              for (int[] pair : themes) {
+                Context light = themedContext(pair[0], false);
+                Context dark = themedContext(pair[1], true);
+                int seed = MaterialColors.getColor(light, R.attr.colorPrimary, 0);
+                int lightBubble =
+                    MaterialColors.getColor(
+                        light, R.attr.conversation_item_outgoing_bubble_color, 0);
+                int darkBubble =
+                    MaterialColors.getColor(
+                        dark, R.attr.conversation_item_outgoing_bubble_color, 0);
+                assertEquals(
+                    MaterialColors.getColorRoles(seed, false).getAccentContainer(), darkBubble);
+                assertTrue(
+                    ColorUtils.calculateLuminance(lightBubble)
+                        > ColorUtils.calculateLuminance(
+                            MaterialColors.getColorRoles(seed, true).getAccentContainer()));
+                assertTrue(lightBubble != Color.WHITE);
+
+                for (Context context : new Context[] {light, dark}) {
+                  int bubble =
+                      MaterialColors.getColor(
+                          context, R.attr.conversation_item_outgoing_bubble_color, 0);
+                  int[] foregrounds = {
+                    R.attr.conversation_item_outgoing_text_primary_color,
+                    R.attr.conversation_item_outgoing_text_secondary_color,
+                    R.attr.conversation_item_quote_text_color,
+                    R.attr.forwarded_message_color
+                  };
+                  for (int foreground : foregrounds) {
+                    assertTrue(
+                        ColorUtils.calculateContrast(
+                                MaterialColors.getColor(context, foreground, 0), bubble)
+                            >= 4.5);
+                  }
+                  FrameLayout parent = new FrameLayout(context);
+                  LayoutInflater.from(context).inflate(R.layout.quote_view, parent);
+                  TextView quote = parent.findViewById(R.id.quote_text);
+                  assertTrue(
+                      ColorUtils.calculateContrast(quote.getCurrentTextColor(), bubble) >= 4.5);
+                }
+              }
+            });
+  }
+
+  @Test
   public void materialYouKeepsNeutralWindowsAndReadableLightMessages() {
     Assume.assumeTrue(DynamicColors.isDynamicColorAvailable());
     int[] themes = {
