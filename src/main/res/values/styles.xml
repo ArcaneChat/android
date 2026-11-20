@@ -28,6 +28,17 @@
         <item name="android:textColorSecondary">?attr/toolbar_secondary_foreground</item>
     </style>
 
+    <style name="ThemeOverlay.TextSecure.Welcome" parent="">
+        <item name="actionBarTheme">@style/ThemeOverlay.TextSecure.WelcomeActionBar</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="ThemeOverlay.TextSecure.WelcomeActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="toolbar_foreground">@color/white</item>
+        <item name="toolbar_secondary_foreground">#BFffffff</item>
+        <item name="colorControlNormal">@color/white</item>
+    </style>
+
     <!-- ActionBar styles -->
     <style name="TextSecure.MaterialYouActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="background">?attr/toolbar_color</item>

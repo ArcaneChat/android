@@ -2,6 +2,7 @@ package org.thoughtcrime.securesms.testing;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Context;
@@ -26,9 +27,11 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.ActionBarContextView;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.MenuItemCompat;
 import androidx.preference.PreferenceManager;
@@ -310,6 +313,81 @@ public class MaterialThemeTest {
         editor.putString(Prefs.THEME_PREF, previous);
       }
       editor.commit();
+    }
+  }
+
+  @Test
+  public void welcomeActionBarUsesLightForegroundOverGradient() {
+    Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    String previous = preferences.getString(Prefs.THEME_PREF, null);
+    int previousNightMode = AppCompatDelegate.getDefaultNightMode();
+    String[] themes = {DynamicTheme.LIGHT, DynamicTheme.DARK, DynamicTheme.MATERIAL_YOU};
+    try {
+      for (String theme : themes) {
+        int[] modes =
+            theme.equals(DynamicTheme.MATERIAL_YOU)
+                ? new int[] {AppCompatDelegate.MODE_NIGHT_NO, AppCompatDelegate.MODE_NIGHT_YES}
+                : new int[] {AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM};
+        for (int mode : modes) {
+          preferences.edit().putString(Prefs.THEME_PREF, theme).commit();
+          InstrumentationRegistry.getInstrumentation()
+              .runOnMainSync(() -> AppCompatDelegate.setDefaultNightMode(mode));
+          try (ActivityScenario<WelcomeActivity> scenario =
+              ActivityScenario.launch(WelcomeActivity.class)) {
+            scenario.onActivity(
+                activity -> {
+                  assertNotNull(activity.getSupportActionBar());
+                  activity.getSupportActionBar().show();
+                  activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                  activity.getSupportActionBar().setTitle("Welcome toolbar");
+                  Toolbar toolbar = activity.findViewById(androidx.appcompat.R.id.action_bar);
+                  assertNotNull(toolbar);
+                  TextView title = null;
+                  for (int i = 0; i < toolbar.getChildCount(); i++) {
+                    View child = toolbar.getChildAt(i);
+                    if (child instanceof TextView
+                        && "Welcome toolbar".contentEquals(((TextView) child).getText())) {
+                      title = (TextView) child;
+                    }
+                  }
+                  assertNotNull(title);
+                  assertEquals(Color.WHITE, title.getCurrentTextColor());
+                  Drawable icon = toolbar.getNavigationIcon();
+                  assertNotNull(icon);
+                  Bitmap bitmap = Bitmap.createBitmap(48, 48, Bitmap.Config.ARGB_8888);
+                  icon.setBounds(0, 0, 48, 48);
+                  icon.draw(new Canvas(bitmap));
+                  boolean found = false;
+                  for (int y = 0; y < 48; y++) {
+                    for (int x = 0; x < 48; x++) {
+                      int pixel = bitmap.getPixel(x, y);
+                      if (Color.alpha(pixel) == 255) {
+                        assertEquals(Color.WHITE, pixel);
+                        found = true;
+                      }
+                    }
+                  }
+                  bitmap.recycle();
+                  assertTrue(found);
+                  try (TypedArray attributes =
+                      activity.obtainStyledAttributes(new int[] {R.attr.windowActionBarOverlay})) {
+                    assertTrue(attributes.getBoolean(0, false));
+                  }
+                });
+          }
+        }
+      }
+    } finally {
+      SharedPreferences.Editor editor = preferences.edit();
+      if (previous == null) {
+        editor.remove(Prefs.THEME_PREF);
+      } else {
+        editor.putString(Prefs.THEME_PREF, previous);
+      }
+      editor.commit();
+      InstrumentationRegistry.getInstrumentation()
+          .runOnMainSync(() -> AppCompatDelegate.setDefaultNightMode(previousNightMode));
     }
   }
 

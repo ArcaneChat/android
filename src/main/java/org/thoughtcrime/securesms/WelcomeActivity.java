@@ -61,6 +61,12 @@ public class WelcomeActivity extends BaseActionBarActivity
   private NotificationController notificationController;
 
   @Override
+  protected void onPreCreate() {
+    super.onPreCreate();
+    getTheme().applyStyle(R.style.ThemeOverlay_TextSecure_Welcome, true);
+  }
+
+  @Override
   public void onCreate(Bundle bundle) {
     super.onCreate(bundle);
     setContentView(R.layout.welcome_activity);
@@ -130,10 +136,8 @@ public class WelcomeActivity extends BaseActionBarActivity
     boolean canGoBack = AccountManager.getInstance().canRollbackAccountCreation(this);
     supportActionBar.setDisplayHomeAsUpEnabled(canGoBack);
     if (canGoBack) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        supportActionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        supportActionBar.setElevation(0);
-      }
+      supportActionBar.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+      supportActionBar.setElevation(0);
       supportActionBar.setTitle(R.string.add_account);
     } else {
       supportActionBar.hide();
