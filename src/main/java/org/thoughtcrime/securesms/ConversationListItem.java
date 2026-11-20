@@ -346,11 +346,8 @@ public class ConversationListItem extends RelativeLayout
   }
 
   private void setBgColor(ThreadRecord thread) {
-    int bg = R.attr.conversation_list_item_background;
-    if (thread != null && thread.getVisibility() == DcChat.DC_CHAT_VISIBILITY_PINNED) {
-      bg = R.attr.pinned_list_item_background;
-    }
-    try (TypedArray ta = getContext().obtainStyledAttributes(new int[] {bg})) {
+    try (TypedArray ta =
+        getContext().obtainStyledAttributes(new int[] {R.attr.conversation_list_item_background})) {
       ViewUtil.setBackground(this, ta.getDrawable(0));
     }
   }
@@ -441,10 +438,5 @@ public class ConversationListItem extends RelativeLayout
     }
 
     return spanned;
-  }
-
-  public void hideItemDivider() {
-    View itemDivider = findViewById(R.id.item_divider);
-    itemDivider.setVisibility(View.GONE);
   }
 }
