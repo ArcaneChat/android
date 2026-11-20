@@ -423,14 +423,9 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
     if (unreadCount == 0) {
       unreadIndicator.setVisibility(View.GONE);
     } else {
-      boolean isDarkTheme = DynamicTheme.isDarkTheme(this);
-      int badgeColor = Color.WHITE;
-      if (isDarkTheme) {
-        final TypedArray attrs =
-            obtainStyledAttributes(
-                new int[] {
-                  R.attr.conversation_list_item_unreadcount_color,
-                });
+      final int badgeColor;
+      try (TypedArray attrs =
+          obtainStyledAttributes(new int[] {R.attr.conversation_list_item_unreadcount_color})) {
         badgeColor = attrs.getColor(0, Color.BLACK);
       }
       String badgeText = Util.humanReadableCount(unreadCount);
@@ -439,7 +434,7 @@ public class ConversationListActivity extends PassphraseRequiredActionBarActivit
               .beginConfig()
               .width(ViewUtil.dpToPx(this, 20))
               .height(ViewUtil.dpToPx(this, 20))
-              .textColor(isDarkTheme ? Color.WHITE : Color.BLACK)
+              .textColor(Color.WHITE)
               .bold()
               .endConfig()
               .buildRound(badgeText, badgeColor));
