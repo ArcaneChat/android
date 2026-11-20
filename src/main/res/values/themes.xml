@@ -214,7 +214,7 @@
         <!-- <item name="conversation_item_outgoing_bubble_border_color">#80364e59</item> -->
         <item name="conversation_item_outgoing_text_primary_color">@color/core_dark_05</item>
         <item name="conversation_item_outgoing_text_secondary_color">@color/light_pink</item>
-        <item name="forwarded_message_color">#bebebe</item>
+        <item name="forwarded_message_color">@color/message_secondary_text_dark</item>
         <item name="conversation_item_background">@drawable/conversation_item_background</item>
         <item name="conversation_item_background_animated">@drawable/conversation_item_background_animated</item>
         <item name="conversation_item_update_bg_color">@color/universal_overlay</item>
@@ -222,7 +222,7 @@
 
         <item name="conversation_item_sent_indicator_text_background">@drawable/conversation_item_sent_indicator_text_shape_dark</item>
         <item name="conversation_item_date_line_color">@color/core_dark_55</item>
-        <item name="conversation_item_quote_text_color">#bebebe</item>
+        <item name="conversation_item_quote_text_color">@color/message_secondary_text_dark</item>
         <item name="conversation_item_sticky_date_background">@drawable/sticky_date_header_background_dark</item>
         <item name="conversation_item_sticky_date_text_color">@color/core_dark_30</item>
 
